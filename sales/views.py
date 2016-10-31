@@ -123,16 +123,33 @@ def weixin(request):
 
 
 @csrf_exempt
-def test(request):
+def import_manager(request):
     if request.method == 'GET':
-
-        #
-        # for i in range(0,200):
-        #     temp = str(i)
-        #     n = len(temp)
-        #     for i in range(0,4-n):
-        #         temp = '0' + temp
-        #     Manager.objects.create(id=temp)
+        for i in range(0,200):
+            temp = str(i)
+            n = len(temp)
+            for i in range(0,4-n):
+                temp = '0' + temp
+            Manager.objects.update_or_create(id=temp)
 
         return HttpResponse('finish')
     # return render(request, 'test/test.html', {})
+
+
+@csrf_exempt
+def import_exhibition(request):
+    if request.method == 'GET':
+        csvfile = file('exhibition.csv', 'rb')
+        reader = csv.reader(csvfile)
+        for line in reader:
+            Exhibition.objects.update_or_create(id=line[0])
+        csvfile.close()
+
+@csrf_exempt
+def import_sale_nano(request):
+    if request.method == 'GET':
+        csvfile = file('sale_nano.csv', 'rb')
+        reader = csv.reader(csvfile)
+        for line in reader:
+            SaleNano.objects.update_or_create(id=line[2],name=line[1],location=line[0])
+        csvfile.close()

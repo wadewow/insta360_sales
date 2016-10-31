@@ -277,8 +277,8 @@ def sale_guide(request):
                         return JsonResponse(data=result, safe=False)
                     province = shop.province
 
-                    # if not location in province:
-                    if False:
+                    if not location in province:
+                    # if False:
                         result['message'] = 'Location mismatching'
                         return JsonResponse(data=result, safe=False)
                     else:

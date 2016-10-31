@@ -34,7 +34,7 @@ class ManagerAdmin(admin.ModelAdmin):
     list_display = ('id',)
 
 class SaleNanoAdmin(admin.ModelAdmin):
-    list_display = ('id',)
+    list_display = ('id', 'name', 'location')
 
 class CashRecordAdmin(admin.ModelAdmin):
     list_display = ('id', 'clerk_id', 'name', 'phone', 'base', 'bonus', 'money', 'code', 'created_time', 'wechat')

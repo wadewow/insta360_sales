@@ -182,9 +182,9 @@ def store_info(request):
                     first = para.__getitem__('first')
                 print first
                 result = Shop.objects.get(id=store_id)
-                option = json.loads(result.option)
                 photo_join = result.photo
                 photos = photo_join.split(':')
+                option = json.loads(result.option)
                 new_option = {}
                 for index, item in enumerate(option):
                     n = dict[item]

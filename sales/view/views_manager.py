@@ -72,6 +72,13 @@ def manager_list(request):
         else:
             manager_id = request.session.__getitem__('manager_id')
             store_list = Shop.objects.filter(manager=manager_id)
+            for store in store_list:
+                new_option = {}
+                option = json.loads(store.option)
+                for index, item in enumerate(option):
+                    n = dict[item]
+                    new_option[n] = option[item]
+                store.option = new_option
             return render(request, 'manager/list.html', {
                 'store_list': store_list
             })

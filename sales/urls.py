@@ -6,7 +6,8 @@ from . import views
 urlpatterns = [
     # url( r'^static/(?P<path>.*)$', 'django.views.static.serve', { 'document_root':settings.STATIC_ROOT }),
     # url(r'^$', views.index, name='index'),
-    url(r'^test$', views.test, name='test'),
+    url(r'^import_manager', views.import_manager, name='import_manager'),
+    url(r'^import_exhibition', views.import_exhibition, name='import_exhibition'),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/favicon.ico')),
 
     url(r'^shopkeeper/register$', views.shopkeeper_register, name='shopkeeper_register'),
