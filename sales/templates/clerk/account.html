@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/h5Validate/0.9.0/jquery.h5validate.min.js"></script>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>奖励提现</title>
+</head>
+<body>
+    <div class="weui-cells">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <div class="">
+                    <h4 class="weui-media-box__title">基础奖励</h4>
+                    <p class="weui-cells__tips">售出的相机扫码至本系统后，12小时内用户激活后，您即可获得1~3元随机金额的基础奖励</p>
+                </div>
+            </div>
+            <div class="weui-cell__hd">
+                <div class="weui-media-box weui-media-box_text">
+                    <h4 class="weui-media-box__title">累计金额</h4>
+                    <h3>￥ {{ account.base }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <div class="">
+                    <h4 class="weui-media-box__title">促销奖励</h4>
+                    <p class="weui-cells__tips">促销期间，售出的相机符合基础返利条件后，讲额外奖励促销返利</p>
+                </div>
+            </div>
+            <div class="weui-cell__hd">
+                <div class="weui-media-box weui-media-box_text">
+                    <h4 class="weui-media-box__title">累计金额</h4>
+                    <h3>￥ {{ account.bonus }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <p>总计可提现金额：</p>
+        </div>
+        <div class="weui-cell__hd"><h2>￥ {{ account.balance }}</h2></div>
+    </div>
+    <div class="weui_btn_area">
+        <a href="javascript:;" class="weui-btn weui-btn_primary" id="cash">立即提现</a>
+        <a href="/sales/account/record" class="weui-btn weui-btn_default">查看提现记录</a>
+    </div>
+    <div class="weui-footer weui-footer_fixed-bottom">
+        <p class="weui-footer__text">每次提现将会生成一个提现兑换码，请添加客服微信，发送兑换码，领取现金奖励。</p>
+    </div>
+    <div class="js_dialog" id="dialog" style="display: none;">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog">
+            <form action="" id="cash_form">
+            <div class="weui-dialog__hd"><strong class="weui-dialog__title">总计可提现金额： {{ account.balance }}元</strong></div>
+
+            <div class="weui-dialog__hd">
+                <div class="weui-cell weui-cell_vcode">
+                <div class="weui-cell__hd"><label class="weui-label">立即提现：</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" name="money" id="money" pattern="^(([1-9][0-9]*)|(([0]\.[1-9]{1,2}|[0]\.[1-9]{1}\d|[0]\.\d[1-9]{1}|[1-9][0-9]*\.\d{1,2})))$" required="required" placeholder="请输入金额" value="{{ account.balance }}">
+                </div>
+                <div class="weui-cell__hd">
+                    <p>元</p>
+                </div>
+                </div>
+            </div>
+            <div class="weui-dialog__ft">
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default cancel">取消</a>
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary confirm" id="confirm">确认</a>
+            </div>
+            </form>
+        </div>
+    </div>
+    <div class="js_dialog" id="iosDialog2" style="display: none;">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog">
+            <div class="weui-dialog__bd">
+                <p><span>提现兑换码：</span><span id="code"></span></p>
+                <p><span>提现金额：</span><span id="amount"></span>元</p>
+            </div>
+            <div class="weui-dialog__ft">
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary cancel">知道了</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    $(function () {
+        $('form').h5Validate({
+            errorClass: 'invalid'
+        });
+
+        $("div#sales").click(function(){
+            location.href = "/sales/sale/sales";
+            return false
+        });
+        $("div#clerk").click(function(){
+            location.href = "/sales/clerk/info"
+        });
+
+        $dialog = $('#dialog');
+        $dialog.on('click', '.cancel', function(){
+            $(this).parents('.js_dialog').fadeOut(200);
+        });
+
+        $('#iosDialog2').on('click', '.cancel', function(){
+            $(this).parents('.js_dialog').fadeOut(200);
+            location.href = "/sales/clerk/account"
+        });
+
+        $dialog.on('click', '.confirm', function(){
+            form = $("form#cash_form");
+            result = form.h5Validate('allValid');
+            if (!result){
+                return false
+            }
+            else {
+                $(this).parents('.js_dialog').fadeOut(200);
+                money = $("money").val();
+                data = form.serialize();
+                $.post("/sales/account/cash", data, function(data,status){
+                    if(data['result'] && data['result'] == 'success'){
+                        $('#code').html(data['code']);
+                        $('#amount').html(data['money']);
+                        $('#iosDialog2').fadeIn(100);
+                  }
+                  else{
+                      alert(data);
+                  }
+                });
+                return false
+
+            }
+        });
+
+        $("#cash").click(function(){
+            $('#dialog').fadeIn(200)
+        });
+
+    });
+</script>
+</html>

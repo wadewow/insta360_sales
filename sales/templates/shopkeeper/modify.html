@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/h5Validate/0.9.0/jquery.h5validate.min.js"></script>
+    <script src="/static/js/verification.js"></script>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>商家信息修改</title>
+</head>
+<body>
+    <div class="weui-cells__title">商家信息修改</div>
+    <form action="" id="modify">
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>商户名称</p>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" id="store" name="store" type="text" required="required" autofocus="autofocus" placeholder="请输入商铺名称" value="{{ store_info.store }}">
+                </div>        </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>商家姓名</p>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" id="name" name="name" type="text" required="required"  placeholder="请输入真实姓名" value="{{ store_info.name }}">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>手机号</p>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" id="phone" name="phone" pattern="[0-9]+" required="required"  placeholder="请输入手机号" value="{{ store_info.phone }}">
+                </div>
+            </div>
+            <div class="weui-cell">
+            <div class="weui-cell__hd">
+                <input class="weui-input" id="verification" name="verification" type="number" pattern="[0-9]{6}" required="required"  placeholder="请输入验证码">
+            </div>
+            <div class="weui-cell__bd">
+                <input type="button" class="weui-btn weui-btn_mini weui-btn_default" id="send" value="发送验证码" style="margin-left: 2px;">
+            </div>
+        <input type="submit" class="weui-btn weui-btn_primary" id="save" value="保存">
+{#        <a href="/sales/shopkeeper/info" class="weui-btn weui-btn_default">取消</a>#}
+    </form>
+    <div>
+        <p id="tip"></p>
+    </div>
+</body>
+<script>
+    $(function () {
+        var form = $('form#modify');
+        $('form').h5Validate({
+            errorClass: 'invalid'
+        });
+
+        form.submit(function(){
+            result = form.h5Validate('allValid');
+            if (!result) {
+                return false;
+            }
+            if( ver != $("#verification").val()) {
+                $("#tip").text("验证码错误！");
+                return false
+            }
+            data = $('form#modify').serialize();
+            $.post("/sales/shopkeeper/modify", data, function(data,status){
+              console.log("Data: " + data + "\nStatus: " + status);
+              if(data == 'success') {
+                  alert("修改成功！");
+                  location.href = "/sales/shopkeeper/info"
+              }
+              else {
+                  $("#tip").text(data);
+              }
+            });
+            return false
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/h5Validate/0.9.0/jquery.h5validate.min.js"></script>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>门店信息</title>
+</head>
+<body>
+    <div class="weui-cells__title">门店信息</div>
+    <div class="weui-cells">
+        <div class="weui-cell">
+            <div class="weui-cell__bd" style="min-width: 100px">
+                <p>门店名称</p>
+            </div>
+            <div class="weui-cell__hd">{{ store_info.name }}</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>店铺代码</p>
+            </div>
+            <div class="weui-cell__hd">{{ store_info.code }}</div>
+{#            <div class="weui-cell__hd"><a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" id="copy">点击复制</a></div>#}
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd" style="min-width: 100px">
+                <p>线下地址</p>
+            </div>
+            <div class="weui-cell__hd">{{ store_info.location }}</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd" style="min-width: 100px">
+                <p>网店地址</p>
+            </div>
+            <div class="weui-cell__hd">{% if store_info.online == "http://" %}{% else %}{{ store_info.online }}
+                {% endif %}</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd" style="min-width: 100px">
+                <p>供货代理商</p>
+            </div>
+            <div class="weui-cell__hd">{{ store_info.agent }}</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd" style="min-width: 100px">
+                <p>销售经理编号</p>
+            </div>
+            <div class="weui-cell__hd">{{ store_info.manager }}</div>
+        </div>
+        <div class="weui-cell">
+        <div class="weui-cell__bd" style="min-width: 100px">
+            <p>配置情况</p>
+        </div>
+        <div class="weui-cell__hd">
+        {% for key, value in store_info.option.items %}
+            <p>{% if value == "true" %}{{ key }}{% endif %}</P>
+        {% endfor %}
+        </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd" style="min-width: 100px">
+                <p>备注</p>
+            </div>
+            <div class="weui-cell__hd">{{ store_info.remark }}</div>
+        </div>
+
+        <div class="weui-cell">
+            <ul class="weui-uploader__files" id="uploaderFiles" style="margin-bottom:0">
+            {% for photo in store_info.photos %}
+                <li class="weui-uploader__file" style="background-image:url({{ photo }})"></li>
+            {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+    <a href="/sales/store/modify_store?store_id={{ store_info.id }}"  class="weui-btn weui-btn_primary">修改信息</a>
+    <a href="/sales/store/stores" class="weui-btn weui-btn_default" id="logout">返回列表</a>
+
+    <div class="js_dialog" id="iosDialog2" style="opacity: 1;{% if store_info.first != "1" %}display:none{% endif %}">
+            <div class="weui-mask"></div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__bd">添加成功！唯一店铺代码：{{ store_info.code }}，可将此代码关联至店员账号，随时和掌握销售情况。</div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
+                </div>
+            </div>
+    </div>
+    <input id="store_id" type="hidden" value="{{ store_info.id }}">
+    <div class="weui-gallery" id="gallery">
+        <span class="weui-gallery__img" id="galleryImg" style=""></span>
+        <div class="weui-gallery__opr">
+        </div>
+    </div>
+    <input id="code" type="text" value="{{ store_info.code }}" style="opacity: 0; width:1px;height:1px">
+</body>
+<script>
+    $(function () {
+        $("div#stores").click(function(){
+            location.href = "/sales/store/stores"
+        });
+        $("a#logout").click(function(){
+            return true
+        });
+        $('.weui-dialog__btn').on('click', function(){
+            $(this).parents('.js_dialog').fadeOut(200);
+        });
+
+        $gallery = $("#gallery");
+        $galleryImg = $("#galleryImg");
+        $uploaderFiles = $("#uploaderFiles");
+        $uploaderFiles.on("click", "li", function(){
+            $galleryImg.attr("style", this.getAttribute("style"));
+            $gallery.fadeIn(100);
+        });
+        $gallery.on("click", function(){
+            $gallery.fadeOut(100);
+        });
+    });
+</script>
+</html>

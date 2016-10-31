@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>提现记录</title>
+</head>
+<body>
+    <div class="weui-cells__title title">提现记录</div>
+    <div class="weui-cells column">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <h4 class=""> 奖励详情</h4>
+            </div>
+            <div class="weui-cell__bd">
+                <h4 class=""> 提现兑换码</h4>
+            </div>
+            <div class="weui-cell__hd">
+                <h4 class="">金额与状态</h4>
+            </div>
+        </div>
+    </div>
+    <div class="weui-cells records" style="overflow-y: auto" >
+        {% for record in records %}
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <div class="">
+                    <p class="weui-footer__text">基础返利{{ record.base }}元</p>
+                    <p class="weui-footer__text">促销返利{{ record.bonus }}元</p>
+                    <p class="weui-footer__text">{{ record.created_time }}</p>
+                </div>
+            </div>
+            <div class="weui-cell__bd">
+                <div class="">
+                    <h4 class="">{{ record.code }}</h4>
+                </div>
+            </div>
+            <div class="weui-cell__hd">
+                <div class="">
+                    <h4 class="">{{ record.money }}元</h4>
+                    <h4 class="">
+                        {% if record.wechat == "" %}
+                            未提现
+                        {% else %}
+                            已提现
+                        {% endif %}</h4>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="weui-footer weui-footer_fixed-bottom">
+        <p class="weui-footer__text">请添加客服微信，发送提现兑换码，即可获取现金奖励</p>
+    </div>
+</body>
+<script>
+    $(function () {
+        panel = $(".records");
+        footer = $(".weui-footer");
+        title = $(".title");
+        column = $(".column");
+        $height  = $(document).height() - footer.height() - title.height() - column.height() - 70;
+        panel.css('height', $height + "px");
+
+    });
+</script>
+</html>

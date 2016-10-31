@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/h5Validate/0.9.0/jquery.h5validate.min.js"></script>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>门店列表</title>
+</head>
+<body>
+<div class="container" id="container">
+    <div class="page navbar js_show">
+    <div class="page__bd" style="height: 100%;">
+        <div class="weui-tab">
+            <div class="weui-navbar">
+                <div class="weui-navbar__item weui-bar__item_on" id="business">
+                    商家信息
+                </div>
+                <div class="weui-navbar__item" id="stores">
+                    门店列表
+                </div>
+                <div class="weui-navbar__item weui-bar__item_on" id="sales">
+                    销售情况
+                </div>
+            </div>
+            <div class="weui-tab__panel">
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+<a href="/sales/store/add_store" class="weui-btn weui-btn_primary">添加门店</a>
+<div class="weui-cells">
+    {% for store in store_list %}
+    <a class="weui-cell weui-cell_access detail" href="/sales/store/store_info?store_id={{ store.id }}">
+        <div class="weui-cell__bd">
+            <p><span>门店名称: </span><span>{{ store.name }}</span></p>
+            <p><span>门店代码: </span><span>{{ store.code }}</span></p>
+            <p><span>门店地址: </span><span>{{ store.province }} {{ store.city }} {{ store.location }}</span></p>
+            {% if store.online == "http://" %}{% else %}<p><span>线上网址: </span><span>{{ store.online }}</span></p>
+                {% endif %}
+        </div>
+        <div class="weui-cell__ft">
+        </div>
+    {% endfor %}
+    </a>
+</div>
+</body>
+<script>
+    $(function () {
+        $("div#business").click(function(){
+            location.href = "/sales/shopkeeper/info"
+        });
+        $("div#sales").click(function(){
+            location.href = "/sales/shopkeeper/sales"
+        });
+    });
+</script>
+</html>

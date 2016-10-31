@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/h5Validate/0.9.0/jquery.h5validate.min.js"></script>
+    <script src="/static/js/verification.js"></script>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>重置密码</title>
+
+</head>
+<body>
+    <div class="weui-cells__title">重置密码</div>
+    <form action="" id="reset">
+        <div class="weui-cells weui-cells_form">
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">手机号</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" id="phone" name="phone" pattern="[0-9]+" required="required"  placeholder="请输入手机号">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">新密码</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" id="password" name="password" type="password" pattern="\S{6,20}" required="required"  placeholder="密码长度6至20位">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">确认密码</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" id="confirm" name="confirm" type="password" pattern="\S{6,20}" required="required"  placeholder="">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <input class="weui-input" id="verification" name="verification" type="text" pattern="[0-9]{6}" required="required"  placeholder="请输入验证码">
+                </div>
+                <div class="weui-cell__bd">
+                    <input type="button" class="weui-btn weui-btn_mini weui-btn_default" id="send" value="发送验证码" style="margin-left: 2px;">
+                </div>
+            </div>
+            <div class="weui_btn_area">
+                <input type="submit" class="weui-btn weui-btn_primary register_submit" value="重置密码">
+            </div>
+        </div>
+    </form>
+    <div>
+        <p id="tip"></p>
+    </div>
+</body>
+<script>
+    $(function () {
+        var form = $('form#reset');
+        $('form').h5Validate({
+            errorClass: 'invalid'
+        });
+
+        form.submit(function(){
+            result = form.h5Validate('allValid');
+            if (!result) {
+                return false;
+            }
+            if($("#password").val() != $("#confirm").val()) {
+                $("#tip").text("两次密码不一致！");
+                return false
+            }
+            if( ver != $("#verification").val()) {
+                $("#tip").text("验证码错误！");
+                return false
+            }
+            data = $('form#reset').serialize();
+            $.post("/sales/shopkeeper/reset", data, function(data,status){
+
+
+              console.log("Data: " + data + "\nStatus: " + status);
+              if(data=="success"){
+                  alert("密码重置成功！");
+                  location.href = "/sales/shopkeeper/login"
+              }
+              else{
+                $("#tip").text(data);
+              }
+            });
+            return false
+        });
+
+    });
+</script>
+</html>

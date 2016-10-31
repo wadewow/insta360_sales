@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>销售经理信息管理系统</title>
+</head>
+<body>
+    <div class="weui-cells__title">门店列表</div>
+    <div class="weui-cells">
+        {% for store in store_list %}
+        <a class="weui-cell weui-cell_access detail" href="/sales/manager/modify_store?store_id={{ store.id }}">
+            <div class="weui-cell__bd">
+                <p><span>门店名称: </span><span>{{ store.name }}</span></p>
+                <p><span>门店地址: </span><span>{{ store.province }} {{ store.city }} {{ store.location }}</span></p>
+                <p><span>线上地址: </span><span>{{ store.online }}</span></p>
+                <p><span>供货代理商: </span><span>{{ store.agent }}</span></p>
+                <p><span>店铺代码: </span><span>{{ store.code }}</span></p>
+                <p><span>展台编号: </span><span>{{ store.exhibition }}</span></p>
+                <p><span>展台配置: </span>
+                    {% for key, value in store.option.items %}
+                        <span>{% if value == "true" %}{{ key }}{% endif %} </span>
+                    {% endfor %}
+                </p>
+                <p><span>备注信息: </span><span>{{ store.remark }}</span></p>
+            </div>
+            <div class="weui-cell__ft">
+            </div>
+        {% endfor %}
+        </a>
+    </div>
+</body>
+</html>

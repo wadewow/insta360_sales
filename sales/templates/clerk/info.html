@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script src="/static/js/config.js"></script>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>店员信息</title>
+</head>
+<body>
+    <div class="container" id="container">
+        <div class="page navbar js_show">
+        <div class="page__bd" style="height: 100%;">
+            <div class="weui-tab">
+                <div class="weui-navbar">
+                    <div class="weui-navbar__item" id="clerk">
+                        店员信息
+                    </div>
+                    <div class="weui-navbar__item weui-bar__item_on" id="sales">
+                        销售情况
+                    </div>
+                </div>
+                <div class="weui-tab__panel">
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="weui-cells">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>用户名</p>
+            </div>
+            <div class="weui-cell__hd">{{ clerk_info.name }}</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>手机号</p>
+            </div>
+            <div class="weui-cell__hd">{{ clerk_info.phone }}</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>所属门店</p>
+            </div>
+            <div class="weui-cell__hd">{{ clerk_info.store }}</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>门店代码</p>
+            </div>
+            <div class="weui-cell__hd">{{ clerk_info.code }}</div>
+        </div>
+    </div>
+    <a href="/sales/clerk/modify" class="weui-btn weui-btn_primary">修改信息</a>
+    <a href="" class="weui-btn weui-btn_warn" id="logout">退出登录</a>
+</body>
+<script>
+    $(function () {
+        $("div#sales").click(function(){
+            location.href = "/sales/sale/sales";
+            return false
+        });
+
+
+        $("div#account").click(function(){
+            location.href = "/sales/clerk/account"
+        });
+        $("a#logout").click(function(){
+            data = {
+              type: 'clerk'
+            };
+          $.post("/sales/logout", data, function(data,status){
+              wx.ready(function(){
+                  wx.closeWindow();
+                  return false
+              });
+          });
+            return false
+        });
+    });
+</script>
+</html>

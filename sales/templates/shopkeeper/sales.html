@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>销售情况</title>
+</head>
+<body>
+    <div class="container" id="container">
+        <div class="page navbar js_show">
+        <div class="page__bd" style="height: 100%;">
+            <div class="weui-tab">
+                <div class="weui-navbar">
+                    <div class="weui-navbar__item weui-bar__item_on" id="business">
+                        商家信息
+                    </div>
+                    <div class="weui-navbar__item weui-bar__item_on" id="stores">
+                        门店列表
+                    </div>
+                    <div class="weui-navbar__item" id="sales">
+                        销售情况
+                    </div>
+                </div>
+                <div class="weui-tab__panel">
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="weui-cells">
+        {% for sale in sale_list %}
+        <a class="weui-cell weui-cell_access detail" href="#" onclick="javascript:return false;">
+            <div class="weui-cell__bd">
+                <p><span>序列号码: </span><span>{{ sale.serial_number }}</span></p>
+                <p><span>商品名称: </span><span>{{ sale.name }}</span></p>
+                <p><span>扫描时间: </span><span>{{ sale.created_time }}</span></p>
+                <p><span>售出门店: </span><span>{{ sale.store_name }}</span> (<span>{{ sale.store_code }}</span>)</p>
+                <p><span>销 售 员 : </span><span>{{ sale.clerk_name }}</span> (<span>{{ sale.clerk_phone }}</span>)</p>
+            </div>
+        {% endfor %}
+        </a>
+    </div>
+</body>
+<script>
+    $(function () {
+        $("div#stores").click(function(){
+            location.href = "/sales/store/stores"
+        });
+        $("div#business").click(function(){
+            location.href = "/sales/shopkeeper/info"
+        });
+
+
+    });
+</script>
+</html>

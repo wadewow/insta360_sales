@@ -1,0 +1,9 @@
+#tip {
+    color: red;
+}
+
+.weui-input.invalid {
+    border-style:solid;
+    border-color:red;
+    border-width: 1px;
+}
