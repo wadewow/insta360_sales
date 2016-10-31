@@ -91,6 +91,8 @@ class Exhibition(models.Model):
 
 class SaleNano(models.Model):
     id = models.CharField(max_length=200,primary_key=True)
+    name = models.CharField(max_length=200, blank=True)
+    location = models.CharField(max_length=200, blank=True)
 
     def __unicode__(self):
         return str(self.id)
