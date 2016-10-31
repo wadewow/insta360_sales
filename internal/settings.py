@@ -12,18 +12,6 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 
-# Celery
-#: Only add pickle to this list if your broker is secured
-#: from unwanted access (see userguide/security.html)
-BROKER_URL = 'django://'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'Asia/Shanghai'
-CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
-CELERY_RESULT_PERSISTENT = True
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,7 +28,6 @@ DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -51,9 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    # 'crawler.apps.CrawlerConfig',
-    'djcelery',
-    'kombu.transport.django',
     'sales',
     # 'crawler.apps.CrawlerConfig',
 ]
