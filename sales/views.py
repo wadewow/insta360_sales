@@ -139,7 +139,7 @@ def import_manager(request):
 @csrf_exempt
 def import_exhibition(request):
     if request.method == 'GET':
-        csvfile = file('exhibition.csv', 'rb')
+        csvfile = file('sales/exhibition.csv', 'rb')
         reader = csv.reader(csvfile)
         for line in reader:
             Exhibition.objects.update_or_create(id=line[0])
@@ -148,8 +148,9 @@ def import_exhibition(request):
 @csrf_exempt
 def import_sale_nano(request):
     if request.method == 'GET':
-        csvfile = file('sale_nano.csv', 'rb')
+        csvfile = file('sales/sale_nano.csv', 'rb')
         reader = csv.reader(csvfile)
         for line in reader:
-            SaleNano.objects.update_or_create(id=line[2],name=line[1],location=line[0])
+            print line
+            SaleNano.objects.update_or_create(id=line[1],name=line[0])
         csvfile.close()

@@ -67,8 +67,11 @@ def store_add(request):
             if not request.session.__contains__('shopkeeper_id'):
                 return redirect('/sales/shopkeeper/login')
             else:
+                print 'add_store'
                 business_id = request.session.__getitem__('shopkeeper_id')
+                print business_id
                 para = request.POST
+                print para.keys()
                 temp = para.__getitem__("city")
                 try:
                     temps = temp.split("/")
@@ -85,6 +88,7 @@ def store_add(request):
                 remark = para.__getitem__("remark")
                 agent = para.__getitem__("agent")
                 manager = para.__getitem__("manager")
+                print manager
                 try:
                     res = Exhibition.objects.get(id=exhibition)
                 except:
@@ -94,7 +98,7 @@ def store_add(request):
                 for i in range(0,4-n):
                     manager = '0' + manager
                 try:
-                    res = Manager.objects.get(id=manager)
+                    Manager.objects.get(id=manager)
                 except:
                     return HttpResponse('销售经理编号无效！')
 
@@ -104,26 +108,25 @@ def store_add(request):
                     if para.__contains__(item):
                         value = para.__getitem__(item)
                         option[item] = value
-
+                print option
                 code = getCode(6)
                 codes = Shop.objects.all().values_list("code").distinct()
                 while code in codes:
                     code = getCode(6)
+
+                print code
                 try:
                     photo_num = int(para.__getitem__("photo_num"))
                 except:
                     photo_num = 1
 
+                print photo_num
+
                 path_join = ''
                 for i in range(0, photo_num):
-
-
                     file = request.FILES.__getitem__("photo"+str(i))
-
                     path = 'sales/static/store/' + file.name
                     path = default_storage.save(path, file)
-
-
 
                     if os.path.isfile(path):
                         sImg = Image.open(path)
@@ -218,7 +221,11 @@ def store_modify(request):
             if not request.session.__contains__('shopkeeper_id'):
                 return redirect('/sales/shopkeeper/login')
             else:
+                print 'modify store'
+                print request.FILES
                 para = request.POST
+                print para
+                print para.keys()
                 store_id = para.__getitem__("store_id")
                 temp = para.__getitem__("city")
                 try:
@@ -244,7 +251,7 @@ def store_modify(request):
                 for i in range(0,4-n):
                     manager = '0' + manager
                 try:
-                    res = Manager.objects.get(id=manager)
+                    Manager.objects.get(id=manager)
                 except:
                     return HttpResponse('销售经理编号无效！')
                 # ball = para.__getitem__("ball")

@@ -129,7 +129,6 @@ def sale_sales(request):
 
                 now = timezone.now()
                 for sale in sales:
-
                     active = sale['active']
                     created_time = sale['created_time']
                     active_time =sale['active_time']
@@ -191,7 +190,12 @@ def sale_sales(request):
                 clerk = Clerk.objects.get(id=clerk_id)
                 promotion_id = clerk.promotion
                 if promotion_id != '':
-                    promotion = Promotion.objects.get(id=promotion_id)
+                    try:
+                        promotion = Promotion.objects.get(id=promotion_id)
+                    except:
+                        return render(request, 'sale/sales.html', {
+                            'sale_list': sales
+                        })
                     start_time = promotion.start_time
                     end_time = promotion.end_time
                     benchmark = promotion.benchmark
@@ -287,8 +291,8 @@ def sale_guide(request):
                         try:
                             activated_time = para.__getitem__('activated_time')
                         except:
-                            activated_time = 0
-                        if activated_time != 0:
+                            activated_time = '0'
+                        if activated_time != '0':
                             sale.active = 1
                             temp = time.localtime(int(activated_time))
                             sale.active_time = time.strftime("%Y-%m-%d %H:%M:%S", temp)
@@ -308,7 +312,7 @@ def sale_guide(request):
                                 num = 1
                             else:
                                 num = Sale.objects.filter(device_code=device_code, clerk_id=clerk_id,name='Insta360 Nano').count()
-                            if active == 1 and active_time < deadline and name != '测试商品' and num < 2:
+                            if active == 1 and active_time < deadline and num < 2:
                                 qualified = True
 
                         else:
@@ -358,6 +362,11 @@ def sale_test(request):
                 para = request.POST
 
                 serial_number = para.__getitem__('serial')
+                try:
+                    SaleNano.objects.get(id=serial_number)
+                except:
+                    return HttpResponse('非测试序列号不可扫描')
+
                 now = timezone.now()
                 active = 1
                 active_time = now

@@ -119,7 +119,7 @@ def manager_modify_store(request):
                 for i in range(0,4-n):
                     manager = '0' + manager
                 try:
-                    res = Manager.objects.get(id=manager)
+                    Manager.objects.get(id=manager)
                 except:
                     return HttpResponse('销售经理编号无效！')
 

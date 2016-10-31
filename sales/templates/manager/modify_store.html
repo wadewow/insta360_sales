@@ -159,6 +159,7 @@
 <script>
     $(function () {
         var formData = new FormData();
+        var photo_num = 0;
         var form = $('form#modify_store');
         $('form').h5Validate({
             errorClass: 'invalid'
@@ -183,10 +184,11 @@
             for (var k = 0; k < checkboxes.length; k++) {
                 formData.append(checkboxes[k].name, checkboxes[k].checked);
             }
-            for (var j = 0; j < files.length; j++) {
-                formData.append("photo" + j, files[j]);
-            }
-            formData.append("photo_num", files.length);
+{#            for (var j = 0; j < files.length; j++) {#}
+{#                formData.append("photo" + j, files[j]);#}
+{#            }#}
+{#            formData.append("photo_num", files.length);#}
+            formData.append("photo_num", photo_num);
             formData.append("machine_serial", $("#machine_serial").val());
             formData.append("remark", $("#remark").val());
             formData.append("manager", $("#manager").val());
@@ -217,9 +219,12 @@
 
         $uploaderInput.on("change", function(e){
             var src, url = window.URL || window.webkitURL || window.mozURL, files = e.target.files;
-            $uploaderFiles.html('');
+{#            $uploaderFiles.html('');#}
             for (var i = 0, len = files.length; i < len; ++i) {
                 var file = files[i];
+
+                formData.append("photo" + photo_num, file);
+                photo_num += 1;
 
                 if (url) {
                     src = url.createObjectURL(file);
