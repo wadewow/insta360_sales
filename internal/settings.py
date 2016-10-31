@@ -100,7 +100,7 @@ else:
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'internal_sales',
             'USER': 'internal_sales',
-            'PASSWORD': '50lan123',
+            'PASSWORD': '50Lan123',
             'HOST': 'rm-bp1e80l5b37279267i.mysql.rds.aliyuncs.com',
             'PORT': '3306',
             'OPTIONS': {
