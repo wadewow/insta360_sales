@@ -193,11 +193,12 @@
             formData.append("remark", $("#remark").val());
             formData.append("manager", $("#manager").val());
             $.ajax({
-              url: "/sales/manager/modify_store",
-              type: "POST",
-              data: formData,
-              processData: false,  // 告诉jQuery不要去处理发送的数据
-              contentType: false   // 告诉jQuery不要去设置Content-Type请求头
+                url: "/sales/manager/modify_store",
+                type: "POST",
+                data: formData,
+                tiemout: 10000,
+                processData: false,  // 告诉jQuery不要去处理发送的数据
+                contentType: false   // 告诉jQuery不要去设置Content-Type请求头
             }).done(function ( data ) {
                 finish();
                 if (data['result'] && data['result'] == 'success') {
@@ -207,6 +208,8 @@
                 else {
                     alert(data);
                 }
+            }).fail(function () {
+                alert('网络超时，请确认网络环境和图片大小')
             });
             return false
         });
