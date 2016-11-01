@@ -217,7 +217,7 @@ def store_info(request):
 @csrf_exempt
 def store_modify(request):
     if request.method == 'POST':
-        # try:
+        try:
             if not request.session.__contains__('shopkeeper_id'):
                 return redirect('/sales/shopkeeper/login')
             else:
@@ -281,9 +281,7 @@ def store_modify(request):
                     for i in range(0, photo_num):
 
                         file = request.FILES.__getitem__("photo" + str(i))
-
                         # timestamp = str(int(time.time()))
-
                         path = 'sales/static/store/' + file.name
                         path = default_storage.save(path, file)
 
@@ -342,8 +340,8 @@ def store_modify(request):
                         'store_id': store_id
                     }
                     return JsonResponse(result, safe=False)
-        # except:
-        #     return HttpResponse('error')
+        except:
+            return HttpResponse('图片太大上传失败，请减少图片并重试')
     elif request.method == 'GET':
         try:
             para = request.GET
