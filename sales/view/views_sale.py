@@ -268,6 +268,8 @@ def sale_guide(request):
                     serial_number = 'INS3116NQnlaE7'
                 print 'location:' + location
                 print 'serial_number:' + serial_number
+
+
                 sale = Sale.objects.filter(serial_number=serial_number).order_by('-created_time').first()
                 if sale == None:
                     result['message'] = 'No nano information'
@@ -281,8 +283,9 @@ def sale_guide(request):
                         return JsonResponse(data=result, safe=False)
                     province = shop.province
 
-                    if not location in province:
-                    # if False:
+                    serial = SaleNano.objects.filter(id=serial_number).count()
+
+                    if (not location in province) and serial == 0:
                         result['message'] = 'Location mismatching'
                         return JsonResponse(data=result, safe=False)
                     else:
@@ -299,7 +302,6 @@ def sale_guide(request):
                             sale.save()
 
 ######################################
-                        serial = SaleNano.objects.filter(id=serial_number).count()
                         if serial == 0:
                             active = sale.active
                             name = sale.name
