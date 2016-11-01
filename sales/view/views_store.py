@@ -128,12 +128,12 @@ def store_add(request):
                     path = 'sales/static/store/' + file.name
                     path = default_storage.save(path, file)
 
-                    if os.path.isfile(path):
-                        sImg = Image.open(path)
-                        w, h = sImg.size
-                        dImg = sImg.resize((w / 4, h / 4), Image.ANTIALIAS)
-                        dImg.save(path)
-                        print path
+                    # if os.path.isfile(path):
+                    #     sImg = Image.open(path)
+                    #     w, h = sImg.size
+                    #     dImg = sImg.resize((w / 4, h / 4), Image.ANTIALIAS)
+                    #     dImg.save(path)
+                    #     print path
                     path_join += path[5:] + ':'
                 if len(path_join) > 0:
                     path_join = path_join[:-1]
@@ -217,15 +217,16 @@ def store_info(request):
 @csrf_exempt
 def store_modify(request):
     if request.method == 'POST':
-        try:
+        # try:
             if not request.session.__contains__('shopkeeper_id'):
                 return redirect('/sales/shopkeeper/login')
             else:
                 print 'modify store'
+
                 print request.FILES
                 para = request.POST
-                print para
-                print para.keys()
+                # print para
+                # print para.keys()
                 store_id = para.__getitem__("store_id")
                 temp = para.__getitem__("city")
                 try:
@@ -281,18 +282,18 @@ def store_modify(request):
 
                         file = request.FILES.__getitem__("photo" + str(i))
 
-                        timestamp = str(int(time.time()))
+                        # timestamp = str(int(time.time()))
 
-                        path = 'sales/static/store/' + timestamp + str(i) + '.jpg'
+                        path = 'sales/static/store/' + file.name
                         path = default_storage.save(path, file)
 
-                        if os.path.isfile(path):
-                            # 打开原图片缩小后保存，可以用if srcFile.endswith(".jpg")或者split，splitext等函数等针对特定文件压缩
-                            sImg = Image.open(path)
-                            w, h = sImg.size
-                            dImg = sImg.resize((w / 4, h / 4), Image.ANTIALIAS)  # 设置压缩尺寸和选项，注意尺寸要用括号
-                            dImg.save(path)  # 也可以用srcFile原路径保存,或者更改后缀保存，save这个函数后面可以加压缩编码选项JPEG之类的
-                            print path
+                        # if os.path.isfile(path):
+                        #     # 打开原图片缩小后保存，可以用if srcFile.endswith(".jpg")或者split，splitext等函数等针对特定文件压缩
+                        #     sImg = Image.open(path)
+                        #     w, h = sImg.size
+                        #     dImg = sImg.resize((w / 4, h / 4), Image.ANTIALIAS)  # 设置压缩尺寸和选项，注意尺寸要用括号
+                        #     dImg.save(path)  # 也可以用srcFile原路径保存,或者更改后缀保存，save这个函数后面可以加压缩编码选项JPEG之类的
+                        #     print path
                         path_join += path[5:] + ':'
                     if len(path_join) > 0:
                         path_join = path_join[:-1]
@@ -341,8 +342,8 @@ def store_modify(request):
                         'store_id': store_id
                     }
                     return JsonResponse(result, safe=False)
-        except:
-            return HttpResponse('error')
+        # except:
+        #     return HttpResponse('error')
     elif request.method == 'GET':
         try:
             para = request.GET

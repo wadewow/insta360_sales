@@ -140,17 +140,17 @@ def manager_modify_store(request):
 
                         file = request.FILES.__getitem__("photo" + str(i))
 
-                        timestamp = str(int(time.time()))
+                        # timestamp = str(int(time.time()))
 
-                        path = 'sales/static/store/' + timestamp + str(i) + '.jpg'
+                        path = 'sales/static/store/' + file.name
                         path = default_storage.save(path, file)
 
-                        if os.path.isfile(path):
-                            sImg = Image.open(path)
-                            w, h = sImg.size
-                            dImg = sImg.resize((w / 4, h / 4), Image.ANTIALIAS)
-                            dImg.save(path)
-                            print path
+                        # if os.path.isfile(path):
+                        #     sImg = Image.open(path)
+                        #     w, h = sImg.size
+                        #     dImg = sImg.resize((w / 4, h / 4), Image.ANTIALIAS)
+                        #     dImg.save(path)
+                        #     print path
                         path_join += path[5:] + ':'
                     if len(path_join) > 0:
                         path_join = path_join[:-1]

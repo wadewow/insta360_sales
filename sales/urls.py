@@ -51,6 +51,8 @@ urlpatterns = [
 
     url(r'^weixin', views.weixin, name='weixin'),
 
+    url(r'^upload_pic', views.upload_pic, name='upload_pic'),
+
 
 
 ]

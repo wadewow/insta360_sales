@@ -154,3 +154,6 @@ STATIC_URL = '/static/'
 #           os.path.join(os.path.dirname(__file__), '../static/').replace('\\','/'),
 #         )
 
+FILE_UPLOAD_MAX_MEMORY_SIZE = 30971520
+DATA_UPLOAD_MAX_MEMORY_SIZE = 30971520
+MAX_UPLOAD_SIZE = 30971520

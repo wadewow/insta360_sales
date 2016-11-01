@@ -121,6 +121,14 @@ def weixin(request):
         return JsonResponse(config, safe=False)
 
 
+@csrf_exempt
+def upload_pic(request):
+    if request.method == 'POST':
+        para = request.POST
+        files = request.FILES
+        print files
+        print para
+    
 
 @csrf_exempt
 def import_manager(request):
