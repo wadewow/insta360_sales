@@ -212,7 +212,7 @@ def sale_sales(request):
                     'sale_list': sales
                 })
         except:
-            return HttpResponse("error")
+            return render(request, 'clerk/login.html', {})
 
 
 @csrf_exempt

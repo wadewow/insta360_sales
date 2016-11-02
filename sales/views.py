@@ -162,3 +162,8 @@ def import_sale_nano(request):
             print line
             SaleNano.objects.update_or_create(id=line[1],name=line[0])
         csvfile.close()
+
+
+@csrf_exempt
+def QR_code(request):
+    return render(request, 'clerk/QR_code.html', {})

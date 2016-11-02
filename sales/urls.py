@@ -53,6 +53,8 @@ urlpatterns = [
 
     url(r'^upload_pic', views.upload_pic, name='upload_pic'),
 
+    url(r'^QR_code', views.QR_code, name='QR_code'),
+
 
 
 ]

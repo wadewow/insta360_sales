@@ -53,7 +53,7 @@
         <a href="/sales/account/record" class="weui-btn weui-btn_default">查看提现记录</a>
     </div>
     <div class="weui-footer weui-footer_fixed-bottom">
-        <p class="">每次提现将会生成一个提现兑换码，请添加客服微信： <span style="font-weight: bold;">Insta360</span> ，发送提现兑换码，领取现金奖励</p>
+        <p class="">每次提现将会生成一个提现兑换码，请添加客服微信： <span style="font-weight: bold;">insta360_pay</span> ，发送提现兑换码，领取现金奖励</p>
     </div>
     <div class="js_dialog" id="dialog" style="display: none;">
         <div class="weui-mask"></div>
@@ -65,7 +65,7 @@
                 <div class="weui-cell weui-cell_vcode">
                 <div class="weui-cell__hd"><label class="weui-label">立即提现：</label></div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="number" name="money" id="money" pattern="^(([1-9][0-9]*)|(([0]\.[1-9]{1,2}|[0]\.[1-9]{1}\d|[0]\.\d[1-9]{1}|[1-9][0-9]*\.\d{1,2})))$" required="required" placeholder="请输入金额" value="{{ account.balance }}">
+                    <input class="weui-input" type="number" name="money" id="money" pattern="^(([1-9][0-9]*)|0|(([0]\.[1-9]{1,2}|[0]\.[1-9]{1}\d|[0]\.\d[1-9]{1}|[1-9][0-9]*\.\d{1,2})))$" required="required" placeholder="请输入金额" value="{{ account.balance }}">
                 </div>
                 <div class="weui-cell__hd">
                     <p>元</p>
@@ -82,12 +82,16 @@
     <div class="js_dialog" id="iosDialog2" style="display: none;">
         <div class="weui-mask"></div>
         <div class="weui-dialog">
-            <div class="weui-dialog__bd">
-                <p><span>提现兑换码：</span><span id="code"></span></p>
-                <p><span>提现金额：</span><span id="amount"></span>元</p>
+            <div class="weui-dialog__hd">
+                <strong><span>提现兑换码：</span><span id="code"></span></strong>
+                <strong><span>提现金额：</span><span id="amount"></span>元</strong>
+            </div>
+            <div class="weui-dialog__hd">
+                请添加客服微信： <span>insta360_pay</span> ,复制并发送提现兑换码，获取现金奖励
             </div>
             <div class="weui-dialog__ft">
-                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary cancel">知道了</a>
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default cancel">关闭</a>
+                <a href="/sales/QR_code" class="weui-dialog__btn weui-dialog__btn_primary">添加客服微信</a>
             </div>
         </div>
     </div>

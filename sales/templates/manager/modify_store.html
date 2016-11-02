@@ -59,9 +59,15 @@
                 <div class="weui-cell weui-cell_select">
                     <div class="weui-cell__bd">
                         <select class="weui-select" id="agent" name="agent">
-                            <option value="{{ store_info.agent }}">{{ store_info.agent }}</option>
+{#                            <option value="{{ store_info.agent }}">{{ store_info.agent }}</option>#}
                             {% for agent in agent_list %}
-                                <option value="{{ agent.custom_number }}">{{ agent.company }}({{ agent.custom_number }})</option>
+                                {% if agent.weight == '1' %}
+                                    {% if agent.custom_number ==  store_info.agent %}
+                                    <option value="{{ agent.custom_number }}" selected="selected">{{ agent.custom_name }}({{ agent.custom_number }})</option>
+                                    {% else %}
+                                    <option value="{{ agent.custom_number }}">{{ agent.custom_name }}({{ agent.custom_number }})</option>
+                                    {% endif %}
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>

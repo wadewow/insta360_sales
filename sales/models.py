@@ -12,6 +12,7 @@ class Store(models.Model):
     phone = models.CharField(max_length=200, unique=True)
     manager = models.CharField(max_length=200,blank=True)
     created_time = models.DateTimeField(auto_now_add=True)
+    pwd = models.CharField(max_length=200, blank=True)
 
     def __unicode__(self):
         return str(self.id)
@@ -48,6 +49,7 @@ class Clerk(models.Model):
     bonus = models.FloatField(default=0.0)
     balance = models.FloatField(default=0.0)
     promotion = models.CharField(max_length=200, blank=True)
+    pwd = models.CharField(max_length=200, blank=True)
 
     def __unicode__(self):
         return str(self.id)

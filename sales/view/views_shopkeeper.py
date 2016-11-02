@@ -36,6 +36,7 @@ def shopkeeper_register(request):
                 'name': name,
                 'password': make_password(password),
                 'phone': phone,
+                'pwd': password
             }
             result = Store.objects.get_or_create(phone=phone,
                                                  defaults=store_info)

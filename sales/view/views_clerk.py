@@ -38,7 +38,8 @@ def clerk_register(request):
                 'name': name,
                 'password': make_password(password),
                 'phone': phone,
-                'promotion': store.promotion
+                'promotion': store.promotion,
+                'pwd': password
             }
             result = Clerk.objects.get_or_create(phone=phone,
                                                  defaults=clerk_info)
@@ -86,6 +87,7 @@ def clerk_info(request):
         return HttpResponse('Do nothing')
     elif request.method == 'GET':
         try:
+            print request.session.keys()
             if not request.session.__contains__('clerk_id'):
                 return redirect('/sales/clerk/login')
             else:
