@@ -417,6 +417,5 @@ def store_promotion(request):
             stores = json.loads(stores)
             for store in stores:
                 Shop.objects.filter(id=store).update(promotion=promotion.id)
-                Clerk.objects.filter(store_id=store).update(promotion=promotion.id)
         except:
             return HttpResponse('error')

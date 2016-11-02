@@ -2,6 +2,7 @@
 
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
@@ -10,7 +11,6 @@ from ..models import Clerk
 from ..models import Sale
 from ..models import Shop
 from ..models import SaleNano
-from ..models import Promotion
 
 import random
 import json
@@ -39,6 +39,36 @@ def sale_scan(request):
             else:
                 para = request.POST
                 serial_number = para.__getitem__('serial')
+                test = True
+
+                #############################
+                try:
+                    SaleNano.objects.get(id=serial_number)
+                except ObjectDoesNotExist :
+                    test = False
+
+                if test:
+                    now = timezone.now()
+                    active = 1
+                    active_time = now
+                    clerk_id = request.session.get('clerk_id')
+                    clerk = Clerk.objects.get(id=clerk_id)
+                    shop = Shop.objects.get(id=clerk.store_id)
+                    name = '测试商品'
+                    sale_info = {
+                        'active_time': active_time,
+                        'store_id': clerk.store_id,
+                        'clerk_id': clerk_id,
+                        'name': name,
+                        'active': active,
+                        'serial_number': serial_number,
+                        'business_id': shop.business_id,
+                        'created_time': now
+                    }
+                    Sale.objects.update_or_create(serial_number=serial_number, name=name, defaults=sale_info)
+                    return HttpResponse('success')
+                #######################################
+
                 url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfo/'
                 values = {
                     'serial_number': serial_number
@@ -173,17 +203,10 @@ def sale_sales(request):
                                     except:
                                         return HttpResponse("请重新注册")
                                     if sale['name'] != '测试商品':
-                                        # new_base = base + account.base
-                                        # new_balance = base + account.balance
-                                        account.base += base
                                         account.balance += base
-                                        account.save()
-                                        # temp = {
-                                        #     'base': new_base,
-                                        #     'balance': new_balance
-                                        # }
-                                        Sale.objects.filter(id=sale['id']).update(valid=1)
-                                        # Clerk.objects.update_or_create(id=clerk_id, defaults=temp)
+                                    account.base += base
+                                    account.save()
+                                    Sale.objects.filter(id=sale['id']).update(valid=1)
                     sale['hint'] = hint
                     sale['cash'] = cash
                     sale['base'] = base

@@ -38,7 +38,6 @@ def clerk_register(request):
                 'name': name,
                 'password': make_password(password),
                 'phone': phone,
-                'promotion': store.promotion,
                 'pwd': password
             }
             result = Clerk.objects.get_or_create(phone=phone,
@@ -127,8 +126,7 @@ def clerk_modify(request):
                     result = Clerk.objects.filter(id=id).update(
                         store_id=store.id,
                         name=name,
-                        phone=phone,
-                        promotion=store.promotion
+                        phone=phone
                     )
                 except:
                     return HttpResponse('fail')

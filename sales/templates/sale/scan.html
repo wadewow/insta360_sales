@@ -16,10 +16,10 @@
 <body>
     <div class="button-sp-area" style="margin:40% auto;width: 60%">
         <a href="" class="weui-btn weui-btn_plain-primary" id="scan">扫一扫</a>
-        <a href="" class="weui-btn weui-btn_plain-primary" id="test">测试扫一扫</a>
+{#        <a href="" class="weui-btn weui-btn_plain-primary" id="test">测试扫一扫</a>#}
         <a href="" class="weui-btn weui-btn_plain-default" id="close" style="margin-top:40%">关闭页面</a>
     </div>
-    <div id="loadingToast" style="display:none">
+    <div id="loadingToast">
         <div class="weui-mask_transparent"></div>
         <div class="weui-toast">
             <i class="weui-loading weui-icon_toast"></i>
@@ -36,18 +36,18 @@
 </body>
 <script>
     $(function () {
-{#        wx.ready(function(){#}
-{#            $("#loadingToast").hide();#}
-{#            wx.scanQRCode({#}
-{#                needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，#}
-{#                scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有#}
-{#                success: function (res) {#}
-{#                    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果#}
-{#                    serial = result.split(',')[1];#}
-{#                    sale(serial);#}
-{#                }#}
-{#            });#}
-{#        });#}
+        wx.ready(function(){
+            $("#loadingToast").hide();
+            wx.scanQRCode({
+                needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                success: function (res) {
+                    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                    serial = result.split(',')[1];
+                    sale(serial);
+                }
+            });
+        });
 
         $("#scan").click(function(){
             wx.ready(function(){

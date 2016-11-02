@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 
 from ..models import Clerk
+from ..models import Shop
 from ..models import Sale
 from ..models import Promotion
 from ..models import CashRecord
@@ -27,8 +28,13 @@ def account_account(request):
             clerk_id = request.session.__getitem__('clerk_id')
             account = Clerk.objects.get(id=clerk_id)
             store_id = account.store_id
-            promotion_id = account.promotion
+            store = Shop.objects.get(id=store_id)
+            sale_count = Sale.objects.filter(clerk_id=clerk_id,valid=1).count()
+            promotion_id = store.promotion
             promotion = ''
+            store_count = 0
+            print promotion_id
+            print promotion_id == ''
             if promotion_id != '':
                 promotion = Promotion.objects.get(id=promotion_id)
                 start_time = promotion.start_time
@@ -41,24 +47,26 @@ def account_account(request):
                     valid=1,
                     active_time__range=(start_time, end_time)
                 )
-                store_count = store_sales.count()
 
+                store_count = store_sales.count()
                 if store_count >= benchmark:
                     clerk_sales = store_sales.filter(
                         clerk_id=clerk_id,
                         cashed=0
                     )
-                    clerk_sales.update(cashed=1)
                     clerk_count = clerk_sales.count()
+                    clerk_sales.update(cashed=1)
+
                     bonus *= clerk_count
                     account.balance += bonus
                     account.bonus += bonus
                     account.save()
             return render(request, 'clerk/account.html', {
                 'account': account,
-                'promotion': promotion
+                'promotion': promotion,
+                'sale_count': sale_count,
+                'store_count': store_count
             })
-
     if request.method == 'POST':
         return HttpResponse('post')
 

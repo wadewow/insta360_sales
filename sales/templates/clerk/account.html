@@ -16,7 +16,7 @@
         <div class="weui-cell">
             <div class="weui-cell__bd">
                 <div class="">
-                    <h4 class="weui-media-box__title">基础奖励</h4>
+                    <h4 class="weui-media-box__title">基础奖励(<span>{{ sale_count }}</span>笔)</h4>
                     <p class="weui-cells__tips">售出的相机扫码至本系统后，12小时内用户激活后，您即可获得1~3元随机金额的基础奖励。同一个手机激活多个相机时，基础奖励只会计算一次</p>
                 </div>
             </div>
@@ -31,8 +31,8 @@
         <div class="weui-cell">
             <div class="weui-cell__bd">
                 <div class="">
-                    <h4 class="weui-media-box__title">促销奖励</h4>
-                    <p class="weui-cells__tips">{{ promotion.start_time }} ~ {{ promotion.end_time }}期间符合基础奖励的订单数达到{{ promotion.benchmark }}个，则可以获得额外的{{ promotion.bonus }}元奖励</p>
+                    <h4 class="weui-media-box__title">促销奖励(<span>{{ store_count }}</span>/<span>{{ promotion.benchmark }}</span>)</h4>
+                    <p class="weui-cells__tips">{{ promotion.start_time }} ~ {{ promotion.end_time }}期间，店员所属门店符合基础奖励的订单数达到{{ promotion.benchmark }}个，则店员每单可以获得额外的{{ promotion.bonus }}元奖励</p>
                 </div>
             </div>
             <div class="weui-cell__hd">
@@ -67,7 +67,8 @@
                 <div class="weui-cell weui-cell_vcode">
                 <div class="weui-cell__hd"><label class="weui-label">立即提现：</label></div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="number" name="money" id="money" pattern="^(([1-9][0-9]*)|0|(([0]\.[1-9]{1,2}|[0]\.[1-9]{1}\d|[0]\.\d[1-9]{1}|[1-9][0-9]*\.\d{1,2})))$" required="required" placeholder="请输入金额" value="{{ account.balance }}">
+{#                    <input class="weui-input" type="number" name="money" id="money" pattern="^(([1-9][0-9]*)|0|(([0]\.[1-9]{1,2}|[0]\.[1-9]{1}\d|[0]\.\d[1-9]{1}|[1-9][0-9]*\.\d{1,2})))$" required="required" placeholder="请输入金额" value="{{ account.balance }}">#}
+                      <input class="weui-input" type="number" name="money" id="money" pattern="^(([1-9][0-9]*)|0|(([0]\.[0-9]{1,2}|[1-9][0-9]*\.\d{1,2})))$" required="required" placeholder="请输入金额" value="{{ account.balance }}">
                 </div>
                 <div class="weui-cell__hd">
                     <p>元</p>

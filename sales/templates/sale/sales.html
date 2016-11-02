@@ -40,10 +40,10 @@
                 <p><span>序列号码: </span><span>{{ sale.serial_number }}</span></p>
                 <p><span>商品名称: </span><span>{{ sale.name }}</span></p>
                 <p><span>扫描时间: </span><span>{{ sale.created_time }}</span></p>
-                <p {% if sale.cash == 1 %} style="color: red" {% endif %}>
+                <p>
                     <span>激活状态: </span><span>{% if sale.active == 1 %}已激活({{ sale.active_time }}){% else %}未激活{% endif %}</span>
                 </p>
-                <p><span>({{ sale.show_time }}{{ sale.hint }})</span></p>
+                <p {% if sale.cash == 0 %} style="color: red" {% endif %}><span>({{ sale.show_time }}{{ sale.hint }})</span></p>
             </div>
             <div class="weui-cell__hd">
                 {% if sale.cash == 1 %}<h4>基础奖励</h4><h3>￥{{ sale.base }}</h3>{% endif %}
