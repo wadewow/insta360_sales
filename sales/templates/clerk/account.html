@@ -27,7 +27,7 @@
                 </div>
             </div>
         </div>
-        {% if promotion != "" %}{% endif %}
+        {% if promotion != "" %}
         <div class="weui-cell">
             <div class="weui-cell__bd">
                 <div class="">
@@ -42,6 +42,22 @@
                 </div>
             </div>
         </div>
+        {% else %}
+         <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <div class="">
+                    <h4 class="weui-media-box__title">促销奖励</h4>
+                    <p class="weui-cells__tips">当前无促销活动</p>
+                </div>
+            </div>
+            <div class="weui-cell__hd">
+                <div class="weui-media-box weui-media-box_text">
+                    <h4 class="weui-media-box__title">累计金额</h4>
+                    <h3>￥ {{ account.bonus }}</h3>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
     <div class="weui-cell">
         <div class="weui-cell__bd">
