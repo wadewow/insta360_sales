@@ -6,7 +6,8 @@ from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 
 from ..models import Clerk
-
+from ..models import Sale
+from ..models import Promotion
 from ..models import CashRecord
 from ..util.util import getCode1
 
@@ -24,12 +25,38 @@ def account_account(request):
             return redirect('/sales/clerk/login')
         else:
             clerk_id = request.session.__getitem__('clerk_id')
-            try:
-                account = Clerk.objects.get(id=clerk_id)
-            except:
-                return HttpResponse("请重新注册")
+            account = Clerk.objects.get(id=clerk_id)
+            store_id = account.store_id
+            promotion_id = account.promotion
+            promotion = ''
+            if promotion_id != '':
+                promotion = Promotion.objects.get(id=promotion_id)
+                start_time = promotion.start_time
+                end_time = promotion.end_time
+                benchmark = promotion.benchmark
+                bonus = promotion.bonus
+                store_sales = Sale.objects.filter(
+                    store_id=store_id,
+                    name='Insta360 Nano',
+                    valid=1,
+                    active_time__range=(start_time, end_time)
+                )
+                store_count = store_sales.count()
+
+                if store_count >= benchmark:
+                    clerk_sales = store_sales.filter(
+                        clerk_id=clerk_id,
+                        cashed=0
+                    )
+                    clerk_sales.update(cashed=1)
+                    clerk_count = clerk_sales.count()
+                    bonus *= clerk_count
+                    account.balance += bonus
+                    account.bonus += bonus
+                    account.save()
             return render(request, 'clerk/account.html', {
-                'account': account
+                'account': account,
+                'promotion': promotion
             })
 
     if request.method == 'POST':

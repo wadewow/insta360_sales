@@ -162,6 +162,8 @@ def sale_sales(request):
                                 cash = 1
                                 if base == 0:
                                     base = round(random.uniform(0, 3), 2)
+                                    if base > 1:
+                                        base = round((base * random.uniform(0.5, 1)), 2)
                                     temp = {
                                         'base': base
                                     }
@@ -187,53 +189,33 @@ def sale_sales(request):
                     sale['base'] = base
                     sale['show_time'] = show_time
 
-                clerk = Clerk.objects.get(id=clerk_id)
-                promotion_id = clerk.promotion
-                if promotion_id != '':
-                    try:
-                        promotion = Promotion.objects.get(id=promotion_id)
-                    except:
-                        return render(request, 'sale/sales.html', {
-                            'sale_list': sales
-                        })
-                    start_time = promotion.start_time
-                    end_time = promotion.end_time
-                    benchmark = promotion.benchmark
-                    bonus = promotion.bonus
 
-                    count = Sale.objects.filter(clerk_id=clerk_id,name='Insta360 Nano',valid=1,active_time__range=(start_time,end_time)).count()
-                    if count >= benchmark:
-                        account = Clerk.objects.get(id=clerk_id)
-                        account.balance += bonus
-                        account.bonus += bonus
-                        account.promotion = ''
-                        account.save()
                 return render(request, 'sale/sales.html', {
                     'sale_list': sales
                 })
         except:
             return render(request, 'clerk/login.html', {})
 
-
-@csrf_exempt
-def sale_cash(request):
-    if request.method == 'GET':
-        if not request.session.__contains__('clerk_id'):
-            return redirect('/sales/clerk/login')
-        else:
-            return render(request, 'sale/scan.html', {})
-
-    if request.method == 'POST':
-        try:
-            if not request.session.__contains__('clerk_id'):
-                return redirect('/sales/clerk/login')
-            else:
-                para = request.POST
-                sale_id = para.__getitem__('sale_id')
-                Sale.objects.filter(id=sale_id).update(cashed=1)
-                return HttpResponse("success")
-        except:
-            return  HttpResponse("error")
+#
+# @csrf_exempt
+# def sale_cash(request):
+#     if request.method == 'GET':
+#         if not request.session.__contains__('clerk_id'):
+#             return redirect('/sales/clerk/login')
+#         else:
+#             return render(request, 'sale/scan.html', {})
+#
+#     if request.method == 'POST':
+#         try:
+#             if not request.session.__contains__('clerk_id'):
+#                 return redirect('/sales/clerk/login')
+#             else:
+#                 para = request.POST
+#                 sale_id = para.__getitem__('sale_id')
+#                 Sale.objects.filter(id=sale_id).update(cashed=1)
+#                 return HttpResponse("success")
+#         except:
+#             return  HttpResponse("error")
 
 
 @csrf_exempt
