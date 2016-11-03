@@ -17,7 +17,7 @@
             <div class="weui-cell__bd">
                 <div class="">
                     <h4 class="weui-media-box__title">红包奖励 (<span>{{ sale_count }}</span>笔)</h4>
-                    <p class="weui-cells__tips">售出的相机扫码至本系统后，12小时内用户激活后，您即可获得1~10元随机金额的红包奖励。同一个手机激活多个相机时，红包奖励只会计算一次。</p>
+                    <p class="weui-cells__tips">售出的相机扫码至本系统后，<span style="color: red">12小时</span>内用户激活后，您即可获得1~10元随机金额的红包奖励。同一个手机激活多个相机时，红包奖励只会计算一次。</p>
                 </div>
             </div>
             <div class="weui-cell__hd">
@@ -32,7 +32,7 @@
             <div class="weui-cell__bd">
                 <div class="">
                     <h4 class="weui-media-box__title">门店促销</h4>
-                    <p class="weui-cells__tips">{{ promotion.start_time }} ~ {{ promotion.end_time }}期间，您所属门店的销售数量达到{{ promotion.benchmark }}个，则您可以额外获得{{ promotion.bonus }}元/台的奖励，您所在的门店目前已在此期间售出{{ store_count }}台，{% if store_count >= promotion.benchmark %}已满足奖励条件。{% else %}还差{{ delta }}台。{% endif %}</p>
+                    <p class="weui-cells__tips"><span style="color: red">{{ promotion.start_time }} ~ {{ promotion.end_time }}</span>期间，您所属门店的销售数量达到<span style="color: red">{{ promotion.benchmark }}</span>个，则您可以额外获得<span style="color: red">{{ promotion.bonus }}</span>元/台的奖励，您所在的门店目前已在此期间售出<span style="color: red">{{ store_count }}</span>台，{% if store_count >= promotion.benchmark %}已满足奖励条件。{% else %}还差<span style="color: red">{{ delta }}</span>台。{% endif %}</p>
                 </div>
             </div>
             <div class="weui-cell__hd">
@@ -71,7 +71,7 @@
             <div class="weui-cell__hd">
                 <div class="weui-media-box weui-media-box_text">
                     <h4 class="weui-media-box__title">累计金额</h4>
-                    <h3>￥ {{ account.bonus }}</h3>
+                    <h3>￥ 0</h3>
                 </div>
             </div>
         </div>

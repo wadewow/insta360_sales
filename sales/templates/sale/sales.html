@@ -32,7 +32,7 @@
         </div>
     </div>
     <a href="javascript:;" class="weui-btn weui-btn_primary" id="scan">扫描商品</a>
-    <a href="/sales/clerk/account" class="weui-btn weui-btn_default">基础&促销奖励</a>
+    <a href="/sales/clerk/account" class="weui-btn weui-btn_default">红包&促销奖励</a>
     <div class="weui-cells">
         {% for sale in sale_list %}
         <div class="weui-cell">
@@ -46,7 +46,7 @@
                 <p {% if sale.cash == 0 %} style="color: red" {% endif %}><span>({{ sale.show_time }}{{ sale.hint }})</span></p>
             </div>
             <div class="weui-cell__hd">
-                {% if sale.cash == 1 %}<h4>基础奖励</h4><h3>￥{{ sale.base }}</h3>{% endif %}
+                {% if sale.cash == 1 %}<h4>红包奖励</h4><h3>￥{{ sale.base }}</h3>{% endif %}
             </div>
 {#            <div class="weui-cell__hd"><a href="javascript:return false;" data-sale-id="{{ sale.id }}" class="weui-btn weui-btn_plain-primary {% if sale.cash == 0 or sale.cashed == 1 %}weui-btn_plain-disabled{% else %}cash{% endif %}">提现</a></div>#}
 

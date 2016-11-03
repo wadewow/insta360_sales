@@ -33,6 +33,7 @@ def account_account(request):
             promotion_id = store.promotion
             promotion = ''
             store_count = 0
+            delta = 0
             print promotion_id
             print promotion_id == ''
             if promotion_id != '':
@@ -40,6 +41,7 @@ def account_account(request):
                 start_time = promotion.start_time
                 end_time = promotion.end_time
                 benchmark = promotion.benchmark
+                delta = benchmark - store_count
                 bonus = promotion.bonus
                 store_sales = Sale.objects.filter(
                     store_id=store_id,
@@ -61,14 +63,12 @@ def account_account(request):
                     account.balance += bonus
                     account.bonus += bonus
                     account.save()
-                print '123'
-            print '123'
             return render(request, 'clerk/account.html', {
                 'account': account,
                 'promotion': promotion,
                 'sale_count': sale_count,
                 'store_count': store_count,
-                'delta': promotion.benchmark - store_count
+                'delta': delta
             })
             # return HttpResponse('123213')
     if request.method == 'POST':

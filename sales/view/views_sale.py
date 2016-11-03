@@ -191,9 +191,9 @@ def sale_sales(request):
 
                                 cash = 1
                                 if base == 0:
-                                    base = round(random.uniform(0, 3), 2)
-                                    if base > 1:
-                                        base = round((base * random.uniform(0.5, 1)), 2)
+                                    base = round(random.uniform(0, 10), 2)
+                                    if base > 3:
+                                        base = round((base * random.uniform(0.2, 0.6)), 2)
                                     temp = {
                                         'base': base
                                     }
@@ -243,9 +243,9 @@ def sale_sales(request):
 
 @csrf_exempt
 def sale_guide(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         try:
-            para = request.GET
+            para = request.POST
             print para
             if not para.__contains__('location'):
                 return HttpResponse("Missing parameter: location")
