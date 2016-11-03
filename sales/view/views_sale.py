@@ -244,10 +244,8 @@ def sale_sales(request):
 @csrf_exempt
 def sale_guide(request):
     if request.method == 'GET':
-        return HttpResponse("hehe")
-    if request.method == 'POST':
         try:
-            para = request.POST
+            para = request.GET
             print para
             if not para.__contains__('location'):
                 return HttpResponse("Missing parameter: location")
@@ -285,8 +283,6 @@ def sale_guide(request):
                     province = shop.province
 
                     serial = SaleNano.objects.filter(id=serial_number).count()
-                    print 'province',province
-                    print 'location',location
                     if False:
                     # if (not location in province) and serial == 0:
                         result['message'] = 'Location mismatching'
