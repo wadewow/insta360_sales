@@ -124,6 +124,8 @@ def store_add(request):
 
                 path_join = ''
                 for i in range(0, photo_num):
+                    if not request.FILES.__contains__("photo"+str(i)):
+                        continue
                     file = request.FILES.__getitem__("photo"+str(i))
                     path = 'sales/static/store/' + file.name
                     path = default_storage.save(path, file)
@@ -279,7 +281,8 @@ def store_modify(request):
                         photo_num = 1
                     path_join = ''
                     for i in range(0, photo_num):
-
+                        if not request.FILES.__contains__("photo" + str(i)):
+                            continue
                         file = request.FILES.__getitem__("photo" + str(i))
                         # timestamp = str(int(time.time()))
                         path = 'sales/static/store/' + file.name

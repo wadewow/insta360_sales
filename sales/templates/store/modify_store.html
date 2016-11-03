@@ -163,9 +163,9 @@
             <div class="weui-gallery" id="gallery">
             <span class="weui-gallery__img" id="galleryImg" style=""></span>
             <div class="weui-gallery__opr">
-{#                <a href="javascript:" class="weui-gallery__del" id="delete">#}
-{#                    <i class="weui-icon-delete weui-icon_gallery-delete"></i>#}
-{#                </a>#}
+                <a href="javascript:" class="weui-gallery__del" id="delete">
+                    <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+                </a>
             </div>
             </div>
         </div>
@@ -242,7 +242,7 @@
             return false
         });
 
-        var tmpl = '<li class="weui-uploader__file" style="background-image:url(#url#)"></li>',
+        var tmpl = '<li class="weui-uploader__file" id="photo#num#" style="background-image:url(#url#)"></li>',
                 $gallery = $("#gallery"), $galleryImg = $("#galleryImg"),
                 $uploaderInput = $("#uploaderInput"),
                 $uploaderFiles = $("#uploaderFiles")
@@ -307,7 +307,7 @@
                             canvas.height = height;
                             canvas.getContext('2d').drawImage(image, 0, 0, width, height);
                             var dataUrl = canvas.toDataURL('image/jpeg');
-                            $uploaderFiles.append($(tmpl.replace('#url#', dataUrl)));
+                            $uploaderFiles.append($(tmpl.replace('#url#', dataUrl).replace('#num#', photo_num)));
                             var resizedImage = dataURLToBlob(dataUrl);
                             formData.append("photo" + photo_num, resizedImage);
                             photo_num += 1;
@@ -325,17 +325,20 @@
             }
         });
         $uploaderFiles.on("click", "li", function(){
-                    $galleryImg.attr("style", this.getAttribute("style"));
-                    $gallery.fadeIn(100);
+            $galleryImg.attr('data-num', this.getAttribute("id"));
+            $galleryImg.attr("style", this.getAttribute("style"));
+            $gallery.fadeIn(100);
         });
         $gallery.on("click", function(){
             $gallery.fadeOut(100);
         });
 
-{#        $("#delete").on("click", function(){#}
-{#            $gallery.fadeOut(100);#}
-{#            $uploaderFiles.html("")#}
-{#        });#}
+        $("#delete").on("click", function(){
+            $num = $("#galleryImg").attr('data-num');
+            $("#" + $num).remove();
+            formData.delete($num);
+            $gallery.fadeOut(100);
+        });
 
         $("#machine").on("click", function(){
             $("#machine_serial_div").toggle()
