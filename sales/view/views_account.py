@@ -86,39 +86,43 @@ def account_cash(request):
             return redirect('/sales/clerk/login')
         else:
             clerk_id = request.session.__getitem__('clerk_id')
-            if not para.__contains__('money'):
-                return HttpResponse("Missing parameter: money")
-            money = para.__getitem__('money')
-            try:
-                money = float(money)
-            except:
-                return HttpResponse("Illegal parameter: money")
+            # if not para.__contains__('money'):
+            #     return HttpResponse("Missing parameter: money")
+            # money = para.__getitem__('money')
+            # try:
+            #     money = float(money)
+            # except:
+            #     return HttpResponse("Illegal parameter: money")
+
             try:
                 account = Clerk.objects.get(id=clerk_id)
             except:
                 return HttpResponse("请重新注册")
             balance = account.balance
-            if balance < money:
-                return HttpResponse("余额不足！")
-            else:
-                balance = balance - money
-                account.balance = balance
-                account.save()
+            money = balance
+            # if balance < money:
+            #     return HttpResponse("余额不足！")
+            # else:
+            # balance = balance - money
+            account.balance = 0
+            account.bonus = 0
+            account.base = 0
+            account.save()
+            code = getCode1(8)
+            codes = CashRecord.objects.all().values_list("code").distinct()
+            while code in codes:
                 code = getCode1(8)
-                codes = CashRecord.objects.all().values_list("code").distinct()
-                while code in codes:
-                    code = getCode1(8)
-                clerk = Clerk.objects.get(id=clerk_id)
+            clerk = Clerk.objects.get(id=clerk_id)
 
-                CashRecord.objects.create(
-                    clerk_id=clerk_id,
-                    base=account.base,
-                    bonus=account.bonus,
-                    money=money,
-                    code=code,
-                    name=clerk.name,
-                    phone=clerk.phone
-                )
+            CashRecord.objects.create(
+                clerk_id=clerk_id,
+                base=account.base,
+                bonus=account.bonus,
+                money=money,
+                code=code,
+                name=clerk.name,
+                phone=clerk.phone
+            )
             result = {
                 'result': 'success',
                 'code': code,

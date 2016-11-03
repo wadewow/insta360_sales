@@ -49,6 +49,8 @@ urlpatterns = [
 
     url(r'^promotion/store_filter', views.store_filter, name='store_filter'),
 
+    url(r'^cash_query', views.cash_query, name='cash_query'),
+
     url(r'^guide$', views.sale_guide, name='sale_guide'),
 
     url(r'^weixin', views.weixin, name='weixin'),
@@ -56,6 +58,8 @@ urlpatterns = [
     url(r'^upload_pic', views.upload_pic, name='upload_pic'),
 
     url(r'^QR_code', views.QR_code, name='QR_code'),
+
+    url(r'^test', views.test, name='test'),
 
 
 

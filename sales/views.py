@@ -11,6 +11,7 @@ from view.views_sale import *
 from view.views_manager import *
 from view.views_account import *
 from view.views_promotion import *
+from view.views_service import *
 
 import json
 import sys
@@ -169,3 +170,10 @@ def import_sale_nano(request):
 @csrf_exempt
 def QR_code(request):
     return render(request, 'clerk/QR_code.html', {})
+
+
+
+
+@csrf_exempt
+def test(request):
+    return render(request, 'test.html', {})

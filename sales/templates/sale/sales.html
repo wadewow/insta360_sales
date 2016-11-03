@@ -32,13 +32,13 @@
         </div>
     </div>
     <a href="javascript:;" class="weui-btn weui-btn_primary" id="scan">扫描商品</a>
-    <a href="/sales/clerk/account" class="weui-btn weui-btn_default">红包&促销奖励</a>
+    <a href="/sales/clerk/account" class="weui-btn weui-btn_default">查看红包&促销奖励及提现</a>
     <div class="weui-cells">
         {% for sale in sale_list %}
         <div class="weui-cell">
             <div class="weui-cell__bd">
                 <p><span>序列号码: </span><span>{{ sale.serial_number }}</span></p>
-                <p><span>商品名称: </span><span>{{ sale.name }}</span></p>
+                <p><span>商品名称: </span><span {% if sale.name == '测试商品' %}style="color:red"{% endif %}>{{ sale.name }}</span></p>
                 <p><span>扫描时间: </span><span>{{ sale.created_time }}</span></p>
                 <p>
                     <span>激活状态: </span><span>{% if sale.active == 1 %}已激活({{ sale.active_time }}){% else %}未激活{% endif %}</span>
