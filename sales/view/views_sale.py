@@ -193,7 +193,7 @@ def sale_sales(request):
                                 if base == 0:
                                     base = round(random.uniform(0, 10), 2)
                                     if base > 3:
-                                        base = round((base * random.uniform(0.2, 0.6)), 2)
+                                        base = round((base * random.uniform(0, 1)), 2)
                                     temp = {
                                         'base': base
                                     }
