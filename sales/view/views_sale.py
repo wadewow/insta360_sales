@@ -254,8 +254,6 @@ def sale_guide(request):
             elif not para.__contains__('serial_number'):
                 return HttpResponse("Missing parameter: serail_number")
             else:
-
-
 # # ###########################
 #                 timestamp = int(time.time())
 #                 temp = time.localtime(int(timestamp))
@@ -269,11 +267,9 @@ def sale_guide(request):
                 result['status'] = 0
                 location = para.__getitem__('location')
                 serial_number = para.__getitem__('serial_number')
-                if 'kDefaultSeria' in serial_number:
-                    serial_number = 'INS3116NQnlaE7'
+
                 print 'location:' + location
                 print 'serial_number:' + serial_number
-
 
                 sale = Sale.objects.filter(serial_number=serial_number).order_by('-created_time').first()
                 if sale == None:
@@ -289,9 +285,12 @@ def sale_guide(request):
                     province = shop.province
 
                     serial = SaleNano.objects.filter(id=serial_number).count()
-
-                    if (not location in province) and serial == 0:
+                    print 'province',province
+                    print 'location',location
+                    if False:
+                    # if (not location in province) and serial == 0:
                         result['message'] = 'Location mismatching'
+                        print result['message']
                         return JsonResponse(data=result, safe=False)
                     else:
                         qualified = False
@@ -309,19 +308,24 @@ def sale_guide(request):
 ######################################
                         if serial == 0:
                             active = sale.active
-                            name = sale.name
                             created_time = sale.created_time
                             active_time = sale.active_time
+
                             deadline = created_time + datetime.timedelta(hours=12)
+                            deadline = (deadline + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S")
+
                             clerk_id = sale.clerk_id
                             device_code = sale.device_code
                             if device_code == '':
                                 num = 1
                             else:
                                 num = Sale.objects.filter(device_code=device_code, clerk_id=clerk_id,name='Insta360 Nano').count()
+
+                            print active_time
+                            print deadline
+
                             if active == 1 and active_time < deadline and num < 2:
                                 qualified = True
-
                         else:
                             qualified = True
 

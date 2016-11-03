@@ -10,6 +10,7 @@ from view.views_clerk import *
 from view.views_sale import *
 from view.views_manager import *
 from view.views_account import *
+from view.views_promotion import *
 
 import json
 import sys

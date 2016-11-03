@@ -64,7 +64,7 @@
                         <select class="weui-select" id="agent" name="agent">
                             {% for agent in agent_list %}
                                 {% if agent.weight == '1' %}
-                                <option value="{{ agent.custom_number }}">{{ agent.custom_name }}({{ agent.custom_number }})</option>
+                                <option value="{{ agent.custom_number }}">{{ agent.custom_number }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
@@ -91,14 +91,15 @@
             <div class="weui-cell">
                 <a href="javascript:;" class="weui-btn weui-btn_plain-primary" id="scan">扫码展台二维码</a>
             </div>
-            <div class="weui-cell" id="config" style="display: none">
+            <div class="weui-cell" id="config">
                 <div class="weui-cell__hd">
                     <label class="weui-label">展台配置</label>
                 </div>
 
                 <div class="weui-cell__bd">
-                <div class="weui-cell__hd">
-                    <input type="text" class="weui-input" id="machine_serial" name="machine_serial" placeholder="   请输入样机序列号" style="display: none;">
+                <div class="weui-cell__hd" id="machine_serial_div" style="display: none;">
+                    <input type="text" class="weui-input" id="machine_serial" name="machine_serial" placeholder="   请输入样机序列号">
+                    <a href="javascript:;" class="weui-btn weui-btn_plain-primary" id="scan1">扫一扫</a>
                 </div>
                     <div class="weui-cells weui-cells_checkbox">
                     {% for key, value in options.items %}
@@ -315,7 +316,7 @@
 {#        });#}
 
         $("#machine").on("click", function(){
-            $("#machine_serial").toggle()
+            $("#machine_serial_div").toggle()
         });
 
         $("#scan").on("click", function(){
@@ -340,6 +341,18 @@
                         }
                     });
 
+                }
+            });
+        });
+
+        $("#scan1").on("click", function(){
+            wx.scanQRCode({
+                needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                success: function (res) {
+                    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                    var code = result.split(',')[1];
+                    $("#machine_serial").val(code);
                 }
             });
         });

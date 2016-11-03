@@ -61,12 +61,16 @@ def account_account(request):
                     account.balance += bonus
                     account.bonus += bonus
                     account.save()
+                print '123'
+            print '123'
             return render(request, 'clerk/account.html', {
                 'account': account,
                 'promotion': promotion,
                 'sale_count': sale_count,
-                'store_count': store_count
+                'store_count': store_count,
+                'delta': promotion.benchmark - store_count
             })
+            # return HttpResponse('123213')
     if request.method == 'POST':
         return HttpResponse('post')
 

@@ -108,7 +108,7 @@ def manager_modify_store(request):
                 exhibition = para.__getitem__("exhibition")
                 machine_serial = para.__getitem__("machine_serial")
                 remark = para.__getitem__('remark')
-                agent = para.__getitem__("agent")
+                # agent = para.__getitem__("agent")
                 manager = para.__getitem__("manager")
                 try:
                     res = Exhibition.objects.get(id=exhibition)
@@ -169,7 +169,7 @@ def manager_modify_store(request):
                             option=json.dumps(option),
                             machine_serial=machine_serial,
                             remark=remark,
-                            agent=agent,
+                            # agent=agent,
                             manager=manager
                         )
                     except:
@@ -186,7 +186,7 @@ def manager_modify_store(request):
                             option=json.dumps(option),
                             machine_serial=machine_serial,
                             remark=remark,
-                            agent=agent,
+                            # agent=agent,
                             manager=manager
                         )
                     except:

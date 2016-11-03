@@ -47,6 +47,8 @@ urlpatterns = [
     # url(r'^manager/shopkeeper_info', views.manager_shopkeeper_info, name='manager_shopkeeper_info'),
     url(r'^manager/modify_store$', views.manager_modify_store, name='manager_modify_store'),
 
+    url(r'^promotion/store_filter', views.store_filter, name='store_filter'),
+
     url(r'^guide$', views.sale_guide, name='sale_guide'),
 
     url(r'^weixin', views.weixin, name='weixin'),

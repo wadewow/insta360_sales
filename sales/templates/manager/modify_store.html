@@ -51,29 +51,29 @@
                     <input class="weui-input" type="text" id="online" name="online" placeholder="" value="{{ store_info.online }}">
                 </div>
             </div>
-            <div class="weui-cell">
-                <div class="weui-cell__hd">
-                    <label class="weui-label">货源代理商</label>
-                </div>
-                <div class="weui-cell__bd">
-                <div class="weui-cell weui-cell_select">
-                    <div class="weui-cell__bd">
-                        <select class="weui-select" id="agent" name="agent">
+{#            <div class="weui-cell">#}
+{#                <div class="weui-cell__hd">#}
+{#                    <label class="weui-label">货源代理商</label>#}
+{#                </div>#}
+{#                <div class="weui-cell__bd">#}
+{#                <div class="weui-cell weui-cell_select">#}
+{#                    <div class="weui-cell__bd">#}
+{#                        <select class="weui-select" id="agent" name="agent">#}
 {#                            <option value="{{ store_info.agent }}">{{ store_info.agent }}</option>#}
-                            {% for agent in agent_list %}
-                                {% if agent.weight == '1' %}
-                                    {% if agent.custom_number ==  store_info.agent %}
-                                    <option value="{{ agent.custom_number }}" selected="selected">{{ agent.custom_name }}({{ agent.custom_number }})</option>
-                                    {% else %}
-                                    <option value="{{ agent.custom_number }}">{{ agent.custom_name }}({{ agent.custom_number }})</option>
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                </div>
-            </div>
+{#                            {% for agent in agent_list %}#}
+{#                                {% if agent.weight == '1' %}#}
+{#                                    {% if agent.custom_number ==  store_info.agent %}#}
+{#                                    <option value="{{ agent.custom_number }}" selected="selected">{{ agent.custom_name }}({{ agent.custom_number }})</option>#}
+{#                                    {% else %}#}
+{#                                    <option value="{{ agent.custom_number }}">{{ agent.custom_name }}({{ agent.custom_number }})</option>#}
+{#                                    {% endif %}#}
+{#                                {% endif %}#}
+{#                            {% endfor %}#}
+{#                        </select>#}
+{#                    </div>#}
+{#                </div>#}
+{#                </div>#}
+{#            </div>#}
             <div class="weui-cell">
                 <div class="weui-cell__hd">
                     <label class="weui-label">销售经理编号</label>
@@ -98,7 +98,10 @@
                     <label class="weui-label">展台配置</label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input type="text" class="weui-input" id="machine_serial" placeholder="   请输入样机序列号" value="{{ store_info.machine_serial }}" {% if store_info.option.machine != 'true' %}style="display: none"{% endif %}>
+                <div class="weui-cell__hd" id="machine_serial_div"  {% if store_info.option.machine != 'true' %}style="display: none"{% endif %}>
+                    <input type="text" class="weui-input" id="machine_serial" placeholder="   请输入样机序列号" value="{{ store_info.machine_serial }}">
+                    <a href="javascript:;" class="weui-btn weui-btn_plain-primary" id="scan1">扫一扫</a>
+                </div>
                     <div class="weui-cells weui-cells_checkbox">
                     {% for key, value in options.items %}
                         <label class="weui-cell weui-check__label" for={{ key }}>
@@ -113,6 +116,12 @@
                                 {% elif key == 'demo' and store_info.option.demo == 'true' %}
                                 checked="checked"
                                 {% elif key == 'KA' and store_info.option.KA == 'true' %}
+                                checked="checked"
+                                {% elif key == 'KT' and store_info.option.KT == 'true' %}
+                                checked="checked"
+                                {% elif key == 'TV' and store_info.option.TV == 'true' %}
+                                checked="checked"
+                                {% elif key == 'fold' and store_info.option.fold == 'true' %}
                                 checked="checked"
                                 {% endif %}>
                         <i class="weui-icon-checked"></i>
@@ -185,7 +194,7 @@
             formData.append("location", $("#location").val());
             formData.append("online", $("#online").val());
             formData.append("exhibition", $("#exhibition").val());
-            formData.append("agent", $("#agent").val());
+{#            formData.append("agent", $("#agent").val());#}
             checkboxes = $(':checkbox');
             for (var k = 0; k < checkboxes.length; k++) {
                 formData.append(checkboxes[k].name, checkboxes[k].checked);
@@ -317,7 +326,7 @@
 {#        });#}
 
         $("#machine").on("click", function(){
-            $("#machine_serial").toggle()
+            $("#machine_serial_div").toggle()
         });
 
         $("#scan").on("click", function(){
@@ -341,6 +350,18 @@
                             $("#config").hide();
                         }
                     });
+                }
+            });
+        });
+
+        $("#scan1").on("click", function(){
+            wx.scanQRCode({
+                needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                success: function (res) {
+                    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                    var code = result.split(',')[1];
+                    $("#machine_serial").val(code);
                 }
             });
         });

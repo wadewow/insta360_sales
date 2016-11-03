@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <title>促销方案设置系统</title>
+</head>
+<body>
+<form action="" class="mui-form--inline">
+  <div class="mui-select">
+    <select name="type">
+      <option value="store">门店</option>
+      <option value="shopkeeper">商家</option>
+    </select>
+{#    <label>Type</label>#}
+  </div>
+
+  <div class="mui-textfield">
+    <input type="text" name="keyword"  placeholder="搜索门店或商家">
+  </div>
+  <button class="mui-btn">submit</button>
+</form>
+<table class="mui-table mui-table--bordered">
+  <thead>
+    <tr>
+      <th>门店id</th>
+      <th>门店名称</th>
+      <th>地理位置</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for store in store_list|dictsort:"province" %}
+    <tr>
+      <td>{{ store.id }}</td>
+      <td>{{ store.name }}</td>
+      <td>{{ store.province }} {{ store.city }} {{ store.location }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</body>
+</html>
