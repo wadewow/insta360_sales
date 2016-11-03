@@ -5,21 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
     <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
     <title>Insta360 提现查询系统</title>
 </head>
 <body>
 <div class="mui--text-center">
-    <form action="" class="mui-form--inline">
+    <form action="/sales/cash_query" method="post" class="mui-form--inline">
       <div class="mui-textfield">
-        <input type="text" name="code"  placeholder="请输入提现兑换码">
+        <input type="text" name="code"  placeholder="请输入提现兑换码" value="{{ record.code }}">
       </div>
       <button class="mui-btn mui-btn--raised mui-btn--primary">查询</button>
     </form>
 </div>
-
-{#<table class="mui-table mui-table--bordered">#}
+{% if exsit == 1 %}
+    <div class="mui--align-middle" style="max-width:500px;margin: 100px auto;font-size:16px">
+<table class="mui-table mui-table--bordered">
 {#  <thead>#}
 {#    <tr>#}
 {#      <th>门店id</th>#}
@@ -27,15 +29,59 @@
 {#      <th>地理位置</th>#}
 {#    </tr>#}
 {#  </thead>#}
-{#  <tbody>#}
-{#  {% for store in store_list|dictsort:"province" %}#}
-{#    <tr>#}
-{#      <td>{{ store.id }}</td>#}
-{#      <td>{{ store.name }}</td>#}
-{#      <td>{{ store.province }} {{ store.city }} {{ store.location }}</td>#}
-{#    </tr>#}
-{#    {% endfor %}#}
-{#  </tbody>#}
-{#</table>#}
+
+  <tbody>
+    <tr>
+      <td><strong>员工ID</strong></td>
+      <td>{{ record.clerk_id }}</td>
+    </tr>
+    <tr>
+      <td><strong>姓名</strong></td>
+      <td>{{ record.name }}</td>
+    </tr>
+      <tr>
+      <td><strong>手机</strong></td>
+      <td>{{ record.phone }}</td>
+    </tr>
+    <tr>
+      <td><strong>提现金额</strong></td>
+      <td>{{ record.money }}元</td>
+    </tr>
+    <tr>
+      <td><strong>提现码</strong></td>
+      <td>{{ record.code }}</td>
+    </tr>
+    {% if record.wechat != "" %}
+    <tr>
+      <td><strong>提现微信号</strong></td>
+      <td>{{ record.wechat }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+      <td><strong>提现状态</strong></td>
+      <td><strong style="color:red">{% if record.wechat == "" %}未提现 <button class="mui-btn mui-btn--raised mui-btn--primary" id="cash">支付</button>{% else %}已提现{% endif %}</strong></td>
+    </tr>
+  </tbody>
+</table>
+    <form class="mui-form--inline" id="wechat_form" style="display: none" method="post" action="/sales/service_cash">
+      <div class="mui-textfield">
+          <input type="text" name="wechat" required="required" placeholder="输入提现微信号">
+          <input type="hidden" name="id" value="{{ record.id }}">
+      </div>
+      <button class="mui-btn mui-btn--raised mui-btn--danger">确认支付</button>
+    </form>
+    </div>
+{% elif exsit == 0%}
+    <div class="mui--text-center">
+    <h2>提现码错误</h2>
+    </div>
+{% endif %}
 </body>
+<script>
+    $(function () {
+       $("#cash").click(function () {
+           $("#wechat_form").show()
+       })
+    });
+</script>
 </html>

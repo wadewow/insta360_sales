@@ -50,6 +50,7 @@ urlpatterns = [
     url(r'^promotion/store_filter', views.store_filter, name='store_filter'),
 
     url(r'^cash_query', views.cash_query, name='cash_query'),
+    url(r'^service_cash', views.service_cash, name='service_cash'),
 
     url(r'^guide$', views.sale_guide, name='sale_guide'),
 
