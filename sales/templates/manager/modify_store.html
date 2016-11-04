@@ -159,9 +159,9 @@
             <div class="weui-gallery" id="gallery">
             <span class="weui-gallery__img" id="galleryImg" style=""></span>
             <div class="weui-gallery__opr">
-{#                <a href="javascript:" class="weui-gallery__del" id="delete">#}
-{#                    <i class="weui-icon-delete weui-icon_gallery-delete"></i>#}
-{#                </a>#}
+                <a href="javascript:" class="weui-gallery__del" id="delete">
+                    <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+                </a>
             </div>
             </div>
         </div>
@@ -327,7 +327,8 @@
         $("#delete").on("click", function(){
             $num = $("#galleryImg").attr('data-num');
             $("#" + $num).remove();
-            $formData.delete($num);
+{#            $formData.delete($num);#}
+            $formData.append('remove'+$num, '1');
             $gallery.fadeOut(100);
         });
 

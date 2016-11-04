@@ -136,7 +136,7 @@ def manager_modify_store(request):
                     photo_num = 1
                 path_join = ''
                 for i in range(0, photo_num):
-                    if not request.FILES.__contains__("photo" + str(i)):
+                    if (not request.FILES.__contains__("photo" + str(i))) or para.__contains__('removephoto' + str(i)):
                         continue
                     file = request.FILES.__getitem__("photo" + str(i))
 

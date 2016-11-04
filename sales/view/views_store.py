@@ -124,7 +124,7 @@ def store_add(request):
 
                 path_join = ''
                 for i in range(0, photo_num):
-                    if not request.FILES.__contains__("photo"+str(i)):
+                    if (not request.FILES.__contains__("photo" + str(i))) or para.__contains__('removephoto' + str(i)):
                         continue
                     file = request.FILES.__getitem__("photo"+str(i))
                     path = 'sales/static/store/' + file.name
@@ -282,7 +282,7 @@ def store_modify(request):
                 path_join = ''
                 print photo_num
                 for i in range(0, photo_num):
-                    if not request.FILES.__contains__("photo" + str(i)):
+                    if (not request.FILES.__contains__("photo" + str(i))) or para.__contains__('removephoto' + str(i)):
                         continue
                     file = request.FILES.__getitem__("photo" + str(i))
                     # timestamp = str(int(time.time()))

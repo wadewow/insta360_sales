@@ -314,7 +314,8 @@
         $("#delete").on("click", function(){
             $num = $("#galleryImg").attr('data-num');
             $("#" + $num).remove();
-            $formData.delete($num);
+{#            $formData.delete($num);#}
+            $formData.append('remove'+$num, '1');
             $gallery.fadeOut(100);
         });
 
