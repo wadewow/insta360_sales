@@ -129,6 +129,10 @@ class Promotion(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
     benchmark = models.IntegerField(default=30)
     bonus = models.FloatField(default=0.0)
+    benchmark1 = models.IntegerField(default=50)
+    bonus1 = models.FloatField(default=0.0)
+    benchmark2 = models.IntegerField(default=100)
+    bonus2 = models.FloatField(default=0.0)
 
     def __unicode__(self):
         return str(self.id)

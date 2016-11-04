@@ -61,12 +61,13 @@
 </body>
 <script>
     $(function () {
-        panel = $(".records");
-        footer = $(".weui-footer");
-        title = $(".title");
-        column = $(".column");
-        $height  = $(document).height() - footer.height() - title.height() - column.height() - 70;
-        panel.css('height', $height + "px");
+        panel = $(".records")[0];
+        footer = $(".weui-footer")[0];
+        title = $(".title")[0];
+        column = $(".column")[0];
+        console.log($(window).height());
+        $height  = $(window).height() - 200;
+        panel.setAttribute('style', 'overflow-y: auto;height:' + $height + "px" );
 
     });
 </script>

@@ -274,33 +274,36 @@ def store_modify(request):
                         value = para.__getitem__(item)
                         option[item] = value
 
-                if request.FILES.__contains__("photo0"):
-                    try:
-                        photo_num = int(para.__getitem__("photo_num"))
-                    except:
-                        photo_num = 1
-                    path_join = ''
-                    for i in range(0, photo_num):
-                        if not request.FILES.__contains__("photo" + str(i)):
-                            continue
-                        file = request.FILES.__getitem__("photo" + str(i))
-                        # timestamp = str(int(time.time()))
-                        path = 'sales/static/store/' + file.name
-                        path = default_storage.save(path, file)
 
-                        # if os.path.isfile(path):
-                        #     # 打开原图片缩小后保存，可以用if srcFile.endswith(".jpg")或者split，splitext等函数等针对特定文件压缩
-                        #     sImg = Image.open(path)
-                        #     w, h = sImg.size
-                        #     dImg = sImg.resize((w / 4, h / 4), Image.ANTIALIAS)  # 设置压缩尺寸和选项，注意尺寸要用括号
-                        #     dImg.save(path)  # 也可以用srcFile原路径保存,或者更改后缀保存，save这个函数后面可以加压缩编码选项JPEG之类的
-                        #     print path
-                        path_join += path[5:] + ':'
-                    if len(path_join) > 0:
-                        path_join = path_join[:-1]
+                try:
+                    photo_num = int(para.__getitem__("photo_num"))
+                except:
+                    photo_num = 1
+                path_join = ''
+                print photo_num
+                for i in range(0, photo_num):
+                    if not request.FILES.__contains__("photo" + str(i)):
+                        continue
+                    file = request.FILES.__getitem__("photo" + str(i))
+                    # timestamp = str(int(time.time()))
+                    path = 'sales/static/store/' + file.name
+                    path = default_storage.save(path, file)
 
-                    res.active = 1
-                    res.save()
+                    # if os.path.isfile(path):
+                    #     # 打开原图片缩小后保存，可以用if srcFile.endswith(".jpg")或者split，splitext等函数等针对特定文件压缩
+                    #     sImg = Image.open(path)
+                    #     w, h = sImg.size
+                    #     dImg = sImg.resize((w / 4, h / 4), Image.ANTIALIAS)  # 设置压缩尺寸和选项，注意尺寸要用括号
+                    #     dImg.save(path)  # 也可以用srcFile原路径保存,或者更改后缀保存，save这个函数后面可以加压缩编码选项JPEG之类的
+                    #     print path
+                    path_join += path[5:] + ':'
+                    print path_join
+                if len(path_join) > 0:
+                    path_join = path_join[:-1]
+
+                res.active = 1
+                res.save()
+                if len(path_join) > 0:
                     try:
                         res = Shop.objects.filter(id=store_id).update(
                             name=name,

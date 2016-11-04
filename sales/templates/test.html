@@ -1,34 +1,60 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<script type="text/javascript">
-    function getCookie() {
-         var url = location.search; //获取url中"?"符后的字串
-           var theRequest = new Object();
-           if (url.indexOf("?") != -1) {
-              var str = url.substr(1);
-              strs = str.split("%26");
-              theRequest[strs[0].split("=")[0]]=(strs[0].split("=")[1]);
-           }
-        alert(document.cookie);
-        c_openId="openId";
-        if (document.cookie.length > 0) {
-            c_start = document.cookie.indexOf(c_openId + "=");
-            if (c_start != -1) {
-                c_start = c_start + c_openId.length + 1;
-                c_end = document.cookie.indexOf(";", c_start);
-                if (c_end == -1)
-                    c_end = document.cookie.length;
-                openId=unescape(document.cookie.substring(c_start, c_end));//通过截取字符串，获取到openId。
-                alert(openId);
-{#                window.location.href = "joinActivity.jsf?openId="+openId+"&activityId="+activityId;//获取openId之//后再跳转到指定页面，把该openId放置到浏览器链接中。然后后台可以随时的从链接中确定是该用户在操作。#}
-            }
-        }
-{#        window.location.href = "joinActivity.jsf?activityId="+activityId;#}
-    }
-</script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script src="/static/js/config.js"></script>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>扫描商品</title>
 </head>
-<body onload="getCookie()">
+<body>
+    <div class="button-sp-area" style="margin:40% auto;width: 60%">
+        <a href="" class="weui-btn weui-btn_plain-primary" id="test">测试扫一扫</a>
+    </div>
 </body>
+<script>
+    $(function () {
+        wx.ready(function(){
+{#            $("#test").click(function(){#}
+{#            wx.ready(function(){#}
+{#                wx.scanQRCode({#}
+{#                    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，#}
+{#                    scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有#}
+{#                    success: function (res) {#}
+{#                        var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果#}
+{#                        serial = result.split(',')[1];#}
+{#                        alert(serial)#}
+{#                    }#}
+{#                });#}
+{#            });#}
+{#            return false#}
+{#        });#}
+        });
 
+
+        $("#test").click(function(){
+            wx.ready(function(){
+                wx.scanQRCode({
+                    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                    scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                    success: function (res) {
+                        var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                        serial = result.split(',')[1];
+                        alert(serial)
+                    }
+                });
+            });
+            return false
+        });
+
+
+    });
+
+</script>
 </html>

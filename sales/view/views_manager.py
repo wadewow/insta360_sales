@@ -130,34 +130,34 @@ def manager_modify_store(request):
                         value = para.__getitem__(item)
                         option[item] = value
 
-                if request.FILES.__contains__("photo0"):
-                    try:
-                        photo_num = int(para.__getitem__("photo_num"))
-                    except:
-                        photo_num = 1
-                    path_join = ''
-                    for i in range(0, photo_num):
-                        if not request.FILES.__contains__("photo" + str(i)):
-                            continue
-                        file = request.FILES.__getitem__("photo" + str(i))
+                try:
+                    photo_num = int(para.__getitem__("photo_num"))
+                except:
+                    photo_num = 1
+                path_join = ''
+                for i in range(0, photo_num):
+                    if not request.FILES.__contains__("photo" + str(i)):
+                        continue
+                    file = request.FILES.__getitem__("photo" + str(i))
 
-                        # timestamp = str(int(time.time()))
+                    # timestamp = str(int(time.time()))
 
-                        path = 'sales/static/store/' + file.name
-                        path = default_storage.save(path, file)
+                    path = 'sales/static/store/' + file.name
+                    path = default_storage.save(path, file)
 
-                        # if os.path.isfile(path):
-                        #     sImg = Image.open(path)
-                        #     w, h = sImg.size
-                        #     dImg = sImg.resize((w / 4, h / 4), Image.ANTIALIAS)
-                        #     dImg.save(path)
-                        #     print path
-                        path_join += path[5:] + ':'
-                    if len(path_join) > 0:
-                        path_join = path_join[:-1]
+                    # if os.path.isfile(path):
+                    #     sImg = Image.open(path)
+                    #     w, h = sImg.size
+                    #     dImg = sImg.resize((w / 4, h / 4), Image.ANTIALIAS)
+                    #     dImg.save(path)
+                    #     print path
+                    path_join += path[5:] + ':'
+                if len(path_join) > 0:
+                    path_join = path_join[:-1]
 
-                    res.active = 1
-                    res.save()
+                res.active = 1
+                res.save()
+                if len(path_join) > 0:
                     try:
                         res = Shop.objects.filter(id=store_id).update(
                             name=name,

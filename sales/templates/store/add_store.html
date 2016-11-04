@@ -144,9 +144,9 @@
             <div class="weui-gallery" id="gallery">
             <span class="weui-gallery__img" id="galleryImg" style=""></span>
             <div class="weui-gallery__opr">
-                <a href="javascript:" class="weui-gallery__del" id="delete">
-                    <i class="weui-icon-delete weui-icon_gallery-delete"></i>
-                </a>
+{#                <a href="javascript:" class="weui-gallery__del" id="delete">#}
+{#                    <i class="weui-icon-delete weui-icon_gallery-delete"></i>#}
+{#                </a>#}
             </div>
             </div>
         </div>
@@ -164,7 +164,7 @@
 </body>
 <script>
     $(function () {
-        var formData = new FormData();
+        var $formData = new FormData();
         var photo_num = 0;
         var form = $('form#add_store');
         $('form').h5Validate({
@@ -181,28 +181,28 @@
                 return false;
             }
             load();
-            formData.append("name", $("#name").val());
-            formData.append("city", $("#city").val());
-            formData.append("location", $("#location").val());
-            formData.append("online", $("#online").val());
-            formData.append("agent", $("#agent").val());
+            $formData.append("name", $("#name").val());
+            $formData.append("city", $("#city").val());
+            $formData.append("location", $("#location").val());
+            $formData.append("online", $("#online").val());
+            $formData.append("agent", $("#agent").val());
             checkboxes = $(':checkbox');
             for (var k = 0; k < checkboxes.length; k++) {
-                formData.append(checkboxes[k].name, checkboxes[k].checked);
+                $formData.append(checkboxes[k].name, checkboxes[k].checked);
             }
-            formData.append("exhibition", $("#exhibition").val());
+            $formData.append("exhibition", $("#exhibition").val());
 {#            for (var j = 0; j < files.length; j++) {#}
-{#                formData.append("photo" + j, files[j]);#}
+{#                $formData.append("photo" + j, files[j]);#}
 {#            }#}
-{#            formData.append("photo_num", files.length);#}
-            formData.append("photo_num", photo_num);
-            formData.append("machine_serial", $("#machine_serial").val());
-            formData.append("remark", $("#remark").val());
-            formData.append("manager", $("#manager").val());
+{#            $formData.append("photo_num", files.length);#}
+            $formData.append("photo_num", photo_num);
+            $formData.append("machine_serial", $("#machine_serial").val());
+            $formData.append("remark", $("#remark").val());
+            $formData.append("manager", $("#manager").val());
             $.ajax({
                 url: "/sales/store/add_store",
                 type: "POST",
-                data: formData,
+                data: $formData,
                 timeout: 15000,
                 processData: false,  // 告诉jQuery不要去处理发送的数据
                 contentType: false   // 告诉jQuery不要去设置Content-Type请求头
@@ -287,7 +287,7 @@
                             var dataUrl = canvas.toDataURL('image/jpeg');
                             $uploaderFiles.append($(tmpl.replace('#url#', dataUrl).replace('#num#', photo_num)));
                             var resizedImage = dataURLToBlob(dataUrl);
-                            formData.append("photo" + photo_num, resizedImage);
+                            $formData.append("photo" + photo_num, resizedImage);
                             photo_num += 1;
                             $.event.trigger({
                                 type: "imageResized",
@@ -303,9 +303,9 @@
             }
         });
         $uploaderFiles.on("click", "li", function(){
-                $galleryImg.attr('data-num', this.getAttribute("id"));
-                $galleryImg.attr("style", this.getAttribute("style"));
-                $gallery.fadeIn(100);
+            $galleryImg.attr('data-num', this.getAttribute("id"));
+            $galleryImg.attr("style", this.getAttribute("style"));
+            $gallery.fadeIn(100);
         });
         $gallery.on("click", function(){
             $gallery.fadeOut(100);
@@ -314,7 +314,7 @@
         $("#delete").on("click", function(){
             $num = $("#galleryImg").attr('data-num');
             $("#" + $num).remove();
-            formData.delete($num);
+            $formData.delete($num);
             $gallery.fadeOut(100);
         });
 

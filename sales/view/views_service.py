@@ -40,10 +40,14 @@ def cash_query(request):
 
 @csrf_exempt
 def service_cash(request):
+    if request.method == 'GET':
+        return redirect('/sales/cash_query')
     if request.method == 'POST':
         para = request.POST
         id = para.get('id', '')
         wechat = para.get('wechat','')
+        if id == '':
+            return redirect('/sales/cash_query')
         try:
             record = CashRecord.objects.get(id=id)
         except ObjectDoesNotExist:

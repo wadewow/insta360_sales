@@ -171,12 +171,12 @@ def sale_sales(request):
                             hint = '未在12小时内激活，不可提现'
                         else:
                             show_time = deadline
-                            hint = '之前激活可返现'
+                            hint = '之前激活可提现'
 
                     else:
                         show_time = active_time
                         if active_time >= deadline:
-                            hint = '激活，不可返现'
+                            hint = '激活，不可提现'
                         else:
                             device_code = sale['device_code']
                             if device_code == '':
@@ -185,7 +185,7 @@ def sale_sales(request):
                                 num = Sale.objects.filter(device_code=device_code,clerk_id=clerk_id,name='Insta360 Nano').count()
                             if num > 1:
                                 show_time = ''
-                                hint = '被重复手机激活，不可返现'
+                                hint = '被重复手机激活，不可提现'
                             else:
                                 hint = '激活，可提现'
 

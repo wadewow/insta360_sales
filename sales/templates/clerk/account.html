@@ -23,7 +23,7 @@
             <div class="weui-cell__hd">
                 <div class="weui-media-box weui-media-box_text">
                     <h4 class="weui-media-box__title">累计金额</h4>
-                    <h3>￥ {{ account.base }}</h3>
+                    <h3 id="base">￥ {{ account.base }}</h3>
                 </div>
             </div>
         </div>
@@ -32,13 +32,17 @@
             <div class="weui-cell__bd">
                 <div class="">
                     <h4 class="weui-media-box__title">门店促销奖励</h4>
-                    <p class="weui-cells__tips"><span style="color: red">{{ promotion.start_time }} ~ {{ promotion.end_time }}</span>期间，若您所属门店的销售数量达到<span style="color: red">{{ promotion.benchmark }}</span>个，则您可以额外获得<span style="color: red">{{ promotion.bonus }}</span>元/台的奖励，您所在的门店目前已在此期间售出<span style="color: red">{{ store_count }}</span>台，{% if store_count >= promotion.benchmark %}已满足奖励条件。{% else %}还差<span style="color: red">{{ delta }}</span>台能达到目标。{% endif %}</p>
+                    <p class="weui-cells__tips"><span style="color: red">{{ promotion.start_time }} ~ {{ promotion.end_time }}</span>期间，若您所属门店的销售数量达到
+                        <span style="color: red">{{ promotion.benchmark }}</span>台/<span style="color: red">{{ promotion.benchmark1 }}</span>台/<span style="color: red">{{ promotion.benchmark2 }}</span>台
+                        ，则门店奖池可以获得每台
+                        <span style="color: red">{{ promotion.bonus }}</span>元/<span style="color: red">{{ promotion.bonus1 }}</span>元/<span style="color: red">{{ promotion.bonus2 }}</span>元不同梯度的奖金，系统将根据您的贡献率分配奖励。
+                        您所在的门店目前已在此期间售出<span style="color: red">{{ store_count }}</span>台，{% if store_count >= promotion.benchmark %}已满足奖励条件。{% else %}还差<span style="color: red">{{ delta }}</span>台能达到目标。{% endif %}</p>
                 </div>
             </div>
             <div class="weui-cell__hd">
                 <div class="weui-media-box weui-media-box_text">
                     <h4 class="weui-media-box__title">金额</h4>
-                    <h3>￥ {{ account.bonus }}</h3>
+                    <h3 id="bonus">￥ {{ account.bonus }}</h3>
                 </div>
             </div>
         </div>
@@ -52,8 +56,8 @@
             </div>
             <div class="weui-cell__hd">
                 <div class="weui-media-box weui-media-box_text">
-                    <h4 class="weui-media-box__title">金额</h4>
-                    <h3>￥ {{ account.bonus }}</h3>
+                    <h4 class="weui-media-box__title">累计金额</h4>
+                    <h3 id="bonus">￥ {{ account.bonus }}</h3>
                 </div>
             </div>
         </div>
@@ -69,8 +73,8 @@
             </div>
             <div class="weui-cell__hd">
                 <div class="weui-media-box weui-media-box_text">
-                    <h4 class="weui-media-box__title">金额</h4>
-                    <h3>￥ 0</h3>
+                    <h4 class="weui-media-box__title">累计金额</h4>
+                    <h3 id="vocation">￥ 0</h3>
                 </div>
             </div>
         </div>
@@ -84,7 +88,7 @@
         <div class="weui-cell__bd">
             <p>总计可提现金额：</p>
         </div>
-        <div class="weui-cell__hd"><h2>￥ {{ account.balance }}</h2></div>
+        <div class="weui-cell__hd"><h2 id="total">￥ {{ account.balance }}</h2></div>
     </div>
     <div class="weui_btn_area">
         <a href="javascript:;" class="weui-btn weui-btn_primary" id="cash">立即提现</a>
@@ -201,6 +205,10 @@
                     $('#code').html(data['code']);
                     $('#amount').html(data['money']);
                     $('#iosDialog2').fadeIn(100);
+                    $('#base').html('￥ 0');
+                    $('#bonus').html('￥ 0');
+                    $('#vocation').html('￥ 0');
+                    $('#total').html('￥ 0');
                 }
                 else{
                     alert(data);
