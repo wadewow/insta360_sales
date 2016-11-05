@@ -63,9 +63,7 @@
                     <div class="weui-cell__bd">
                         <select class="weui-select" id="agent" name="agent">
                             {% for agent in agent_list %}
-                                {% if agent.weight == '1' %}
                                 <option value="{{ agent.custom_number }}">{{ agent.custom_number }}</option>
-                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
