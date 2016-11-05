@@ -155,6 +155,7 @@ def import_exhibition(request):
             print line
             Exhibition.objects.update_or_create(id=line[0])
         csvfile.close()
+        return HttpResponse("finish")
 
 @csrf_exempt
 def import_sale_nano(request):
