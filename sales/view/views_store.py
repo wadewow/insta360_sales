@@ -37,7 +37,7 @@ def stores(request):
                     "store_list" : results
                 })
         except:
-            return HttpResponse('error')
+            return render(request, 'shopkeeper/login.html', {})
 
 @csrf_exempt
 def store_add(request):
@@ -60,7 +60,7 @@ def store_add(request):
                     "agent_list": agent_list
                 })
         except:
-            return HttpResponse('error')
+            return render(request, 'shopkeeper/login.html', {})
 
     if request.method == 'POST':
         try:
@@ -211,8 +211,7 @@ def store_info(request):
                     }
                 })
         except:
-            return HttpResponse('error')
-
+            return render(request, 'shopkeeper/login.html', {})
 
 
 
@@ -387,7 +386,7 @@ def store_modify(request):
                     "agent_list": agent_list
                 })
         except:
-            return HttpResponse('error')
+            return render(request, 'shopkeeper/login.html', {})
 
 
 @csrf_exempt

@@ -243,4 +243,4 @@ def manager_modify_store(request):
                     "agent_list": agent_list
                 })
         except:
-            return HttpResponse('error')
+            return render(request, 'manager/login.html', {})

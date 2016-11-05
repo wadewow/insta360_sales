@@ -142,7 +142,7 @@ def shopkeeper_modify(request):
                     }
                 })
         except:
-            return HttpResponse('error')
+            return render(request, 'shopkeeper/login.html', {})
 
 
 @csrf_exempt

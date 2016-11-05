@@ -50,7 +50,7 @@ def clerk_register(request):
             else:
                 return HttpResponse('该手机号已经被注册！')
         except:
-            return render(request, 'clerk/register.html', {})
+            return HttpResponse('error')
 
 
 @csrf_exempt
@@ -92,7 +92,17 @@ def clerk_info(request):
             else:
                 id = request.session.__getitem__('clerk_id')
                 result = Clerk.objects.get(id=id)
-                store = Shop.objects.get(id=result.store_id)
+                try:
+                    store = Shop.objects.get(id=result.store_id)
+                except:
+                    return render(request, 'clerk/info.html', {
+                        'clerk_info': {
+                            'store': '',
+                            'name': result.name,
+                            'phone': result.phone,
+                            'code': ''
+                        }
+                    })
                 return render(request, 'clerk/info.html', {
                     'clerk_info': {
                         'store': store.name,
@@ -143,7 +153,16 @@ def clerk_modify(request):
             else:
                 id = request.session.__getitem__('clerk_id')
                 result = Clerk.objects.get(id=id)
-                store = Shop.objects.get(id=result.store_id)
+                try:
+                    store = Shop.objects.get(id=result.store_id)
+                except:
+                    return render(request, 'clerk/modify.html', {
+                        'clerk_info': {
+                            'code': '',
+                            'name': result.name,
+                            'phone': result.phone
+                        }
+                    })
                 return render(request, 'clerk/modify.html', {
                     'clerk_info': {
                         'code': store.code,
@@ -152,7 +171,7 @@ def clerk_modify(request):
                     }
                 })
         except:
-            return HttpResponse('error')
+            return render(request, 'clerk/login.html', {})
 
 
 

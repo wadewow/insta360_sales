@@ -44,16 +44,18 @@ def sale_scan(request):
                 #############################
                 try:
                     SaleNano.objects.get(id=serial_number)
-                except ObjectDoesNotExist :
+                except ObjectDoesNotExist:
                     test = False
-
+                clerk_id = request.session.get('clerk_id')
+                clerk = Clerk.objects.get(id=clerk_id)
+                try:
+                    shop = Shop.objects.get(id=clerk.store_id)
+                except:
+                    return redirect('/sales/clerk/info')
                 if test:
                     now = timezone.now()
                     active = 1
                     active_time = now
-                    clerk_id = request.session.get('clerk_id')
-                    clerk = Clerk.objects.get(id=clerk_id)
-                    shop = Shop.objects.get(id=clerk.store_id)
                     name = '测试商品'
                     sale_info = {
                         'active_time': active_time,
@@ -92,9 +94,8 @@ def sale_scan(request):
                     return HttpResponse("该序列号已被售出！")
                 else:
                     active_time = now
-                clerk_id = request.session.get('clerk_id')
-                clerk = Clerk.objects.get(id=clerk_id)
-                shop = Shop.objects.get(id=clerk.store_id)
+
+
                 name = 'Insta360 Nano'
                 try:
                     sale = Sale.objects.get(serial_number=serial_number, name=name)
@@ -400,7 +401,10 @@ def sale_test(request):
                 active_time = now
                 clerk_id = request.session.get('clerk_id')
                 clerk = Clerk.objects.get(id=clerk_id)
-                shop = Shop.objects.get(id=clerk.store_id)
+                try:
+                    shop = Shop.objects.get(id=clerk.store_id)
+                except:
+                    return redirect('/sales/clerk/info')
                 name = '测试商品'
                 sale_info = {
                     'active_time': active_time,
