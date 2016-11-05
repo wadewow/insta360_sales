@@ -185,8 +185,10 @@ def store_info(request):
                 first = 0
                 if para.__contains__('first'):
                     first = para.__getitem__('first')
-                print first
                 result = Shop.objects.get(id=store_id)
+                business_id = result.business_id
+                if request.session['shopkeeper_id'] != business_id:
+                    return redirect('/sales/store/stores')
                 photo_join = result.photo
                 photos = photo_join.split(':')
                 option = json.loads(result.option)
@@ -365,6 +367,9 @@ def store_modify(request):
                 agent_list = json.loads(data)
                 store_id = para.__getitem__('store_id')
                 result = Shop.objects.get(id=store_id)
+                business_id = result.business_id
+                if request.session['shopkeeper_id'] != business_id:
+                    return redirect('/sales/store/stores')
                 option = json.loads(result.option)
                 print option
                 return render(request, 'store/modify_store.html', {
