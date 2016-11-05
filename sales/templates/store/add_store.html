@@ -8,6 +8,7 @@
     <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.js"></script>
     <script src="/static/city_picker/js/city-picker.data.js"></script>
     <script src="/static/city_picker/js/city-picker.js"></script>
+    <script src="/static/js/exif.js"></script>
     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script src="//cdn.bootcss.com/h5Validate/0.9.0/jquery.h5validate.min.js"></script>
     <script src="/static/js/config.js"></script>
@@ -279,9 +280,39 @@
                                     height = max_size;
                                 }
                             }
-                            canvas.width = width;
-                            canvas.height = height;
-                            canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+
+                            EXIF.getData(image, function() {
+                               // alert(EXIF.pretty(this));
+                                EXIF.getAllTags(this);
+                                //alert(EXIF.getTag(this, 'Orientation'));
+                                Orientation = EXIF.getTag(this, 'Orientation');
+                                //return;
+                            });
+
+                            var cxt = canvas.getContext('2d');
+                            if(Orientation == 3) {
+                                canvas.width = width;
+                                canvas.height = height;
+                                cxt.rotate(Math.PI);
+                                cxt.drawImage(image, 0, 0, -width, -height);
+                            }
+                            else if(Orientation == 8) {
+                                canvas.width = height;
+                                canvas.height = width;
+                                cxt.rotate(Math.PI * 3 / 2);
+                                cxt.drawImage(image, 0, 0, -width, height);
+                            }
+                            else if(Orientation == 6) {
+                                canvas.width = height;
+                                canvas.height = width;
+                                cxt.rotate(Math.PI / 2);
+                                cxt.drawImage(image, 0, 0, width, -height);
+                            }
+                            else {
+                                canvas.width = width;
+                                canvas.height = height;
+                                cxt.drawImage(image, 0, 0, width, height);
+                            }
                             var dataUrl = canvas.toDataURL('image/jpeg');
                             $uploaderFiles.append($(tmpl.replace('#url#', dataUrl).replace('#num#', photo_num)));
                             var resizedImage = dataURLToBlob(dataUrl);
