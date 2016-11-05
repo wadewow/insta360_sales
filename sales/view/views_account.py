@@ -22,114 +22,117 @@ sys.setdefaultencoding('utf-8')
 @csrf_exempt
 def account_account(request):
     if request.method == 'GET':
-        if not request.session.__contains__('clerk_id'):
-            return redirect('/sales/clerk/login')
-        else:
-            clerk_id = request.session.__getitem__('clerk_id')
-            account = Clerk.objects.get(id=clerk_id)
-            store_id = account.store_id
-            store = Shop.objects.get(id=store_id)
-            sale_count = Sale.objects.filter(clerk_id=clerk_id,valid=1).count()
-            promotion_id = store.promotion
-            promotion = ''
-            store_count = 0
-            clerk_count = 0
-            achieve_benchmark = 0
-            achieve_bonus = 0
-            next_benchmark = 0
-            next_bonus = 0
-            delta = 0
-            clerk_base = 0
-            clerk_bonus = 0
-            clerk_sales = Sale.objects.filter(
-                    clerk_id=clerk_id,
-                    name='Insta360 Nano',
-                    valid=1,
-                    cashed=0
-                )
-            for s in clerk_sales:
-                clerk_base += s.base
-            if promotion_id != '':
-                promotion = Promotion.objects.get(id=promotion_id)
-                start_time = promotion.start_time
-                end_time = promotion.end_time
-                benchmark = promotion.benchmark
-                delta = benchmark - store_count
-                bonus = promotion.bonus
-                store_sales = Sale.objects.filter(
-                    store_id=store_id,
-                    name='Insta360 Nano',
-                    valid=1,
-                    active_time__range=(start_time, end_time)
-                )
+        try:
+            if not request.session.__contains__('clerk_id'):
+                return redirect('/sales/clerk/login')
+            else:
+                clerk_id = request.session.__getitem__('clerk_id')
+                account = Clerk.objects.get(id=clerk_id)
+                store_id = account.store_id
+                store = Shop.objects.get(id=store_id)
+                sale_count = Sale.objects.filter(clerk_id=clerk_id,valid=1).count()
+                promotion_id = store.promotion
+                promotion = ''
+                store_count = 0
+                clerk_count = 0
+                achieve_benchmark = 0
+                achieve_bonus = 0
+                next_benchmark = 0
+                next_bonus = 0
+                delta = 0
+                clerk_base = 0
+                clerk_bonus = 0
+                clerk_sales = Sale.objects.filter(
+                        clerk_id=clerk_id,
+                        name='Insta360 Nano',
+                        valid=1,
+                        cashed=0
+                    )
+                for s in clerk_sales:
+                    clerk_base += s.base
+                if promotion_id != '':
+                    promotion = Promotion.objects.get(id=promotion_id)
+                    start_time = promotion.start_time
+                    end_time = promotion.end_time
+                    benchmark = promotion.benchmark
+                    delta = benchmark - store_count
+                    bonus = promotion.bonus
+                    store_sales = Sale.objects.filter(
+                        store_id=store_id,
+                        name='Insta360 Nano',
+                        valid=1,
+                        active_time__range=(start_time, end_time)
+                    )
 
-                store_count = store_sales.count()
-                clerk_count = store_sales.filter(clerk_id=clerk_id).count()
+                    store_count = store_sales.count()
+                    clerk_count = store_sales.filter(clerk_id=clerk_id).count()
 
-                store_uncashed= store_sales.filter(cashed=0)
-                store_uncashed_count = store_uncashed.count()
+                    store_uncashed= store_sales.filter(cashed=0)
+                    store_uncashed_count = store_uncashed.count()
 
-                benchmark1 = promotion.benchmark1
-                bonus1 = promotion.bonus1
-                benchmark2 = promotion.benchmark2
-                bonus2 = promotion.bonus2
-
-
-                ####################
-                sum_bonus = 0
-                next_benchmark = benchmark
-                next_bonus = bonus
-                if store_count >= benchmark and store_count < benchmark1:
-                    sum_bonus = store_uncashed_count * bonus
-                    achieve_benchmark = benchmark
-                    achieve_bonus = bonus
-                    next_benchmark = benchmark1
-                    next_bonus = bonus1
-                if store_count >= benchmark1 and store_count < benchmark2:
-                    sum_bonus = store_uncashed_count * bonus1
-                    achieve_benchmark = benchmark1
-                    achieve_bonus = bonus1
-                    next_benchmark = benchmark2
-                    next_bonus = bonus2
-                if store_count >= benchmark2:
-                    sum_bonus = store_uncashed_count * bonus2
-                    achieve_benchmark = benchmark2
-                    achieve_bonus = bonus2
-                    next_benchmark = -1
-                    next_bonus = -1
-                ####################
+                    benchmark1 = promotion.benchmark1
+                    bonus1 = promotion.bonus1
+                    benchmark2 = promotion.benchmark2
+                    bonus2 = promotion.bonus2
 
 
-                # if store_count >= benchmark:
-                clerk_uncashed = store_uncashed.filter(
-                    clerk_id=clerk_id,
-                )
-                clerk_uncashed_count = clerk_uncashed.count()
-                # clerk_sales.update(cashed=1)
-                if store_uncashed_count == 0:
-                    ratio = 0
-                else:
-                    ratio = clerk_uncashed_count / store_uncashed_count
-                print ratio
-                clerk_bonus = round((sum_bonus * ratio), 2)
+                    ####################
+                    sum_bonus = 0
+                    next_benchmark = benchmark
+                    next_bonus = bonus
+                    if store_count >= benchmark and store_count < benchmark1:
+                        sum_bonus = store_uncashed_count * bonus
+                        achieve_benchmark = benchmark
+                        achieve_bonus = bonus
+                        next_benchmark = benchmark1
+                        next_bonus = bonus1
+                    if store_count >= benchmark1 and store_count < benchmark2:
+                        sum_bonus = store_uncashed_count * bonus1
+                        achieve_benchmark = benchmark1
+                        achieve_bonus = bonus1
+                        next_benchmark = benchmark2
+                        next_bonus = bonus2
+                    if store_count >= benchmark2:
+                        sum_bonus = store_uncashed_count * bonus2
+                        achieve_benchmark = benchmark2
+                        achieve_bonus = bonus2
+                        next_benchmark = -1
+                        next_bonus = -1
+                    ####################
 
-            account.bonus = clerk_bonus
-            account.balance = clerk_bonus + clerk_base
-            account.base = clerk_base
-            account.save()
 
-            return render(request, 'clerk/account.html', {
-                'account': account,
-                'promotion': promotion,
-                'sale_count': sale_count,
-                'store_count': store_count,
-                'clerk_count': clerk_count,
-                'delta': delta,
-                'achieve_benchmark': achieve_benchmark,
-                'achieve_bonus': achieve_bonus,
-                'next_benchmark': next_benchmark,
-                'next_bonus': next_bonus
-            })
+                    # if store_count >= benchmark:
+                    clerk_uncashed = store_uncashed.filter(
+                        clerk_id=clerk_id,
+                    )
+                    clerk_uncashed_count = clerk_uncashed.count()
+                    # clerk_sales.update(cashed=1)
+                    if store_uncashed_count == 0:
+                        ratio = 0
+                    else:
+                        ratio = clerk_uncashed_count / store_uncashed_count
+                    print ratio
+                    clerk_bonus = round((sum_bonus * ratio), 2)
+
+                account.bonus = clerk_bonus
+                account.balance = clerk_bonus + clerk_base
+                account.base = clerk_base
+                account.save()
+
+                return render(request, 'clerk/account.html', {
+                    'account': account,
+                    'promotion': promotion,
+                    'sale_count': sale_count,
+                    'store_count': store_count,
+                    'clerk_count': clerk_count,
+                    'delta': delta,
+                    'achieve_benchmark': achieve_benchmark,
+                    'achieve_bonus': achieve_bonus,
+                    'next_benchmark': next_benchmark,
+                    'next_bonus': next_bonus
+                })
+        except:
+            return render(request, 'clerk/login.html', {})
     if request.method == 'POST':
         return HttpResponse('post')
 

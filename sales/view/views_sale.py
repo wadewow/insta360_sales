@@ -122,6 +122,7 @@ def sale_sales(request):
                 return redirect('/sales/clerk/login')
             else:
                 clerk_id = request.session.get('clerk_id')
+                Clerk.objects.get(id=clerk_id)
                 sales = Sale.objects.filter(clerk_id=clerk_id, name='Insta360 Nano', active=0).values()
     ######################################
                 serial_numbers = ''

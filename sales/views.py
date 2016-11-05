@@ -152,6 +152,7 @@ def import_exhibition(request):
         csvfile = file('sales/exhibition.csv', 'rb')
         reader = csv.reader(csvfile)
         for line in reader:
+            print line
             Exhibition.objects.update_or_create(id=line[0])
         csvfile.close()
 
