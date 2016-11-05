@@ -186,13 +186,24 @@ def account_cash(request):
             account.base = 0
             account.save()
 
+
+
             code = getCode1(8)
             codes = CashRecord.objects.all().values_list("code").distinct()
             while code in codes:
                 code = getCode1(8)
 
-            clerk = Clerk.objects.get(id=clerk_id)
+            result = {
+                'result': 'success',
+                'code': code,
+                'money': money
+            }
+            print money
+            print money == 0
+            if money == 0:
+                return JsonResponse(result, safe=False)
 
+            clerk = Clerk.objects.get(id=clerk_id)
             CashRecord.objects.create(
                 clerk_id=clerk_id,
                 base=account.base,
@@ -202,15 +213,6 @@ def account_cash(request):
                 name=clerk.name,
                 phone=clerk.phone
             )
-
-
-
-            result = {
-                'result': 'success',
-                'code': code,
-                'money': money
-            }
-
             return JsonResponse(result, safe=False)
 
 
