@@ -50,7 +50,7 @@ def clerk_register(request):
             else:
                 return HttpResponse('该手机号已经被注册！')
         except:
-            return HttpResponse('error')
+            return render(request, 'clerk/register.html', {})
 
 
 @csrf_exempt
