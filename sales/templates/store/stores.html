@@ -42,7 +42,8 @@
             <p><span>门店代码: </span><span>{{ store.code }}</span></p>
             <p><span>门店地址: </span><span>{{ store.province }} {{ store.city }} {{ store.location }}</span></p>
             {% if store.online == "http://" %}{% else %}<p><span>线上网址: </span><span>{{ store.online }}</span></p>
-                {% endif %}
+            {% endif %}
+            <p><span>销售经理: </span><span>{{ store.manager }}</span></p>
         </div>
         <div class="weui-cell__ft">
         </div>

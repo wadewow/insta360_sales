@@ -252,14 +252,12 @@ def sale_guide(request):
             elif not para.__contains__('serial_number'):
                 return HttpResponse("Missing parameter: serail_number")
             else:
-# # ###########################
+# # ######################
 #                 timestamp = int(time.time())
 #                 temp = time.localtime(int(timestamp))
 #                 active_time = time.strftime("%Y-%m-%d %H:%M:%S", temp)
 #                 print active_time
-
 ##########################
-
                 result = {
                 }
                 result['status'] = 0
@@ -341,13 +339,18 @@ def sale_guide(request):
                             website = shop.online
                             if ('taobao.com' in website) or ('tmall.com' in website):
                                 result['status'] = 1
+                                info['type'] = 'taobao'
                                 info['website'] = website
                                 result['data'] = info
-                                return JsonResponse(data=result, safe=False)
+                            elif ('jd.com' in website):
+                                result['status'] = 1
+                                info['type'] = 'jd'
+                                info['website'] = website
+                                result['data'] = info
                             else:
                                 result['status'] = 2
                                 result['data'] = info
-                                return JsonResponse(data=result, safe=False)
+                            return JsonResponse(data=result, safe=False)
 
         except:
             return HttpResponse("Something unknown wrong")
