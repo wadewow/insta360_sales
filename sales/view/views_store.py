@@ -31,7 +31,7 @@ def stores(request):
             if not request.session.__contains__('shopkeeper_id'):
                 return redirect('/sales/shopkeeper/login')
             else:
-                business_id = request.session.__getitem__('shopkeeper_id')
+                business_id = request.session['shopkeeper_id']
                 results = Shop.objects.filter(business_id=business_id)
                 return render(request, 'store/stores.html', {
                     "store_list" : results
@@ -68,7 +68,7 @@ def store_add(request):
                 return redirect('/sales/shopkeeper/login')
             else:
                 print 'add_store'
-                business_id = request.session.__getitem__('shopkeeper_id')
+                business_id = request.sessio['shopkeeper_id']
                 print business_id
                 para = request.POST
                 print para.keys()

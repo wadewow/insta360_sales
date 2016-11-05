@@ -86,7 +86,7 @@ def shopkeeper_info(request):
             if not request.session.__contains__('shopkeeper_id'):
                 return redirect('/sales/shopkeeper/login')
             else:
-                id = request.session.__getitem__('shopkeeper_id')
+                id = request.session['shopkeeper_id']
                 result = Store.objects.get(id=id)
                 return render(request, 'shopkeeper/info.html', {
                     'store_info': {
@@ -108,7 +108,7 @@ def shopkeeper_modify(request):
             if not request.session.__contains__('shopkeeper_id'):
                 return redirect('/sales/shopkeeper/login')
             else:
-                id = request.session.__getitem__('shopkeeper_id')
+                id = request.session['shopkeeper_id']
                 store = para.__getitem__('store')
                 name = para.__getitem__('name')
                 phone = para.__getitem__('phone')
@@ -132,7 +132,7 @@ def shopkeeper_modify(request):
             if not request.session.__contains__('shopkeeper_id'):
                 return redirect('/sales/shopkeeper/login')
             else:
-                id = request.session.__getitem__('shopkeeper_id')
+                id = request.session['shopkeeper_id']
                 result = Store.objects.get(id=id)
                 return render(request, 'shopkeeper/modify.html', {
                     'store_info': {
@@ -175,7 +175,7 @@ def shopkeeper_sales(request):
         if not request.session.__contains__('shopkeeper_id'):
             return redirect('/sales/shopkeeper/login')
         else:
-            shopkeeper_id = request.session.get('shopkeeper_id')
+            shopkeeper_id = request.session['shopkeeper_id']
             sales = Sale.objects.filter(business_id=shopkeeper_id).order_by("-created_time").values()
 
             for sale in sales:

@@ -26,7 +26,7 @@ def account_account(request):
             if not request.session.__contains__('clerk_id'):
                 return redirect('/sales/clerk/login')
             else:
-                clerk_id = request.session.__getitem__('clerk_id')
+                clerk_id = request.session['clerk_id']
                 account = Clerk.objects.get(id=clerk_id)
                 store_id = account.store_id
                 store = Shop.objects.get(id=store_id)
@@ -149,7 +149,7 @@ def account_cash(request):
         if not request.session.__contains__('clerk_id'):
             return redirect('/sales/clerk/login')
         else:
-            clerk_id = request.session.__getitem__('clerk_id')
+            clerk_id = request.session['clerk_id']
             # if not para.__contains__('money'):
             #     return HttpResponse("Missing parameter: money")
             # money = para.__getitem__('money')
@@ -225,7 +225,7 @@ def account_record(request):
         if not request.session.__contains__('clerk_id'):
             return redirect('/sales/clerk/login')
         else:
-            clerk_id = request.session.__getitem__('clerk_id')
+            clerk_id = request.session['clerk_id']
             records = CashRecord.objects.filter(clerk_id=clerk_id).order_by("-created_time")
             return render(request, 'clerk/records.html', {
                 'records': records

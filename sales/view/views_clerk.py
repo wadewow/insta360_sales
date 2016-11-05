@@ -86,11 +86,10 @@ def clerk_info(request):
         return HttpResponse('Do nothing')
     elif request.method == 'GET':
         try:
-            print request.session.keys()
             if not request.session.__contains__('clerk_id'):
                 return redirect('/sales/clerk/login')
             else:
-                id = request.session.__getitem__('clerk_id')
+                id = request.session['clerk_id']
                 result = Clerk.objects.get(id=id)
                 try:
                     store = Shop.objects.get(id=result.store_id)
@@ -124,7 +123,7 @@ def clerk_modify(request):
             if not request.session.__contains__('clerk_id'):
                 return redirect('/sales/clerk/login')
             else:
-                id = request.session.__getitem__('clerk_id')
+                id = request.session['clerk_id']
                 code = para.__getitem__('code')
                 name = para.__getitem__('name')
                 phone = para.__getitem__('phone')
@@ -151,7 +150,7 @@ def clerk_modify(request):
             if not request.session.__contains__('clerk_id'):
                 return redirect('/sales/clerk/login')
             else:
-                id = request.session.__getitem__('clerk_id')
+                id = request.session['clerk_id']
                 result = Clerk.objects.get(id=id)
                 try:
                     store = Shop.objects.get(id=result.store_id)

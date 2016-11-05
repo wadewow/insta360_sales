@@ -70,7 +70,7 @@ def manager_list(request):
         if not request.session.__contains__('manager_id'):
             return redirect('/sales/manager/login')
         else:
-            manager_id = request.session.__getitem__('manager_id')
+            manager_id = request.session['manager_id']
             store_list = Shop.objects.filter(manager=manager_id)
             for store in store_list:
                 new_option = {}

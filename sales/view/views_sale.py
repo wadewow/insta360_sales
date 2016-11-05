@@ -46,7 +46,7 @@ def sale_scan(request):
                     SaleNano.objects.get(id=serial_number)
                 except ObjectDoesNotExist:
                     test = False
-                clerk_id = request.session.get('clerk_id')
+                clerk_id = request.session['clerk_id']
                 clerk = Clerk.objects.get(id=clerk_id)
                 try:
                     shop = Shop.objects.get(id=clerk.store_id)
@@ -131,7 +131,7 @@ def sale_sales(request):
             if not request.session.__contains__('clerk_id'):
                 return redirect('/sales/clerk/login')
             else:
-                clerk_id = request.session.get('clerk_id')
+                clerk_id = request.session['clerk_id']
                 Clerk.objects.get(id=clerk_id)
                 sales = Sale.objects.filter(clerk_id=clerk_id, name='Insta360 Nano', active=0).values()
     ######################################
@@ -399,7 +399,7 @@ def sale_test(request):
                 now = timezone.now()
                 active = 1
                 active_time = now
-                clerk_id = request.session.get('clerk_id')
+                clerk_id = request.session['clerk_id']
                 clerk = Clerk.objects.get(id=clerk_id)
                 try:
                     shop = Shop.objects.get(id=clerk.store_id)
