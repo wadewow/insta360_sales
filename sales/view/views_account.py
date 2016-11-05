@@ -33,6 +33,11 @@ def account_account(request):
             promotion_id = store.promotion
             promotion = ''
             store_count = 0
+            clerk_count = 0
+            achieve_benchmark = 0
+            achieve_bonus = 0
+            next_benchmark = 0
+            next_bonus = 0
             delta = 0
             clerk_base = 0
             clerk_bonus = 0
@@ -59,6 +64,7 @@ def account_account(request):
                 )
 
                 store_count = store_sales.count()
+                clerk_count = store_sales.filter(clerk_id=clerk_id).count()
 
                 store_uncashed= store_sales.filter(cashed=0)
                 store_uncashed_count = store_uncashed.count()
@@ -71,14 +77,26 @@ def account_account(request):
 
                 ####################
                 sum_bonus = 0
+                next_benchmark = benchmark
+                next_bonus = bonus
                 if store_count >= benchmark and store_count < benchmark1:
                     sum_bonus = store_uncashed_count * bonus
-
+                    achieve_benchmark = benchmark
+                    achieve_bonus = bonus
+                    next_benchmark = benchmark1
+                    next_bonus = bonus1
                 if store_count >= benchmark1 and store_count < benchmark2:
                     sum_bonus = store_uncashed_count * bonus1
-
+                    achieve_benchmark = benchmark1
+                    achieve_bonus = bonus1
+                    next_benchmark = benchmark2
+                    next_bonus = bonus2
                 if store_count >= benchmark2:
                     sum_bonus = store_uncashed_count * bonus2
+                    achieve_benchmark = benchmark2
+                    achieve_bonus = bonus2
+                    next_benchmark = -1
+                    next_bonus = -1
                 ####################
 
 
@@ -105,7 +123,12 @@ def account_account(request):
                 'promotion': promotion,
                 'sale_count': sale_count,
                 'store_count': store_count,
-                'delta': delta
+                'clerk_count': clerk_count,
+                'delta': delta,
+                'achieve_benchmark': achieve_benchmark,
+                'achieve_bonus': achieve_bonus,
+                'next_benchmark': next_benchmark,
+                'next_bonus': next_bonus
             })
     if request.method == 'POST':
         return HttpResponse('post')
