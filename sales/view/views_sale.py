@@ -96,6 +96,15 @@ def sale_scan(request):
                 clerk = Clerk.objects.get(id=clerk_id)
                 shop = Shop.objects.get(id=clerk.store_id)
                 name = 'Insta360 Nano'
+                try:
+                    sale = Sale.objects.get(serial_number=serial_number, name=name)
+                    created_time = sale.created_time
+                    deadline = created_time + datetime.timedelta(hours=12)
+                    format_created = (created_time + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S")
+                    if now < deadline:
+                        return HttpResponse('该商品于' + format_created + '被扫描，12小时之内无法再次扫描')
+                except:
+                    pass
                 sale_info = {
                     'active_time': active_time,
                     'store_id': clerk.store_id,
@@ -154,11 +163,12 @@ def sale_sales(request):
                     }
                     Sale.objects.update_or_create(serial_number=item, name='Insta360 Nano',defaults=sale_info)
 
+                now = timezone.now()
                 sales = Sale.objects.filter(clerk_id=clerk_id).order_by("-created_time").values()
 
     #########################################
 
-                now = timezone.now()
+
                 for sale in sales:
                     active = sale['active']
                     created_time = sale['created_time']
@@ -167,9 +177,11 @@ def sale_sales(request):
                     base = sale['base']
                     cash = 0
                     show_time = ''
+                    invalid = 0
                     if active==0:
                         if now >= deadline:
                             hint = '未在12小时内激活，不可提现'
+                            invalid = 1
                         else:
                             show_time = deadline
                             hint = '之前激活可提现'
@@ -178,6 +190,7 @@ def sale_sales(request):
                         show_time = active_time
                         if active_time >= deadline:
                             hint = '激活，不可提现'
+                            invalid = 1
                         else:
                             device_code = sale['device_code']
                             if device_code == '':
@@ -192,9 +205,13 @@ def sale_sales(request):
 
                                 cash = 1
                                 if base == 0:
-                                    base = round(random.uniform(0, 10), 2)
+                                    base = round(random.uniform(1, 10), 2)
                                     if base > 3:
-                                        base = round((base * random.uniform(0, 1)), 2)
+                                        base = round((base * random.uniform(0.1, 1)), 2)
+                                    if base > 5.5:
+                                        base = round((base * random.uniform(0.2, 1)), 2)
+                                    if base < 1:
+                                        base = base * 2
                                     temp = {
                                         'base': base
                                     }
@@ -212,7 +229,7 @@ def sale_sales(request):
                     sale['cash'] = cash
                     sale['base'] = base
                     sale['show_time'] = show_time
-
+                    sale['invalid'] = invalid
 
                 return render(request, 'sale/sales.html', {
                     'sale_list': sales

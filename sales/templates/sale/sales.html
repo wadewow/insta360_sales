@@ -35,6 +35,7 @@
     <a href="/sales/clerk/account" class="weui-btn weui-btn_default">查看红包&促销奖励及提现</a>
     <div class="weui-cells">
         {% for sale in sale_list %}
+        {% if sale.invalid == 0 %}
         <div class="weui-cell">
             <div class="weui-cell__bd">
                 <p><span>序列号码: </span><span>{{ sale.serial_number }}</span></p>
@@ -49,8 +50,8 @@
                 {% if sale.cash == 1 %}<h4>红包奖励</h4><h3>￥{{ sale.base }}</h3>{% endif %}
             </div>
 {#            <div class="weui-cell__hd"><a href="javascript:return false;" data-sale-id="{{ sale.id }}" class="weui-btn weui-btn_plain-primary {% if sale.cash == 0 or sale.cashed == 1 %}weui-btn_plain-disabled{% else %}cash{% endif %}">提现</a></div>#}
-
         </div>
+        {% endif %}
     {% endfor %}
     </div>
     <div id="loadingToast" style="display:none">
