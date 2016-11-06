@@ -77,6 +77,7 @@ def account_account(request):
 
 
                     ####################
+
                     sum_bonus = 0
                     next_benchmark = benchmark
                     next_bonus = bonus
@@ -98,6 +99,7 @@ def account_account(request):
                         achieve_bonus = bonus2
                         next_benchmark = -1
                         next_bonus = -1
+
                     ####################
 
 
@@ -167,13 +169,12 @@ def account_cash(request):
             except:
                 return HttpResponse("请重新注册")
 
-            clerk_sales = Sale.objects.filter(
+            Sale.objects.filter(
                 clerk_id=clerk_id,
                 name='Insta360 Nano',
                 valid=1,
                 cashed=0,
-            )
-            clerk_sales.update(cashed=1)
+            ).update(cashed=1)
 
 
 
