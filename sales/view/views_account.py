@@ -11,6 +11,7 @@ from ..models import Sale
 from ..models import Promotion
 from ..models import CashRecord
 from ..util.util import getCode1
+from ..util.util import calBonus
 
 import sys
 
@@ -101,6 +102,7 @@ def account_account(request):
                         next_bonus = -1
 
                     ####################
+                    # sum_bonus = calBonus(benchmark,benchmark1,benchmark2,bonus,bonus1,bonus2,store_count) - calBonus(benchmark,benchmark1,benchmark2,bonus,bonus1,bonus2,store_count - store_uncashed_count)
 
 
                     # if store_count >= benchmark:
@@ -234,3 +236,5 @@ def account_record(request):
 
     if request.method == 'POST':
         return HttpResponse('POST')
+
+
