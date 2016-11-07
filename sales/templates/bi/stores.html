@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
     <title>Insta360 展台信息</title>
 </head>
-<body>
+<body style="font-family: 'Microsoft YaHei UI'">
 <table class="mui-table mui-table--bordered">
   <thead>
     <tr>
@@ -41,7 +41,7 @@
       <td>{{ store.business_id.phone }}</td>
       <td>{{ store.code }}</td>
       <td>{{ store.name }}</td>
-      <td>{{ store.online }}</td>
+      <td><a href="{{ store.online }}" target="_blank">{{ store.online }}</a> </td>
       <td>{{ store.province }} {{ store.city }} {{ store.location }}</td>
 {#      <td>{{ store.exhibition }}</td>#}
       <td>

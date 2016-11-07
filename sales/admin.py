@@ -31,7 +31,7 @@ class ExhibitionAdmin(admin.ModelAdmin):
     list_display = ('id', 'active', 'active_time')
 
 class ManagerAdmin(admin.ModelAdmin):
-    list_display = ('id',)
+    list_display = ('id', 'name', 'area')
 
 class SaleNanoAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'location')

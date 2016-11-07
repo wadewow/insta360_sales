@@ -25,7 +25,6 @@ urlpatterns = [
     url(r'^store/store_info$', views.store_info, name='store_info'),
     url(r'^store/modify_store$', views.store_modify, name='store_modify'),
     url(r'^store/store_validate$', views.store_validate, name='store_validate'),
-    # url(r'^store/guide', views.store_guide, name='store_guide'),
 
     url(r'^logout$', views.logout, name='logout'),
 

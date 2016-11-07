@@ -105,6 +105,8 @@ class SaleNano(models.Model):
 
 class Manager(models.Model):
     id = models.CharField(max_length=200,primary_key=True)
+    name = models.CharField(max_length=200, blank=True)
+    area = models.CharField(max_length=200, blank=True)
 
     def __unicode__(self):
         return str(self.id)
