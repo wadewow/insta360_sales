@@ -286,7 +286,7 @@ def sale_guide(request):
                 print 'location:' + location
                 print 'serial_number:' + serial_number
 
-                shop = Shop.objects.filter(machine_serial=serial_number).first()
+                shop = Shop.objects.filter(machine_serial=serial_number).order_by('-created_time').first()
                 if shop != None:
                     store_name = shop.name
                     store_location = shop.province + ' ' + shop.city + ' ' + shop.location
@@ -310,8 +310,6 @@ def sale_guide(request):
                         result['status'] = 2
                         result['data'] = info
                     return JsonResponse(data=result, safe=False)
-
-
 
                 sale = Sale.objects.filter(serial_number=serial_number).order_by('-created_time').first()
                 if sale == None:
