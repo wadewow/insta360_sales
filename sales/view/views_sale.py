@@ -29,7 +29,7 @@ sys.setdefaultencoding('utf-8')
 def sale_scan(request):
     if request.method == 'GET':
         if not request.session.__contains__('clerk_id'):
-            return redirect('/sales/clerk/login')
+            return redirect('/sales/clerk/login_wx')
         else:
             return render(request, 'sale/scan.html', {
                 'lib_path': lib_path
@@ -38,7 +38,7 @@ def sale_scan(request):
     if request.method == 'POST':
         try:
             if not request.session.__contains__('clerk_id'):
-                return redirect('/sales/clerk/login')
+                return redirect('/sales/clerk/login_wx')
             else:
                 para = request.POST
                 serial_number = para.__getitem__('serial')
@@ -132,7 +132,7 @@ def sale_sales(request):
     if request.method == 'GET':
         try:
             if not request.session.__contains__('clerk_id'):
-                return redirect('/sales/clerk/login')
+                return redirect('/sales/clerk/login_wx')
             else:
                 clerk_id = request.session['clerk_id']
                 Clerk.objects.get(id=clerk_id)
@@ -249,7 +249,7 @@ def sale_sales(request):
 # def sale_cash(request):
 #     if request.method == 'GET':
 #         if not request.session.__contains__('clerk_id'):
-#             return redirect('/sales/clerk/login')
+#             return redirect('/sales/clerk/login_wx')
 #         else:
 #             return render(request, 'sale/scan.html', {
 # 'lib_path': lib_path})
@@ -257,7 +257,7 @@ def sale_sales(request):
 #     if request.method == 'POST':
 #         try:
 #             if not request.session.__contains__('clerk_id'):
-#                 return redirect('/sales/clerk/login')
+#                 return redirect('/sales/clerk/login_wx')
 #             else:
 #                 para = request.POST
 #                 sale_id = para.__getitem__('sale_id')
@@ -411,7 +411,7 @@ def sale_guide(request):
 def sale_test(request):
     if request.method == 'GET':
         if not request.session.__contains__('clerk_id'):
-            return redirect('/sales/clerk/login')
+            return redirect('/sales/clerk/login_wx')
         else:
             return render(request, 'sale/scan.html', {
                 'lib_path': lib_path
@@ -420,7 +420,7 @@ def sale_test(request):
     if request.method == 'POST':
         try:
             if not request.session.__contains__('clerk_id'):
-                return redirect('/sales/clerk/login')
+                return redirect('/sales/clerk/login_wx')
             else:
                 para = request.POST
 

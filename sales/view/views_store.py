@@ -30,7 +30,7 @@ def stores(request):
     elif request.method == 'GET':
         try:
             if not request.session.__contains__('shopkeeper_id'):
-                return redirect('/sales/shopkeeper/login')
+                return redirect('/sales/shopkeeper/login_wx')
             else:
                 business_id = request.session['shopkeeper_id']
                 results = Shop.objects.filter(business_id=business_id)
@@ -48,7 +48,7 @@ def store_add(request):
     if request.method == 'GET':
         try:
             if not request.session.__contains__('shopkeeper_id'):
-                return redirect('/sales/shopkeeper/login')
+                return redirect('/sales/shopkeeper/login_wx')
             else:
                 url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
                 req = urllib2.Request(url=url)
@@ -72,7 +72,7 @@ def store_add(request):
     if request.method == 'POST':
         try:
             if not request.session.__contains__('shopkeeper_id'):
-                return redirect('/sales/shopkeeper/login')
+                return redirect('/sales/shopkeeper/login_wx')
             else:
                 print 'add_store'
                 business_id = request.session['shopkeeper_id']
@@ -183,7 +183,7 @@ def store_info(request):
         try:
             para = request.GET
             if not request.session.__contains__('shopkeeper_id'):
-                return redirect('/sales/shopkeeper/login')
+                return redirect('/sales/shopkeeper/login_wx')
             elif not para.__contains__('store_id'):
                 return redirect('/sales/store/stores')
             else:
@@ -231,7 +231,7 @@ def store_modify(request):
     if request.method == 'POST':
         try:
             if not request.session.__contains__('shopkeeper_id'):
-                return redirect('/sales/shopkeeper/login')
+                return redirect('/sales/shopkeeper/login_wx')
             else:
                 print 'modify store'
 
@@ -362,7 +362,7 @@ def store_modify(request):
         try:
             para = request.GET
             if not request.session.__contains__('shopkeeper_id'):
-                return redirect('/sales/shopkeeper/login')
+                return redirect('/sales/shopkeeper/login_wx')
             elif not para.__contains__('store_id'):
                 return redirect('/sales/store/stores')
             else:

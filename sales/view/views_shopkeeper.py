@@ -124,7 +124,7 @@ def shopkeeper_info(request):
     elif request.method == 'GET':
         try:
             if not request.session.__contains__('shopkeeper_id'):
-                return redirect('/sales/shopkeeper/login')
+                return redirect('/sales/shopkeeper/login_wx')
             else:
                 id = request.session['shopkeeper_id']
                 result = Store.objects.get(id=id)
@@ -149,7 +149,7 @@ def shopkeeper_modify(request):
         para = request.POST
         try:
             if not request.session.__contains__('shopkeeper_id'):
-                return redirect('/sales/shopkeeper/login')
+                return redirect('/sales/shopkeeper/login_wx')
             else:
                 id = request.session['shopkeeper_id']
                 store = para.__getitem__('store')
@@ -176,7 +176,7 @@ def shopkeeper_modify(request):
     elif request.method == 'GET':
         try:
             if not request.session.__contains__('shopkeeper_id'):
-                return redirect('/sales/shopkeeper/login')
+                return redirect('/sales/shopkeeper/login_wx')
             else:
                 id = request.session['shopkeeper_id']
                 result = Store.objects.get(id=id)
@@ -224,7 +224,7 @@ def shopkeeper_reset(request):
 def shopkeeper_sales(request):
     if request.method == 'GET':
         if not request.session.__contains__('shopkeeper_id'):
-            return redirect('/sales/shopkeeper/login')
+            return redirect('/sales/shopkeeper/login_wx')
         else:
             shopkeeper_id = request.session['shopkeeper_id']
             sales = Sale.objects.filter(business_id=shopkeeper_id).order_by("-created_time").values()

@@ -26,7 +26,7 @@ def account_account(request):
     if request.method == 'GET':
         try:
             if not request.session.__contains__('clerk_id'):
-                return redirect('/sales/clerk/login')
+                return redirect('/sales/clerk/login_wx')
             else:
                 clerk_id = request.session['clerk_id']
                 account = Clerk.objects.get(id=clerk_id)
@@ -155,7 +155,7 @@ def account_cash(request):
     if request.method == 'POST':
         para = request.POST
         if not request.session.__contains__('clerk_id'):
-            return redirect('/sales/clerk/login')
+            return redirect('/sales/clerk/login_wx')
         else:
             clerk_id = request.session['clerk_id']
             # if not para.__contains__('money'):
@@ -231,7 +231,7 @@ def account_cash(request):
 def account_record(request):
     if request.method == 'GET':
         if not request.session.__contains__('clerk_id'):
-            return redirect('/sales/clerk/login')
+            return redirect('/sales/clerk/login_wx')
         else:
             clerk_id = request.session['clerk_id']
             records = CashRecord.objects.filter(clerk_id=clerk_id).order_by("-created_time")

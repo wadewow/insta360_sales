@@ -119,7 +119,7 @@ def clerk_info(request):
     elif request.method == 'GET':
         try:
             if not request.session.__contains__('clerk_id'):
-                return redirect('/sales/clerk/login')
+                return redirect('/sales/clerk/login_wx')
             else:
                 id = request.session['clerk_id']
                 result = Clerk.objects.get(id=id)
@@ -157,7 +157,7 @@ def clerk_modify(request):
         para = request.POST
         try:
             if not request.session.__contains__('clerk_id'):
-                return redirect('/sales/clerk/login')
+                return redirect('/sales/clerk/login_wx')
             else:
                 id = request.session['clerk_id']
                 code = para.__getitem__('code')
@@ -184,7 +184,7 @@ def clerk_modify(request):
     elif request.method == 'GET':
         try:
             if not request.session.__contains__('clerk_id'):
-                return redirect('/sales/clerk/login')
+                return redirect('/sales/clerk/login_wx')
             else:
                 id = request.session['clerk_id']
                 result = Clerk.objects.get(id=id)
