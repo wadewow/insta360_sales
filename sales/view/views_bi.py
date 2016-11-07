@@ -24,7 +24,27 @@ sys.setdefaultencoding('utf-8')
 @csrf_exempt
 def bi_stores(request):
     if request.method == 'GET':
-        stores = Shop.objects.all()
+        para = request.GET
+        page = 1
+        if para.__contains__('page'):
+            try:
+                page = int(para.__getitem__('page'))
+            except:
+                page = 1
+        if page < 1:
+            page = 1
+        size = 10
+        stores = Shop.objects.all().order_by('-created_time')
+        total = stores.count()
+        page_total = total / size + (1 if (total % size) > 0 else 0)
+        if page > page_total:
+            page = page_total
+        start = size * (page -1)
+        end = start + size
+        if end >= total:
+            end = total - 1
+        stores = stores[start: end]
+
         for store in stores:
             new_option = {}
             option = json.loads(store.option)
@@ -41,7 +61,13 @@ def bi_stores(request):
                 store.business_id = shopkeeper
             except:
                 pass
+        data = {
+            'total': total,
+            'current_page': page,
+            'page_total': page_total
 
+        }
         return render(request, 'bi/stores.html', {
-            'stores': stores
+            'stores': stores,
+            'data': data
         })

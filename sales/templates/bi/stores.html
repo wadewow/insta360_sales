@@ -11,37 +11,35 @@
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
     <title>Insta360 展台信息</title>
 </head>
-<body style="font-family: 'Microsoft YaHei UI'">
+<body style="font-family: 'Microsoft YaHei UI'; padding:0 20px">
 <table class="mui-table mui-table--bordered">
   <thead>
     <tr>
-      <th>id</th>
+{#      <th>id</th>#}
+      <th>门店名称</th>
       <th>商家名称</th>
       <th>商家姓名</th>
       <th>手机号</th>
-      <th>代码</th>
-      <th>名称</th>
-      <th>网店地址</th>
+{#      <th>代码</th>#}
       <th>线下地址</th>
       <th>配置</th>
-      <th>备注</th>
       <th>展台照片</th>
+      <th>备注</th>
       <th>促销策略</th>
       <th>销售经理</th>
       <th>创建时间</th>
-
+      <th>网店地址</th>
     </tr>
   </thead>
   <tbody>
-  {% for store in stores reversed%}
+  {% for store in stores%}
     <tr>
-      <td>{{ store.id }}</td>
-      <td>{{ store.business_id.store }}</td>
-      <td>{{ store.business_id.name }}</td>
-      <td>{{ store.business_id.phone }}</td>
-      <td>{{ store.code }}</td>
+{#      <td>{{ store.id }}</td>#}
       <td>{{ store.name }}</td>
-      <td><a href="{{ store.online }}" target="_blank">{{ store.online }}</a> </td>
+      <td>{{ store.business_id.store }}</td>
+      <td style="min-width: 70px">{{ store.business_id.name }}</td>
+      <td>{{ store.business_id.phone }}</td>
+{#      <td>{{ store.code }}</td>#}
       <td>{{ store.province }} {{ store.city }} {{ store.location }}</td>
 {#      <td>{{ store.exhibition }}</td>#}
       <td>
@@ -50,7 +48,7 @@
         {% endfor %}
       </td>
 {#      <td>{{ store.machine_serial }}</td>#}
-      <td>{{ store.remark }}</td>
+
 {#      <td>{{ store.agent }}</td>#}
       <td>
           {% for photo in store.photo %}
@@ -59,9 +57,11 @@
               </ul>
           {% endfor %}
       </td>
+      <td>{{ store.remark }}</td>
       <td>{{ store.promotion }}</td>
       <td>{{ store.manager }}</td>
-      <td>{{ store.created_time }}</td>
+      <td style="min-width: 120px">{{ store.created_time }}</td>
+      <td style="max-width: 500px">{% if store.online != 'http://' %}<a href="{{ store.online }}" title="{{ store.online }}"  target="_blank">{{ store.online|truncatechars:40 }}</a>{% endif %}</td>
     </tr>
   {% endfor %}
     <div class="weui-gallery" id="gallery">
@@ -71,6 +71,21 @@
     </div>
   </tbody>
 </table>
+<div class="mui-container-fluid page_tool">
+    <form action="/sales/bi/stores">
+        <a href="/sales/bi/stores?page=1" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
+        <a href="/sales/bi/stores?page={{ data.current_page|add:"-1"}}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">上页</a>
+        <span class="currentPage">{{ data.current_page }}</span> / <span class="totalPage">{{ data.page_total }}</span>
+        <a href="/sales/bi/stores?page={{ data.current_page|add:"1"}}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">下页</a>
+        <a href="/sales/bi/stores?page={{ data.page_total }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">尾页</a>
+        <span>跳转到第</span>
+        <input id="skip" type="number" pattern="[0-9]+" name="page" style="width:70px" class="skip">
+        <span>页</span>
+        <input type="submit" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary" value="GO">
+        <span> 总计 </span><span>{{ data.total }}</span><span> 条</span>
+{#  <input type="hidden" id="total_page" number value="{{ data.page_total }}">#}
+    </form>
+</div>
 </body>
 <script>
     $(function () {

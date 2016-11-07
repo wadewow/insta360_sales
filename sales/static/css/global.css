@@ -2,6 +2,10 @@
     color: red;
 }
 
+body {
+    padding: 0 10px !important;
+}
+
 .highlight {
     color: red;
 }
