@@ -187,10 +187,7 @@ def account_cash(request):
             #     return HttpResponse("余额不足！")
             # else:
             # balance = balance - money
-            account.balance = 0
-            account.bonus = 0
-            account.base = 0
-            account.save()
+
 
 
 
@@ -219,6 +216,10 @@ def account_cash(request):
                 name=clerk.name,
                 phone=clerk.phone
             )
+            account.balance = 0
+            account.bonus = 0
+            account.base = 0
+            account.save()
             return JsonResponse(result, safe=False)
 
 

@@ -2,9 +2,88 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>Insta360 展台信息</title>
 </head>
 <body>
-$END$
+<table class="mui-table mui-table--bordered">
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>商家名称</th>
+      <th>商家姓名</th>
+      <th>手机号</th>
+      <th>代码</th>
+      <th>名称</th>
+      <th>网店地址</th>
+      <th>线下地址</th>
+      <th>配置</th>
+      <th>备注</th>
+      <th>展台照片</th>
+      <th>促销策略</th>
+      <th>销售经理</th>
+      <th>创建时间</th>
+
+    </tr>
+  </thead>
+  <tbody>
+  {% for store in stores reversed%}
+    <tr>
+      <td>{{ store.id }}</td>
+      <td>{{ store.business_id.store }}</td>
+      <td>{{ store.business_id.name }}</td>
+      <td>{{ store.business_id.phone }}</td>
+      <td>{{ store.code }}</td>
+      <td>{{ store.name }}</td>
+      <td>{{ store.online }}</td>
+      <td>{{ store.province }} {{ store.city }} {{ store.location }}</td>
+{#      <td>{{ store.exhibition }}</td>#}
+      <td>
+        {% for key, value in store.option.items %}
+          <span>{% if value == "true" %}{{ key }}{% endif %} </span>
+        {% endfor %}
+      </td>
+{#      <td>{{ store.machine_serial }}</td>#}
+      <td>{{ store.remark }}</td>
+{#      <td>{{ store.agent }}</td>#}
+      <td>
+          {% for photo in store.photo %}
+              <ul class="weui-uploader__files uploaderFiles" id="uploaderFiles" style="margin-bottom:0;min-width:270px">
+                <li class="weui-uploader__file" style="background-image:url({{ photo }})"></li>
+              </ul>
+          {% endfor %}
+      </td>
+      <td>{{ store.promotion }}</td>
+      <td>{{ store.manager }}</td>
+      <td>{{ store.created_time }}</td>
+    </tr>
+  {% endfor %}
+    <div class="weui-gallery" id="gallery">
+        <span class="weui-gallery__img" id="galleryImg" style=""></span>
+        <div class="weui-gallery__opr">
+        </div>
+    </div>
+  </tbody>
+</table>
 </body>
+<script>
+    $(function () {
+        $gallery = $("#gallery");
+        $galleryImg = $("#galleryImg");
+        $uploaderFiles = $(".uploaderFiles");
+        $uploaderFiles.on("click", "li", function(){
+            $galleryImg.attr("style", this.getAttribute("style"));
+            $gallery.fadeIn(100);
+        });
+        $gallery.on("click", function(){
+            $gallery.fadeOut(100);
+        });
+    });
+</script>
 </html>

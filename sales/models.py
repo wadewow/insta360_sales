@@ -13,6 +13,7 @@ class Store(models.Model):
     manager = models.CharField(max_length=200,blank=True)
     created_time = models.DateTimeField(auto_now_add=True)
     pwd = models.CharField(max_length=200, blank=True)
+    openid = models.CharField(max_length=200, blank=True)
 
     def __unicode__(self):
         return str(self.id)
@@ -50,6 +51,7 @@ class Clerk(models.Model):
     balance = models.FloatField(default=0.0)
     promotion = models.CharField(max_length=200, blank=True)
     pwd = models.CharField(max_length=200, blank=True)
+    openid = models.CharField(max_length=200, blank=True)
 
     def __unicode__(self):
         return str(self.id)

@@ -1,6 +1,10 @@
 # coding=utf-8
 
 from random import Random
+import urllib
+import urllib2
+import json
+from wx_option import option
 
 def getCode(n):
     code = ''
@@ -31,3 +35,24 @@ def calBonus(bm, bm1, bm2, bonus, bonus1, bonus2, num):
     elif num > bm2:
         total += (bm1 - bm) * bonus + (bm2 - bm1) * bonus1 + (num - bm2) * bonus2
     return total
+
+
+def getOpenid(code):
+    url = 'https://api.weixin.qq.com/sns/oauth2/access_token'
+    values = {
+        'appid': option['appid'],
+        'secret': option['secret'],
+        'code': code,
+        'grant_type': 'authorization_code',
+    }
+    data = urllib.urlencode(values)
+    req = urllib2.Request(url, data=data)
+    res_data = urllib2.urlopen(req)
+    res = res_data.read()
+    res = json.loads(res)
+
+    try:
+        openid = res['openid']
+    except:
+        openid = ''
+    return openid

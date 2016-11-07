@@ -7,6 +7,7 @@
     <meta name="renderer" content="webkit">
     <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
     <script src="//cdn.bootcss.com/h5Validate/0.9.0/jquery.h5validate.min.js"></script>
+    <script src="/static/js/util.js"></script>
     <link rel="stylesheet" href="/static/css/global.css"/>
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
     <title>商家登录</title>
@@ -53,13 +54,14 @@
         $('form').h5Validate({
             errorClass: 'invalid'
         });
-
+        wx_code = getQueryString('code');
         form.submit(function(){
             result = form.h5Validate('allValid');
             if (!result) {
                 return false;
             }
             data = $('form#login').serialize();
+            data += '&wx_code='+ wx_code;
             $.post("/sales/shopkeeper/login", data, function(data,status){
 
               console.log("Data: " + data + "\nStatus: " + status);

@@ -12,6 +12,8 @@ from view.views_manager import *
 from view.views_account import *
 from view.views_promotion import *
 from view.views_service import *
+from view.views_bi import *
+from .util.wx_option import option
 
 import json
 import sys
@@ -71,8 +73,8 @@ def weixin(request):
             url = "https://api.weixin.qq.com/cgi-bin/token"
             values = {
                 'grant_type' : 'client_credential',
-                'appid': 'wx9c9c45a70bb3da47',
-                'secret': '3e8850494ea778835940955f02d71047'
+                'appid': option['appid'],
+                'secret': option['secret']
             }
             data = urllib.urlencode(values)
             req = urllib2.Request(url, data=data)
@@ -114,7 +116,7 @@ def weixin(request):
         signature = 'jsapi_ticket='+jsapi_ticket+'&noncestr='+noncestr+'&timestamp='+timestamp+'&url='+url
         signature = hashlib.sha1(signature).hexdigest()
         config = {
-            'appId': 'wx9c9c45a70bb3da47',
+            'appId': option['appid'],
             'timestamp': timestamp,
             'nonceStr': noncestr,
             'signature': signature,
@@ -168,14 +170,15 @@ def import_sale_nano(request):
         csvfile.close()
         return HttpResponse('finished')
 
-
 @csrf_exempt
 def QR_code(request):
     return render(request, 'clerk/QR_code.html', {})
 
-
-
-
 @csrf_exempt
 def test(request):
     return render(request, 'test.html', {})
+
+@csrf_exempt
+def test1(request):
+    return render(request, 'test/test1.html', {})
+

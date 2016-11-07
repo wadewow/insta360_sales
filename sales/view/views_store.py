@@ -68,7 +68,7 @@ def store_add(request):
                 return redirect('/sales/shopkeeper/login')
             else:
                 print 'add_store'
-                business_id = request.sessio['shopkeeper_id']
+                business_id = request.session['shopkeeper_id']
                 print business_id
                 para = request.POST
                 print para.keys()
@@ -187,7 +187,7 @@ def store_info(request):
                     first = para.__getitem__('first')
                 result = Shop.objects.get(id=store_id)
                 business_id = result.business_id
-                if request.session['shopkeeper_id'] != business_id:
+                if request.session['shopkeeper_id'] != int(business_id):
                     return redirect('/sales/store/stores')
                 photo_join = result.photo
                 photos = photo_join.split(':')
@@ -368,7 +368,7 @@ def store_modify(request):
                 store_id = para.__getitem__('store_id')
                 result = Shop.objects.get(id=store_id)
                 business_id = result.business_id
-                if request.session['shopkeeper_id'] != business_id:
+                if request.session['shopkeeper_id'] != int(business_id):
                     return redirect('/sales/store/stores')
                 option = json.loads(result.option)
                 print option

@@ -8,6 +8,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password, check_password
 from ..models import Clerk
 from ..models import Shop
+from ..util.util import getOpenid
+from ..util.wx_option import option
+
 import sys
 
 reload(sys)
@@ -27,22 +30,28 @@ def clerk_register(request):
             password = para.__getitem__('password')
             phone = para.__getitem__('phone')
             code = para.__getitem__('code')
+            wx_code = para.__getitem__('wx_code')
+
 
             try:
                 store = Shop.objects.get(code=code)
             except:
                 return HttpResponse('代码错误，请联系商家！')
 
+            openid = ''
+            if wx_code != '':
+                openid = getOpenid(wx_code)
+
             clerk_info = {
                 'store_id': store.id,
                 'name': name,
                 'password': make_password(password),
                 'phone': phone,
-                'pwd': password
+                'pwd': password,
+                'openid': openid
             }
             result = Clerk.objects.get_or_create(phone=phone,
                                                  defaults=clerk_info)
-            print result
             if result[1]:
                 clerk = result[0]
                 request.session['clerk_id'] = clerk.id
@@ -54,18 +63,36 @@ def clerk_register(request):
 
 
 @csrf_exempt
+def clerk_register_wx(request):
+    redirect_uri = 'http://' + option['domain'] + '/sales/clerk/register'
+    url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + option['appid'] + '&redirect_uri=' + redirect_uri + '&response_type=code&scope=snsapi_base&#wechat_redirect'
+    return redirect(url)
+
+@csrf_exempt
+def clerk_login_wx(request):
+    redirect_uri = 'http://' + option['domain'] + '/sales/clerk/login'
+    url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + option['appid'] + '&redirect_uri=' + redirect_uri + '&response_type=code&scope=snsapi_base&#wechat_redirect'
+    return redirect(url)
+
+@csrf_exempt
 def clerk_login(request):
     if request.method == 'POST':
         para = request.POST
         try:
             phone = para.__getitem__('phone')
             password = para.__getitem__('password')
+            wx_code = para.__getitem__('wx_code')
             try:
                 result = Clerk.objects.get(phone=phone)
                 is_valid = check_password(password, result.password)
                 if is_valid:
                     id = result.id
                     request.session['clerk_id'] = id
+                    if wx_code != '':
+                        openid = getOpenid(wx_code)
+                        if openid != '':
+                            result.openid = openid
+                            result.save()
                     return HttpResponse('success')
                 else:
                     return HttpResponse('密码错误！')

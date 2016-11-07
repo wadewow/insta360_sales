@@ -12,7 +12,9 @@ urlpatterns = [
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/favicon.ico')),
 
     url(r'^shopkeeper/register$', views.shopkeeper_register, name='shopkeeper_register'),
+    url(r'^shopkeeper/register_wx$', views.shopkeeper_register_wx, name='shopkeeper_register_wx'),
     url(r'^shopkeeper/login$', views.shopkeeper_login, name='shopkeeper_login'),
+    url(r'^shopkeeper/login_wx$', views.shopkeeper_login_wx, name='shopkeeper_login_wx'),
     url(r'^shopkeeper/info$', views.shopkeeper_info, name='shopkeeper_info'),
     url(r'^shopkeeper/modify$', views.shopkeeper_modify, name='shopkeeper_modify'),
     url(r'^shopkeeper/reset$', views.shopkeeper_reset, name='shopkeeper_reset'),
@@ -28,7 +30,9 @@ urlpatterns = [
     url(r'^logout$', views.logout, name='logout'),
 
     url(r'^clerk/register$', views.clerk_register, name='clerk_register'),
+    url(r'^clerk/register_wx$', views.clerk_register_wx, name='clerk_register_wx'),
     url(r'^clerk/login$', views.clerk_login, name='clerk_login'),
+    url(r'^clerk/login_wx$', views.clerk_login_wx, name='clerk_login_wx'),
     url(r'^clerk/info$', views.clerk_info, name='clerk_info'),
     url(r'^clerk/modify$', views.clerk_modify, name='clerk_modify'),
     url(r'^clerk/reset$', views.clerk_reset, name='clerk_reset'),
@@ -47,20 +51,24 @@ urlpatterns = [
     # url(r'^manager/shopkeeper_info', views.manager_shopkeeper_info, name='manager_shopkeeper_info'),
     url(r'^manager/modify_store$', views.manager_modify_store, name='manager_modify_store'),
 
-    url(r'^promotion/store_filter', views.store_filter, name='store_filter'),
+    url(r'^promotion/store_filter$', views.store_filter, name='store_filter'),
 
-    url(r'^cash_query', views.cash_query, name='cash_query'),
-    url(r'^service_cash', views.service_cash, name='service_cash'),
+    url(r'^cash_query$', views.cash_query, name='cash_query'),
+    url(r'^service_cash$', views.service_cash, name='service_cash'),
 
     url(r'^guide$', views.sale_guide, name='sale_guide'),
 
-    url(r'^weixin', views.weixin, name='weixin'),
+    url(r'^weixin$', views.weixin, name='weixin'),
 
-    url(r'^upload_pic', views.upload_pic, name='upload_pic'),
+    url(r'^upload_pic$', views.upload_pic, name='upload_pic'),
 
-    url(r'^QR_code', views.QR_code, name='QR_code'),
+    url(r'^QR_code$', views.QR_code, name='QR_code'),
 
-    url(r'^test', views.test, name='test'),
+    url(r'^test$', views.test, name='test'),
+    url(r'^test1$', views.test1, name='test1'),
+
+    url(r'^bi/stores$', views.bi_stores, name='bi_stores'),
+
 
 
 

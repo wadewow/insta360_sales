@@ -6,7 +6,8 @@ from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password, check_password
-
+from ..util.wx_option import option
+from ..util.util import getOpenid
 from ..models import Store
 
 from ..models import Sale
@@ -31,12 +32,18 @@ def shopkeeper_register(request):
             name =  para.__getitem__('name')
             password = para.__getitem__('password')
             phone = para.__getitem__('phone')
+            wx_code = para.__getitem__('wx_code')
+            openid = ''
+            if wx_code != '':
+                openid = getOpenid(wx_code)
+
             store_info = {
                 'store': store,
                 'name': name,
                 'password': make_password(password),
                 'phone': phone,
-                'pwd': password
+                'pwd': password,
+                'openid': openid
             }
             result = Store.objects.get_or_create(phone=phone,
                                                  defaults=store_info)
@@ -51,18 +58,37 @@ def shopkeeper_register(request):
 
 
 @csrf_exempt
+def shopkeeper_register_wx(request):
+    redirect_uri = 'http://' + option['domain'] + '/sales/shopkeeper/register'
+    url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + option['appid'] + '&redirect_uri=' + redirect_uri + '&response_type=code&scope=snsapi_base&#wechat_redirect'
+    return redirect(url)
+
+@csrf_exempt
+def shopkeeper_login_wx(request):
+    redirect_uri = 'http://' + option['domain'] + '/sales/shopkeeper/login'
+    url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + option['appid'] + '&redirect_uri=' + redirect_uri + '&response_type=code&scope=snsapi_base&#wechat_redirect'
+    return redirect(url)
+
+
+@csrf_exempt
 def shopkeeper_login(request):
     if request.method == 'POST':
         para = request.POST
         try:
             phone = para.__getitem__('phone')
             password = para.__getitem__('password')
+            wx_code = para.__getitem__('wx_code')
             try:
                 result = Store.objects.get(phone=phone)
                 is_valid = check_password(password, result.password)
                 if is_valid:
                     id = result.id
                     request.session['shopkeeper_id'] = id
+                    if wx_code != '':
+                        openid = getOpenid(wx_code)
+                        if openid != '':
+                            result.openid = openid
+                            result.save()
                     return HttpResponse('success')
                 else:
                     return HttpResponse('密码错误！')
