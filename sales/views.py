@@ -171,6 +171,19 @@ def import_sale_nano(request):
         return HttpResponse('finished')
 
 @csrf_exempt
+def query_ex(request):
+    if request.method == 'GET':
+        para = request.GET
+        if not para.__contains__('serial_number'):
+            return HttpResponse('Missing serial_number')
+        serial_number = para.__getitem__('serial_number')
+        try:
+            Exhibition.objects.get(id=serial_number)
+        except:
+            return HttpResponse('Exhibition does not exists')
+        return HttpResponse('Exhibition exists')
+
+@csrf_exempt
 def QR_code(request):
     return render(request, 'clerk/QR_code.html', {})
 

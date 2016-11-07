@@ -102,7 +102,6 @@ def store_add(request):
                 except:
                     return HttpResponse('销售经理编号无效！')
 
-
                 option = {}
                 for index, item in enumerate(dict):
                     if para.__contains__(item):
@@ -110,7 +109,7 @@ def store_add(request):
                         option[item] = value
                 print option
                 code = getCode(6)
-                codes = Shop.objects.all().values_list("code").distinct()
+                codes = Shop.objects.all().values_list("code", flat=True).distinct()
                 while code in codes:
                     code = getCode(6)
 

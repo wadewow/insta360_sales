@@ -37,6 +37,12 @@ def shopkeeper_register(request):
             if wx_code != '':
                 openid = getOpenid(wx_code)
 
+            stores = Store.objects.all().values_list("store", flat=True).distinct()
+            print store
+            print type(store)
+            print stores
+            if store in stores:
+                return HttpResponse('该商家公司名称已被占用！')
             store_info = {
                 'store': store,
                 'name': name,
@@ -79,7 +85,10 @@ def shopkeeper_login(request):
             password = para.__getitem__('password')
             wx_code = para.__getitem__('wx_code')
             try:
-                result = Store.objects.get(phone=phone)
+                try:
+                    result = Store.objects.get(phone=phone)
+                except ObjectDoesNotExist:
+                    result = Store.objects.get(store=phone)
                 is_valid = check_password(password, result.password)
                 if is_valid:
                     id = result.id
@@ -139,6 +148,9 @@ def shopkeeper_modify(request):
                 name = para.__getitem__('name')
                 phone = para.__getitem__('phone')
 
+                stores = Store.objects.exclude(id=id).values_list("store", flat=True).distinct()
+                if store in stores:
+                    return HttpResponse('该商家公司名称已被占用！')
                 try:
                     result = Store.objects.filter(id=id).update(
                         store=store,

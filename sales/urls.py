@@ -66,6 +66,8 @@ urlpatterns = [
     url(r'^test$', views.test, name='test'),
     url(r'^test1$', views.test1, name='test1'),
 
+    url(r'^util/query_ex$', views.query_ex, name='query_ex'),
+
     url(r'^bi/stores$', views.bi_stores, name='bi_stores'),
 
 

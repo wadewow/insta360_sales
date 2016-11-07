@@ -192,7 +192,7 @@ def account_cash(request):
 
 
             code = getCode1(8)
-            codes = CashRecord.objects.all().values_list("code").distinct()
+            codes = CashRecord.objects.all().values_list("code", flat=True).distinct()
             while code in codes:
                 code = getCode1(8)
 
