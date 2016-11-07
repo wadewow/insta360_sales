@@ -56,9 +56,15 @@ def bi_stores(request):
             photos = photo_join.split(':')
             store.photo = photos
             business_id = store.business_id
+            manager_id = store.manager
             try:
                 shopkeeper = Store.objects.get(id=business_id)
                 store.business_id = shopkeeper
+            except:
+                pass
+            try:
+                manager = Manager.objects.get(id=manager_id)
+                store.manager = manager
             except:
                 pass
         data = {
