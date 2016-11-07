@@ -13,6 +13,7 @@ from ..models import Exhibition
 from ..models import Manager
 from ..util.util import getCode
 from ..util.option import dict
+from ..util.option import lib_path
 from PIL import Image
 
 import json
@@ -34,10 +35,13 @@ def stores(request):
                 business_id = request.session['shopkeeper_id']
                 results = Shop.objects.filter(business_id=business_id)
                 return render(request, 'store/stores.html', {
-                    "store_list" : results
+                    "store_list" : results,
+                    'lib_path': lib_path
                 })
         except:
-            return render(request, 'shopkeeper/login.html', {})
+            return render(request, 'shopkeeper/login.html', {
+                'lib_path': lib_path
+            })
 
 @csrf_exempt
 def store_add(request):
@@ -57,10 +61,13 @@ def store_add(request):
                 option = dict
                 return render(request, 'store/add_store.html', {
                     "options": option,
-                    "agent_list": agent_list
+                    "agent_list": agent_list,
+                    'lib_path': lib_path
                 })
         except:
-            return render(request, 'shopkeeper/login.html', {})
+            return render(request, 'shopkeeper/login.html', {
+                'lib_path': lib_path
+            })
 
     if request.method == 'POST':
         try:
@@ -209,10 +216,13 @@ def store_info(request):
                         'machine_serial': result.machine_serial,
                         'agent': result.agent,
                         'manager': result.manager
-                    }
+                    },
+                    'lib_path': lib_path
                 })
         except:
-            return render(request, 'shopkeeper/login.html', {})
+            return render(request, 'shopkeeper/login.html', {
+                'lib_path': lib_path
+            })
 
 
 
@@ -387,10 +397,13 @@ def store_modify(request):
                         'manager': result.manager
                     },
                     "options": dict,
-                    "agent_list": agent_list
+                    "agent_list": agent_list,
+                    'lib_path': lib_path
                 })
         except:
-            return render(request, 'shopkeeper/login.html', {})
+            return render(request, 'shopkeeper/login.html', {
+                'lib_path': lib_path
+            })
 
 
 @csrf_exempt

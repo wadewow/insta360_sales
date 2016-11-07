@@ -5,7 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
-
+from ..util.option import lib_path
 from ..models import Store
 
 from ..models import Shop
@@ -26,7 +26,8 @@ def store_filter(request):
         store_list = Shop.objects.all()
         if keyword == '':
             return render(request, 'promotion/store_filter.html', {
-                'store_list': store_list
+                'store_list': store_list,
+                'lib_path': lib_path
             })
         type = para.get('type', 'store')
         if type == 'store':
@@ -40,5 +41,6 @@ def store_filter(request):
             store_list = store_list.filter(business_id__in=id_list)
 
         return render(request, 'promotion/store_filter.html', {
-            'store_list': store_list
+            'store_list': store_list,
+            'lib_path': lib_path
         })

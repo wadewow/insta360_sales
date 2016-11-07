@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password, check_password
 from ..util.wx_option import option
 from ..util.util import getOpenid
+from ..util.option import lib_path
 from ..models import Store
 
 from ..models import Sale
@@ -23,7 +24,9 @@ sys.setdefaultencoding('utf-8')
 @csrf_exempt
 def shopkeeper_register(request):
     if request.method == 'GET':
-        return render(request, 'shopkeeper/register.html', {})
+        return render(request, 'shopkeeper/register.html', {
+            'lib_path': lib_path
+        })
 
     if request.method == 'POST':
         para = request.POST
@@ -109,7 +112,9 @@ def shopkeeper_login(request):
         if request.session.__contains__('shopkeeper_id'):
             return redirect('/sales/shopkeeper/info')
         else:
-            return render(request, 'shopkeeper/login.html', {})
+            return render(request, 'shopkeeper/login.html', {
+                'lib_path': lib_path
+            })
 
 
 @csrf_exempt
@@ -128,10 +133,13 @@ def shopkeeper_info(request):
                         'store': result.store,
                         'name': result.name,
                         'phone': result.phone,
-                    }
+                    },
+                    'lib_path': lib_path
                 })
         except:
-            return render(request, 'shopkeeper/login.html', {})
+            return render(request, 'shopkeeper/login.html', {
+                'lib_path': lib_path
+            })
 
 
 
@@ -177,16 +185,21 @@ def shopkeeper_modify(request):
                         'store': result.store,
                         'name': result.name,
                         'phone': result.phone,
-                    }
+                    },
+                    'lib_path': lib_path
                 })
         except:
-            return render(request, 'shopkeeper/login.html', {})
+            return render(request, 'shopkeeper/login.html', {
+                'lib_path': lib_path
+            })
 
 
 @csrf_exempt
 def shopkeeper_reset(request):
     if request.method == 'GET':
-        return render(request, 'shopkeeper/reset.html', {})
+        return render(request, 'shopkeeper/reset.html', {
+            'lib_path': lib_path
+        })
 
     if request.method == 'POST':
         para = request.POST
@@ -231,5 +244,6 @@ def shopkeeper_sales(request):
                 sale['store_code'] = store_code
 
             return render(request, 'shopkeeper/sales.html', {
-                'sale_list': sales
+                'sale_list': sales,
+                'lib_path': lib_path
             })

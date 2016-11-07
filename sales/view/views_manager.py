@@ -10,6 +10,7 @@ from ..models import Manager
 from ..models import Shop
 from ..models import Exhibition
 from ..util.option import dict
+from ..util.option import lib_path
 
 import json
 import os
@@ -25,7 +26,9 @@ sys.setdefaultencoding('utf-8')
 @csrf_exempt
 def manager_login(request):
     if request.method == 'GET':
-        return render(request, 'manager/login.html', {})
+        return render(request, 'manager/login.html', {
+            'lib_path': lib_path
+        })
 
     if request.method == 'POST':
         para = request.POST
@@ -80,7 +83,8 @@ def manager_list(request):
                     new_option[n] = option[item]
                 store.option = new_option
             return render(request, 'manager/list.html', {
-                'store_list': store_list
+                'store_list': store_list,
+                'lib_path': lib_path
             })
 
 
@@ -240,7 +244,10 @@ def manager_modify_store(request):
                         'manager': result.manager
                     },
                     "options": dict,
-                    "agent_list": agent_list
+                    "agent_list": agent_list,
+                    'lib_path': lib_path
                 })
         except:
-            return render(request, 'manager/login.html', {})
+            return render(request, 'manager/login.html', {
+                'lib_path': lib_path
+            })

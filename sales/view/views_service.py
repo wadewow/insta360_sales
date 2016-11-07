@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
-
+from ..util.option import lib_path
 from ..models import CashRecord
 
 
@@ -25,17 +25,20 @@ def cash_query(request):
             record = CashRecord.objects.get(code=code)
         except ObjectDoesNotExist:
             return render(request, 'service/cash_query.html', {
-                'exsit': 0
+                'exsit': 0,
+                'lib_path': lib_path
             })
 
 
         return render(request, 'service/cash_query.html', {
             'exsit': 1,
-            'record': record
+            'record': record,
+            'lib_path': lib_path
         })
 
     elif request.method == 'GET':
         return render(request, 'service/cash_query.html', {
+            'lib_path': lib_path
         })
 
 @csrf_exempt
@@ -52,13 +55,15 @@ def service_cash(request):
             record = CashRecord.objects.get(id=id)
         except ObjectDoesNotExist:
             return render(request, 'service/cash_query.html', {
-                'exsit': 0
+                'exsit': 0,
+                'lib_path': lib_path
             })
         record.wechat = wechat
         record.save()
 
         return render(request, 'service/cash_query.html', {
             'exsit': 1,
-            'record': record
+            'record': record,
+            'lib_path': lib_path
         })
 

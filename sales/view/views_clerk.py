@@ -10,6 +10,7 @@ from ..models import Clerk
 from ..models import Shop
 from ..util.util import getOpenid
 from ..util.wx_option import option
+from ..util.option import lib_path
 
 import sys
 
@@ -20,7 +21,9 @@ sys.setdefaultencoding('utf-8')
 @csrf_exempt
 def clerk_register(request):
     if request.method == 'GET':
-        return render(request, 'clerk/register.html', {})
+        return render(request, 'clerk/register.html', {
+            'lib_path': lib_path
+        })
 
     if request.method == 'POST':
 
@@ -104,7 +107,9 @@ def clerk_login(request):
         if request.session.__contains__('clerk_id'):
             return redirect('/sales/clerk/info')
         else:
-            return render(request, 'clerk/login.html', {})
+            return render(request, 'clerk/login.html', {
+                'lib_path': lib_path
+            })
 
 
 @csrf_exempt
@@ -127,7 +132,8 @@ def clerk_info(request):
                             'name': result.name,
                             'phone': result.phone,
                             'code': ''
-                        }
+                        },
+                        'lib_path': lib_path
                     })
                 return render(request, 'clerk/info.html', {
                     'clerk_info': {
@@ -135,10 +141,13 @@ def clerk_info(request):
                         'name': result.name,
                         'phone': result.phone,
                         'code': store.code
-                    }
+                    },
+                    'lib_path': lib_path
                 })
         except:
-            return render(request, 'clerk/login.html', {})
+            return render(request, 'clerk/login.html', {
+                'lib_path': lib_path
+            })
 
 
 
@@ -187,17 +196,21 @@ def clerk_modify(request):
                             'code': '',
                             'name': result.name,
                             'phone': result.phone
-                        }
+                        },
+                        'lib_path': lib_path
                     })
                 return render(request, 'clerk/modify.html', {
                     'clerk_info': {
                         'code': store.code,
                         'name': result.name,
                         'phone': result.phone
-                    }
+                    },
+                    'lib_path': lib_path
                 })
         except:
-            return render(request, 'clerk/login.html', {})
+            return render(request, 'clerk/login.html', {
+                'lib_path': lib_path
+            })
 
 
 
@@ -205,7 +218,9 @@ def clerk_modify(request):
 @csrf_exempt
 def clerk_reset(request):
     if request.method == 'GET':
-        return render(request, 'clerk/reset.html', {})
+        return render(request, 'clerk/reset.html', {
+            'lib_path': lib_path
+        })
 
     if request.method == 'POST':
         para = request.POST

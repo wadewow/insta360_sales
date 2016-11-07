@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+from ..util.option import lib_path
 
 from ..models import Clerk
 from ..models import Sale
@@ -30,7 +31,9 @@ def sale_scan(request):
         if not request.session.__contains__('clerk_id'):
             return redirect('/sales/clerk/login')
         else:
-            return render(request, 'sale/scan.html', {})
+            return render(request, 'sale/scan.html', {
+                'lib_path': lib_path
+            })
 
     if request.method == 'POST':
         try:
@@ -233,10 +236,13 @@ def sale_sales(request):
                     sale['invalid'] = invalid
 
                 return render(request, 'sale/sales.html', {
-                    'sale_list': sales
+                    'sale_list': sales,
+                    'lib_path': lib_path
                 })
         except:
-            return render(request, 'clerk/login.html', {})
+            return render(request, 'clerk/login.html', {
+                'lib_path': lib_path
+            })
 
 #
 # @csrf_exempt
@@ -245,7 +251,8 @@ def sale_sales(request):
 #         if not request.session.__contains__('clerk_id'):
 #             return redirect('/sales/clerk/login')
 #         else:
-#             return render(request, 'sale/scan.html', {})
+#             return render(request, 'sale/scan.html', {
+# 'lib_path': lib_path})
 #
 #     if request.method == 'POST':
 #         try:
@@ -406,7 +413,9 @@ def sale_test(request):
         if not request.session.__contains__('clerk_id'):
             return redirect('/sales/clerk/login')
         else:
-            return render(request, 'sale/scan.html', {})
+            return render(request, 'sale/scan.html', {
+                'lib_path': lib_path
+            })
 
     if request.method == 'POST':
         try:

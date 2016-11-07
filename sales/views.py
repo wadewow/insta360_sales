@@ -14,6 +14,7 @@ from view.views_promotion import *
 from view.views_service import *
 from view.views_bi import *
 from .util.wx_option import option
+from .util.option import lib_path
 
 import json
 import sys
@@ -145,7 +146,8 @@ def import_manager(request):
             Manager.objects.update_or_create(id=temp)
 
         return HttpResponse('finish')
-    # return render(request, 'test/test.html', {})
+    # return render(request, 'test/test.html', {
+        # 'lib_path': lib_path})
 
 
 @csrf_exempt
@@ -185,13 +187,19 @@ def query_ex(request):
 
 @csrf_exempt
 def QR_code(request):
-    return render(request, 'clerk/QR_code.html', {})
+    return render(request, 'clerk/QR_code.html', {
+        'lib_path': lib_path
+    })
 
 @csrf_exempt
 def test(request):
-    return render(request, 'test.html', {})
+    return render(request, 'test.html', {
+        'lib_path': lib_path
+    })
 
 @csrf_exempt
 def test1(request):
-    return render(request, 'test/test1.html', {})
+    return render(request, 'test/test1.html', {
+        'lib_path': lib_path
+    })
 

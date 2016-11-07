@@ -10,6 +10,7 @@ from ..models import Manager
 from ..models import Shop
 from ..models import Store
 from ..util.option import dict
+from ..util.option import lib_path
 
 import json
 import os
@@ -75,5 +76,6 @@ def bi_stores(request):
         }
         return render(request, 'bi/stores.html', {
             'stores': stores,
-            'data': data
+            'data': data,
+            'lib_path': lib_path
         })

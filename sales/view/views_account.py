@@ -12,6 +12,7 @@ from ..models import Promotion
 from ..models import CashRecord
 from ..util.util import getCode1
 from ..util.util import calBonus
+from ..util.option import lib_path
 
 import sys
 
@@ -133,10 +134,13 @@ def account_account(request):
                     'achieve_benchmark': achieve_benchmark,
                     'achieve_bonus': achieve_bonus,
                     'next_benchmark': next_benchmark,
-                    'next_bonus': next_bonus
+                    'next_bonus': next_bonus,
+                    'lib_path': lib_path
                 })
         except:
-            return render(request, 'clerk/login.html', {})
+            return render(request, 'clerk/login.html', {
+                'lib_path': lib_path
+            })
     if request.method == 'POST':
         return HttpResponse('post')
 
@@ -232,7 +236,8 @@ def account_record(request):
             clerk_id = request.session['clerk_id']
             records = CashRecord.objects.filter(clerk_id=clerk_id).order_by("-created_time")
             return render(request, 'clerk/records.html', {
-                'records': records
+                'records': records,
+                'lib_path': lib_path
             })
 
     if request.method == 'POST':
