@@ -303,14 +303,14 @@ def sale_guide(request):
                     result['status'] = 1
 
                     website = shop.online
-                    if ('taobao.com' in website) or ('tmall.com' in website):
-                        result['status'] = 1
-                        info['type'] = 'taobao'
-                        info['website'] = website
-                        result['data'] = info
-                    elif ('jd.com' in website):
+                    if ('jd.com' in website):
                         result['status'] = 1
                         info['type'] = 'jd'
+                        info['website'] = website
+                        result['data'] = info
+                    elif len(website) > 15:
+                        result['status'] = 1
+                        info['type'] = 'taobao'
                         info['website'] = website
                         result['data'] = info
                     else:
@@ -388,14 +388,14 @@ def sale_guide(request):
                             result['status'] = 1
 
                             website = shop.online
-                            if ('taobao.com' in website) or ('tmall.com' in website):
-                                result['status'] = 1
-                                info['type'] = 'taobao'
-                                info['website'] = website
-                                result['data'] = info
-                            elif ('jd.com' in website):
+                            if ('jd.com' in website):
                                 result['status'] = 1
                                 info['type'] = 'jd'
+                                info['website'] = website
+                                result['data'] = info
+                            elif len(website) > 15:
+                                result['status'] = 1
+                                info['type'] = 'taobao'
                                 info['website'] = website
                                 result['data'] = info
                             else:
