@@ -68,6 +68,8 @@ urlpatterns = [
 
     url(r'^util/query_ex$', views.query_ex, name='query_ex'),
 
+    url(r'^util/set_offset$', views.set_offset, name='set_offset'),
+
     url(r'^bi/stores$', views.bi_stores, name='bi_stores'),
     url(r'^bi/sales$', views.bi_sales, name='bi_sales'),
 
