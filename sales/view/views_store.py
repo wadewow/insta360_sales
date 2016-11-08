@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
 from ..models import Shop
 from ..models import Clerk
+from ..models import Store
 from ..models import Promotion
 from ..models import Exhibition
 from ..models import Manager
@@ -33,15 +34,14 @@ def stores(request):
                 return redirect('/sales/shopkeeper/login_wx')
             else:
                 business_id = request.session['shopkeeper_id']
+                Store.objects.get(id=business_id)
                 results = Shop.objects.filter(business_id=business_id)
                 return render(request, 'store/stores.html', {
                     "store_list" : results,
                     'lib_path': lib_path
                 })
         except:
-            return render(request, 'shopkeeper/login.html', {
-                'lib_path': lib_path
-            })
+            return redirect('/sales/shopkeeper/login_wx')
 
 @csrf_exempt
 def store_add(request):

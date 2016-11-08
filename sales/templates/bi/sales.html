@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>Insta360 销售情况</title>
+</head>
+<body style="font-family: 'Microsoft YaHei UI'; padding:0 20px">
+<table class="mui-table mui-table--bordered">
+  <thead>
+    <tr>
+        {#      <th>id</th>#}
+        <th>门店名称</th>
+        <th>商家名称</th>
+        <th>店员姓名</th>
+        <th>手机号</th>
+        {#      <th>代码</th>#}
+        <th>序列号</th>
+        {#      <th>促销策略</th>#}
+        <th>售出时间</th>
+        <th>激活状态</th>
+        <th>状态</th>
+        <th>红包奖励</th>
+        <th>销售经理</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for sale in sales%}
+  {% if sale.show == 1%}
+    <tr>
+{#      <td>{{ sale.id }}</td>#}
+      <td>{{ sale.store.name }}</td>
+      <td>{{ sale.business.store }}</td>
+      <td style="min-width: 70px">{{ sale.clerk.name }}</td>
+      <td>{{ sale.clerk.phone }}</td>
+{#      <td>{{ sale.code }}</td>#}
+{#      <td>{{ sale.exhibition }}</td>#}
+
+      <td>{{ sale.serial_number }}</td>
+
+{#      <td>{{ sale.agent }}</td>#}
+
+{#      <td>{{ sale.remark }}</td>#}
+{#      <td>{{ sale.promotion }}</td>#}
+
+      <td style="min-width: 120px">{{ sale.created_time }}</td>
+      <td>{% if sale.active == 1 %}已激活({{ sale.active_time }}){% else %}未激活{% endif %}</td>
+{#      <td>{% if sale.valid == 1 %}有效{% else %}{% if sale.active == 1 %}超时{% else %}等待激活{% endif %}{% endif %}</td>#}
+      <td>{{ sale.state }}</td>
+      <td>￥{{ sale.base }}</td>
+      <td>{{ sale.store.manager.name }}({{ sale.store.manager.area }})</td>
+    </tr>
+  {% endif %}
+  {% endfor %}
+  </tbody>
+</table>
+<div class="mui-container-fluid page_tool">
+    <form action="/sales/bi/sales">
+        <a href="/sales/bi/sales?page=1" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
+        <a href="/sales/bi/sales?page={{ data.current_page|add:"-1"}}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">上页</a>
+        <span class="currentPage">{{ data.current_page }}</span> / <span class="totalPage">{{ data.page_total }}</span>
+        <a href="/sales/bi/sales?page={{ data.current_page|add:"1"}}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">下页</a>
+        <a href="/sales/bi/sales?page={{ data.page_total }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">尾页</a>
+        <span>跳转到第</span>
+        <input id="skip" type="number" pattern="[0-9]+" name="page" style="width:70px" class="skip">
+        <span>页</span>
+        <input type="submit" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary" value="GO">
+        <span> 总计 </span><span>{{ data.total }}</span><span> 条</span>
+{#  <input type="hidden" id="total_page" number value="{{ data.page_total }}">#}
+    </form>
+</div>
+</body>
+<script>
+</script>
+</html>
