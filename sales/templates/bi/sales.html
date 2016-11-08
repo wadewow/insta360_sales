@@ -12,6 +12,9 @@
     <title>Insta360 销售情况</title>
 </head>
 <body style="font-family: 'Microsoft YaHei UI'; padding:0 20px">
+{% extends "./navigation.html" %}
+{% block title %}销售情况{% endblock %}
+{% block content %}
 <table class="mui-table mui-table--bordered">
   <thead>
     <tr>
@@ -75,6 +78,7 @@
 {#  <input type="hidden" id="total_page" number value="{{ data.page_total }}">#}
     </form>
 </div>
+{% endblock %}
 </body>
 <script>
 </script>

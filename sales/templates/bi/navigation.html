@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet/less" type="text/css" href="{{ lib_path }}/static/less/navigation.less">
+    <script src="//cdn.bootcss.com/less.js/3.0.0-pre.4/less.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <div id="sidedrawer" class="mui--no-user-select">
+    <div id="sidedrawer-brand" class="mui--appbar-line-height">Statistics</div>
+    <div class="mui-divider"></div>
+    <ul>
+      <li>
+          <strong><a href="/sales/bi/stores">门店情况</a></strong>
+      </li>
+      <li>
+          <strong><a href="/sales/bi/sales">销售情况</a></strong>
+      </li>
+    </ul>
+  </div>
+  <header id="header">
+    <div class="mui-appbar mui--appbar-line-height">
+      <div class="mui-container-fluid">
+          {% block title %}{% endblock %}
+      </div>
+    </div>
+  </header>
+  <div id="content-wrapper">
+    <div class="mui--appbar-height">
+    </div>
+    <div class="mui-container-fluid">
+        {% block content %}{% endblock %}
+    </div>
+  </div>
+  <footer id="footer">
+    <div class="mui-container-fluid">
+      <p class="text-right copy-right">Copyright © 2016 Arashi Vision All Rights Reserved.</p>
+    </div>
+  </footer>
+</body>
+
+</html>

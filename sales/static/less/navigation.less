@@ -1,0 +1,192 @@
+  /**
+  * Body CSS
+  */
+
+  html,
+  body {
+    height: 100%;
+    min-width: 850px
+  }
+
+  html,
+  body,
+  input,
+  textarea,
+  buttons {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+  }
+  /**
+  * Layout CSS
+  */
+
+  #header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 2;
+    transition: left 0.2s;
+    min-width: 850px;
+    font-size: 20px;
+  }
+
+  #sidedrawer {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 120px;
+    left: -120px;
+    overflow: auto;
+    z-index: 2;
+    background-color: #fff;
+    transition: transform 0.2s;
+    box-shadow: 1px 0 0 rgba(0, 0, 0, 0.1);
+  }
+
+  #content-wrapper {
+    min-height: 100%;
+    overflow-x: hidden;
+    margin-left: 0;
+    transition: margin-left 0.2s;
+    /* sticky bottom */
+    margin-bottom: -64px;
+    padding-bottom: 64px;
+  }
+
+  #footer {
+    height: 64px;
+    margin-left: 0;
+    transition: margin-left 0.2s;
+  }
+
+  @media (min-width: 768px) {
+    #header {
+      left: 120px;
+    }
+    #sidedrawer {
+      transform: translate(120px);
+    }
+    #content-wrapper {
+      margin-left: 120px;
+    }
+    #footer {
+      margin-left: 120px;
+    }
+    body {
+      &.hide-sidedrawer {
+        #sidedrawer {
+          transform: translate(0px);
+        }
+        #header {
+          left: 0;
+        }
+        #content-wrapper {
+          margin-left: 0;
+        }
+        #footer {
+          margin-left: 0;
+        }
+      }
+    }
+  }
+  /**
+  * Header CSS
+  */
+
+  .sidedrawer-toggle {
+    color: #fff;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 20px;
+    margin-right: 10px;
+    &:hover {
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+  /**
+  * Sidedrawer CSS
+  */
+
+  #sidedrawer-brand {
+    padding-left: 20px;
+    font-size: 20px;
+    font-weight: 400;
+  }
+
+  #sidedrawer {
+    /**
+    * Toggle Sidedrawer
+    */
+    &.active {
+      transform: translate(200px);
+    }
+    ul {
+      list-style: none;
+    }
+    > ul {
+      padding-left: 0;
+      li {
+        > ul {
+          padding-left: 0;
+          display: none;
+          li {
+
+            display: block;
+            cursor: pointer;
+            &:hover {
+              background-color: #E0E0E0;
+            }
+            > a {
+              padding-left: 25px;
+              display: block;
+              width: 100%;
+              min-height: 32px;
+              line-height: 32px;
+              &:hover {
+                text-decoration: none;
+              }
+              &:active {
+                color: #0000FF;
+              }
+            }
+          }
+          .selected {
+            background-color: #E0E0E0;
+          }
+        }
+      }
+      > li:first-child {
+        padding-top: 15px;
+      }
+    }
+    a {
+      display: block;
+      padding: 15px 15px;
+      cursor: pointer;
+      &:hover {
+        background-color: #E0E0E0;
+      }
+
+    }
+    strong + ul > li {
+      padding: 0 0;
+    }
+  }
+  /**
+  * Footer CSS
+  */
+  #footer {
+    background-color: #0288D1;
+    color: #fff;
+    a {
+      color: #fff;
+      text-decoration: underline;
+    }
+    .copy-right {
+      line-height: 64px;
+      margin: 0;
+    }
+  }

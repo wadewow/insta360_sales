@@ -10,8 +10,25 @@
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
     <title>Insta360 展台信息</title>
+    <script>
+    $(function () {
+        $gallery = $("#gallery");
+        $galleryImg = $("#galleryImg");
+        $uploaderFiles = $(".uploaderFiles");
+        $uploaderFiles.on("click", "li", function(){
+            $galleryImg.attr("style", this.getAttribute("style"));
+            $gallery.fadeIn(100);
+        });
+        $gallery.on("click", function(){
+            $gallery.fadeOut(100);
+        });
+    });
+    </script>
 </head>
 <body style="font-family: 'Microsoft YaHei UI'; padding:0 20px">
+{% extends "./navigation.html" %}
+{% block title %}门店情况{% endblock %}
+{% block content %}
 <table class="mui-table mui-table--bordered">
   <thead>
     <tr>
@@ -65,13 +82,14 @@
       <td style="max-width: 500px">{% if store.online != 'http://' %}<a href="{{ store.online }}" title="{{ store.online }}"  target="_blank">{{ store.online|truncatechars:40 }}</a>{% endif %}</td>
     </tr>
   {% endfor %}
-    <div class="weui-gallery" id="gallery">
-        <span class="weui-gallery__img" id="galleryImg" style=""></span>
-        <div class="weui-gallery__opr">
-        </div>
-    </div>
+
   </tbody>
 </table>
+<div class="weui-gallery" id="gallery">
+    <span class="weui-gallery__img" id="galleryImg" style=""></span>
+    <div class="weui-gallery__opr">
+    </div>
+</div>
 <div class="mui-container-fluid page_tool">
     <form action="/sales/bi/stores">
         <a href="/sales/bi/stores?page=1" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
@@ -87,19 +105,7 @@
 {#  <input type="hidden" id="total_page" number value="{{ data.page_total }}">#}
     </form>
 </div>
+{% endblock %}
 </body>
-<script>
-    $(function () {
-        $gallery = $("#gallery");
-        $galleryImg = $("#galleryImg");
-        $uploaderFiles = $(".uploaderFiles");
-        $uploaderFiles.on("click", "li", function(){
-            $galleryImg.attr("style", this.getAttribute("style"));
-            $gallery.fadeIn(100);
-        });
-        $gallery.on("click", function(){
-            $gallery.fadeOut(100);
-        });
-    });
-</script>
+
 </html>

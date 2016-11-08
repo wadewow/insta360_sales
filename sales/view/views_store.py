@@ -20,6 +20,7 @@ from PIL import Image
 import json
 import os
 import time
+import urllib
 import urllib2
 
 
@@ -175,10 +176,29 @@ def store_add(request):
                     agent=agent,
                     manager=manager
                 )
+
                 result = {
                     'result': 'success',
                     'store_id': store.id
                 }
+
+###################################待测试
+                if machine_serial != '':
+                    url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/camera/setOffsetBySerial'
+                    values = {
+                        'serial_number': machine_serial,
+                        'offset': ''
+                    }
+                    try:
+                        data = urllib.urlencode(values)
+                        req = urllib2.Request(url, data=data)
+                        res_data = urllib2.urlopen(req)
+                        res = res_data.read()
+                        res = json.loads(res)
+                        print res
+                    except:
+                        print 'setOffsetBySerial error'
+
                 return JsonResponse(result, safe=False)
         except:
             return HttpResponse('error')

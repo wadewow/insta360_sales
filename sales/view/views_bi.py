@@ -98,7 +98,7 @@ def bi_sales(request):
                 page = 1
         if page < 1:
             page = 1
-        size = 10
+        size = 20
         sales = Sale.objects.filter(created_time__gt='2016-11-05', name='Insta360 Nano').order_by('-created_time')
         total = sales.count()
         page_total = total / size + (1 if (total % size) > 0 else 0)
