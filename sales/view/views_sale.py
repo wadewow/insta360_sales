@@ -308,7 +308,7 @@ def sale_guide(request):
                         info['type'] = 'jd'
                         info['website'] = website
                         result['data'] = info
-                    elif len(website) > 15:
+                    elif len(website) > 10:
                         result['status'] = 1
                         info['type'] = 'taobao'
                         info['website'] = website
@@ -393,7 +393,7 @@ def sale_guide(request):
                                 info['type'] = 'jd'
                                 info['website'] = website
                                 result['data'] = info
-                            elif len(website) > 15:
+                            elif len(website) > 10:
                                 result['status'] = 1
                                 info['type'] = 'taobao'
                                 info['website'] = website

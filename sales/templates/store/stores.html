@@ -43,7 +43,22 @@
             <p><span>门店地址: </span><span>{{ store.province }} {{ store.city }} {{ store.location }}</span></p>
             {% if store.online == "http://" %}{% else %}<p><span>线上网址: </span><span>{{ store.online }}</span></p>
             {% endif %}
+            <p><span>展台编号: </span><span>{{ store.exhibition }}</span></p>
             <p><span>销售经理: </span><span>{{ store.manager }}</span></p>
+            <p><span>奖励幅度: </span></p>
+            <div style="margin-left:1em">
+            <p>订单奖励条件:每台相机扫码后12小时内被用户激活</p>
+            <p>红包奖励:1~10元随机金额/笔</p>
+            {% if store.promotion != '' %}
+                <p><span>门店促销:</span></p>
+                <div style="margin-left:1em">
+                <p>{{ store.promotion_info.start_time }}~{{ store.promotion_info.end_time }}内，门店总订单数达</p>
+                <p>{{ store.promotion_info.benchmark }}~{{ store.promotion_info.benchmark1 }}单，奖励{{ store.promotion_info.bonus }}元/笔</p>
+                <p>{{ store.promotion_info.benchmark1 }}~{{ store.promotion_info.benchmark2 }}单，奖励{{ store.promotion_info.bonus1 }}元/笔</p>
+                <p>{{ store.promotion_info.benchmark2 }}单以上，奖励{{ store.promotion_info.bonus2 }}元/笔</p>
+                </div>
+            {% endif %}
+            </div>
         </div>
         <div class="weui-cell__ft">
         </div>

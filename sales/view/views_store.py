@@ -37,9 +37,17 @@ def stores(request):
             else:
                 business_id = request.session['shopkeeper_id']
                 Store.objects.get(id=business_id)
-                results = Shop.objects.filter(business_id=business_id)
+                stores = Shop.objects.filter(business_id=business_id).values()
+                for store in stores:
+                    promotion_id = store['promotion']
+                    if promotion_id != '':
+                        try:
+                            promotion = Promotion.objects.get(id=promotion_id)
+                            store['promotion_info'] = promotion
+                        except:
+                            store['promotion'] = ''
                 return render(request, 'store/stores.html', {
-                    "store_list" : results,
+                    "store_list" : stores,
                     'lib_path': lib_path
                 })
         except:
