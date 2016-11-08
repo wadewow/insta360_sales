@@ -371,9 +371,16 @@ def store_modify(request):
 
                 res.active = 1
                 res.save()
+                old_machine_serial = ''
+                try:
+                    store = Shop.objects.filter(id=store_id)
+                    s = store.first()
+                    old_machine_serial = s.machine_serial
+                except:
+                    return HttpResponse('fail')
                 if len(path_join) > 0:
                     try:
-                        res = Shop.objects.filter(id=store_id).update(
+                        res = store.update(
                             name=name,
                             online=online,
                             province=province,
@@ -391,7 +398,7 @@ def store_modify(request):
                         return HttpResponse('fail')
                 else:
                     try:
-                        res = Shop.objects.filter(id=store_id).update(
+                        res = store.update(
                             name=name,
                             online=online,
                             province=province,
@@ -413,6 +420,40 @@ def store_modify(request):
                         'result': 'success',
                         'store_id': store_id
                     }
+###################################把以前的还原
+                    if old_machine_serial != machine_serial:
+                        if old_machine_serial != '':
+                            url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/camera/setOffsetBySerial'
+                            values = {
+                                'serial_number': old_machine_serial,
+                                'offset': 1
+                            }
+                            try:
+                                data = urllib.urlencode(values)
+                                req = urllib2.Request(url, data=data)
+                                res_data = urllib2.urlopen(req)
+                                res = res_data.read()
+                                res = json.loads(res)
+                                print res
+                            except:
+                                print 'setOffsetBySerial error'
+
+                        if machine_serial != '':
+                            url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/camera/setOffsetBySerial'
+                            values = {
+                                'serial_number': machine_serial,
+                                'offset': ''
+                            }
+                            try:
+                                data = urllib.urlencode(values)
+                                req = urllib2.Request(url, data=data)
+                                res_data = urllib2.urlopen(req)
+                                res = res_data.read()
+                                res = json.loads(res)
+                                print res
+                            except:
+                                print 'setOffsetBySerial error'
+
                     return JsonResponse(result, safe=False)
         except:
             return HttpResponse('图片太大上传失败，请减少图片并重试')

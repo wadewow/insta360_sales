@@ -186,6 +186,29 @@ def query_ex(request):
         return HttpResponse('Exhibition exists')
 
 @csrf_exempt
+def set_offset(request):
+    if request.method == 'GET':
+        stores = Shop.objects.all()
+        for store in stores:
+            machine_serial = store.machine_serial
+            if machine_serial != '':
+                url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/camera/setOffsetBySerial'
+                values = {
+                    'serial_number': machine_serial,
+                    'offset': ''
+                }
+                try:
+                    data = urllib.urlencode(values)
+                    req = urllib2.Request(url, data=data)
+                    res_data = urllib2.urlopen(req)
+                    res = res_data.read()
+                    res = json.loads(res)
+                    print res
+                except:
+                    print 'setOffsetBySerial error'
+    return HttpResponse('finish')
+
+@csrf_exempt
 def QR_code(request):
     return render(request, 'clerk/QR_code.html', {
         'lib_path': lib_path

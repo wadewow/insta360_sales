@@ -42,6 +42,8 @@ def bi_stores(request):
         stores = Shop.objects.filter(created_time__gt='2016-11-05').order_by('-created_time')
         total = stores.count()
         page_total = total / size + (1 if (total % size) > 0 else 0)
+        if page_total <=0:
+            page_total = 1
         if page > page_total:
             page = page_total
         start = size * (page -1)
@@ -102,6 +104,8 @@ def bi_sales(request):
         sales = Sale.objects.filter(created_time__gt='2016-11-05', name='Insta360 Nano').order_by('-created_time')
         total = sales.count()
         page_total = total / size + (1 if (total % size) > 0 else 0)
+        if page_total <=0:
+            page_total = 1
         if page > page_total:
             page = page_total
         start = size * (page -1)
