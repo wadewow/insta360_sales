@@ -9,6 +9,7 @@ from django.core.files.storage import default_storage
 from ..models import Shop
 from ..models import Clerk
 from ..models import Store
+from ..models import Sale
 from ..models import Promotion
 from ..models import Exhibition
 from ..models import Manager
@@ -40,13 +41,44 @@ def stores(request):
                 Store.objects.get(id=business_id)
                 stores = Shop.objects.filter(business_id=business_id).values()
                 for store in stores:
+                    store_id = store['id']
+                    sales = Sale.objects.filter(
+                        store_id=store_id,
+                        name='Insta360 Nano',
+                        valid=1
+                    )
+                    reward = 0
+                    for sale in sales:
+                        reward += sale.base
                     promotion_id = store['promotion']
                     if promotion_id != '':
                         try:
                             promotion = Promotion.objects.get(id=promotion_id)
+                            start_time = promotion.start_time
+                            end_time = promotion.end_time
+                            benchmark = promotion.benchmark
+                            bonus = promotion.bonus
+                            benchmark1 = promotion.benchmark1
+                            bonus1 = promotion.bonus1
+                            benchmark2 = promotion.benchmark2
+                            bonus2 = promotion.bonus2
+                            store_sales = sales.filter(
+                                active_time__range=(start_time, end_time)
+                            )
+                            store_count = store_sales.count()
+                            ####################
+                            sum_bonus = 0
+                            if store_count >= benchmark and store_count < benchmark1:
+                                sum_bonus = store_count * bonus
+                            if store_count >= benchmark1 and store_count < benchmark2:
+                                sum_bonus = store_count * bonus1
+                            if store_count >= benchmark2:
+                                sum_bonus = store_count * bonus2
+                            reward += sum_bonus
                             store['promotion_info'] = promotion
                         except:
                             store['promotion'] = ''
+                    store['reward'] = reward
                 return render(request, 'store/stores.html', {
                     "store_list" : stores,
                     'lib_path': lib_path
