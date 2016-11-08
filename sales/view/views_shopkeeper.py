@@ -137,9 +137,7 @@ def shopkeeper_info(request):
                     'lib_path': lib_path
                 })
         except:
-            return render(request, 'shopkeeper/login.html', {
-                'lib_path': lib_path
-            })
+            return redirect('/sales/shopkeeper/login_wx')
 
 
 
@@ -189,9 +187,7 @@ def shopkeeper_modify(request):
                     'lib_path': lib_path
                 })
         except:
-            return render(request, 'shopkeeper/login.html', {
-                'lib_path': lib_path
-            })
+            return redirect('/sales/shopkeeper/login_wx')
 
 
 @csrf_exempt

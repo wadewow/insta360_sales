@@ -248,6 +248,4 @@ def manager_modify_store(request):
                     'lib_path': lib_path
                 })
         except:
-            return render(request, 'manager/login.html', {
-                'lib_path': lib_path
-            })
+            return redirect('/sales/manager/login')
