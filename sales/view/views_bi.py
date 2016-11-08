@@ -35,16 +35,16 @@ def bi_stores(request):
         if page < 1:
             page = 1
         size = 10
-        stores = Shop.objects.all().order_by('-created_time')
+        stores = Shop.objects.filter(created_time__gt='2016-11-04 23:00').order_by('-created_time')
         total = stores.count()
         page_total = total / size + (1 if (total % size) > 0 else 0)
         if page > page_total:
             page = page_total
         start = size * (page -1)
         end = start + size
-        if end >= total:
-            end = total - 1
-        stores = stores[start: end]
+        if end > total:
+            end = total
+        stores = stores[start: total]
 
         for store in stores:
             new_option = {}
