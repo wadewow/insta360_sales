@@ -62,7 +62,8 @@
                 <div class="weui-cell__bd">
                 <div class="weui-cell weui-cell_select">
                     <div class="weui-cell__bd">
-                        <select class="weui-select" id="agent" name="agent">
+                        <select class="weui-select" required="required" id="agent" name="agent">
+                        <option value="" disabled="disabled" style="display: none;visibility: hidden">请选择代理商</option>
                             {% for agent in agent_list %}
                                 <option value="{{ agent.custom_number }}">{{ agent.custom_number }}</option>
                             {% endfor %}
@@ -197,6 +198,11 @@
         form.submit(function(){
             result = form.h5Validate('allValid');
             files = $("#uploaderInput")[0].files;
+            agent = $("#agent").val();
+            if (agent==null || agent == '') {
+                alert("请选择代理商！");
+                return false;
+            }
             if (!result) {
                 if(files.length == 0){
                     alert("请上传图片！")
@@ -208,7 +214,7 @@
             $formData.append("city", $("#city").val());
             $formData.append("location", $("#location").val());
             $formData.append("online", $("#online").val());
-            $formData.append("agent", $("#agent").val());
+            $formData.append("agent", agent);
             checkboxes = $(':checkbox');
             for (var k = 0; k < checkboxes.length; k++) {
                 $formData.append(checkboxes[k].name, checkboxes[k].checked);
