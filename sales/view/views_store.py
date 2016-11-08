@@ -30,7 +30,9 @@ def stores(request):
         return HttpResponse('error')
     elif request.method == 'GET':
         try:
+            print request.session.keys()
             if not request.session.__contains__('shopkeeper_id'):
+                print 'no session'
                 return redirect('/sales/shopkeeper/login_wx')
             else:
                 business_id = request.session['shopkeeper_id']
