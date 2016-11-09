@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.files.storage import default_storage
 from ..models import Shop
 from ..models import Clerk
@@ -160,11 +160,21 @@ def store_add(request):
                         option[item] = value
                 print option
                 code = getCode(6)
-                codes = Shop.objects.all().values_list("code", flat=True).distinct()
-                while code in codes:
-                    code = getCode(6)
+                # codes = Shop.objects.all().values_list("code", flat=True).distinct()
+                # while code in codes:
+                #     code = getCode(6)
+                while True:
+                    try:
+                        Shop.objects.get(code=code)
+                        code = getCode(6)
+                    except ObjectDoesNotExist:
+                        break
+                    except MultipleObjectsReturned:
+                        code = getCode(6)
 
-                print code
+
+
+
                 try:
                     photo_num = int(para.__getitem__("photo_num"))
                 except:

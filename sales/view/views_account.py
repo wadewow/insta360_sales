@@ -2,6 +2,7 @@
 from __future__ import division
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 
@@ -194,9 +195,19 @@ def account_cash(request):
 
 
             code = getCode1(8)
-            codes = CashRecord.objects.all().values_list("code", flat=True).distinct()
-            while code in codes:
-                code = getCode1(8)
+            # codes = CashRecord.objects.all().values_list("code", flat=True).distinct()
+            # while code in codes:
+            #     code = getCode1(8)
+
+            while True:
+                try:
+                    CashRecord.objects.get(code=code)
+                    code = getCode1(8)
+                except ObjectDoesNotExist:
+                    break
+                except MultipleObjectsReturned:
+                    code = getCode1(8)
+
 
             result = {
                 'result': 'success',

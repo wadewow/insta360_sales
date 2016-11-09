@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.contrib.auth.hashers import make_password, check_password
 from ..util.wx_option import option
 from ..util.util import getOpenid
@@ -40,12 +40,20 @@ def shopkeeper_register(request):
             if wx_code != '':
                 openid = getOpenid(wx_code)
 
-            stores = Store.objects.all().values_list("store", flat=True).distinct()
-            print store
-            print type(store)
-            print stores
-            if store in stores:
-                return HttpResponse('该商家公司名称已被占用！')
+            # stores = Store.objects.all().values_list("store", flat=True).distinct()
+            # if store in stores:
+            #     return HttpResponse('该商家公司名称已被使用！')
+            try:
+                Store.objects.get(store=store)
+                is_used = True
+            except ObjectDoesNotExist:
+                is_used = False
+            except MultipleObjectsReturned:
+                is_used = True
+            if is_used:
+                return HttpResponse("该商家公司名称已被使用！")
+
+
             store_info = {
                 'store': store,
                 'name': name,
@@ -163,9 +171,21 @@ def shopkeeper_modify(request):
                 name = para.__getitem__('name')
                 phone = para.__getitem__('phone')
 
-                stores = Store.objects.exclude(id=id).values_list("store", flat=True).distinct()
-                if store in stores:
-                    return HttpResponse('该商家公司名称已被占用！')
+                # stores = Store.objects.exclude(id=id).values_list("store", flat=True).distinct()
+                # if store in stores:
+                #     return HttpResponse('该商家公司名称已被使用！')
+                try:
+                    Store.objects.exclude(id=id).get(store=store)
+                    is_used = True
+                except ObjectDoesNotExist:
+                    is_used = False
+                except MultipleObjectsReturned:
+                    is_used = True
+
+                if is_used:
+                    return HttpResponse("该商家公司名称已被使用！")
+
+
                 try:
                     result = Store.objects.filter(id=id).update(
                         store=store,
@@ -175,7 +195,7 @@ def shopkeeper_modify(request):
                 except:
                     return HttpResponse('该手机号已被绑定！')
                 if result == 0:
-                    return HttpResponse('fail')
+                    return HttpResponse('账号不存在，请重新注册')
                 else:
                     return HttpResponse('success')
         except:
@@ -218,13 +238,13 @@ def shopkeeper_reset(request):
                     pwd=password
                 )
             except:
-                return HttpResponse('fail')
+                return HttpResponse('重置失败')
             if result == 0:
                 return HttpResponse('不存在该账号')
             else:
                 return HttpResponse('success')
         except:
-            return HttpResponse('error')
+            return HttpResponse('重置失败')
 
 
 
