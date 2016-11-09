@@ -144,7 +144,9 @@ def shopkeeper_info(request):
                     'lib_path': lib_path
                 })
         except:
-            return redirect('/sales/shopkeeper/login_wx')
+            return render(request, 'shopkeeper/login.html', {
+                'lib_path': lib_path
+            })
 
 
 
