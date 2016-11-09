@@ -110,6 +110,13 @@ def shopkeeper_login(request):
             return HttpResponse('error')
     elif request.method == 'GET':
         if request.session.__contains__('shopkeeper_id'):
+            shopkeeper_id = request.session['shopkeeper_id']
+            try:
+                Store.objects.get(id=shopkeeper_id)
+            except:
+                return render(request, 'shopkeeper/login.html', {
+                    'lib_path': lib_path
+                })
             return redirect('/sales/shopkeeper/info')
         else:
             return render(request, 'shopkeeper/login.html', {

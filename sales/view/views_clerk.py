@@ -105,6 +105,13 @@ def clerk_login(request):
             return HttpResponse('error')
     elif request.method == 'GET':
         if request.session.__contains__('clerk_id'):
+            clerk_id = request.session['clerk_id']
+            try:
+                Clerk.objects.get(id=clerk_id)
+            except:
+                return render(request, 'clerk/login.html', {
+                    'lib_path': lib_path
+                })
             return redirect('/sales/clerk/info')
         else:
             return render(request, 'clerk/login.html', {
