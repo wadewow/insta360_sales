@@ -2,7 +2,7 @@
 
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
@@ -73,6 +73,21 @@ def sale_scan(request):
                     Sale.objects.update_or_create(serial_number=serial_number, name=name, defaults=sale_info)
                     return HttpResponse('success')
                 #######################################
+
+
+                try:
+                    Shop.objects.get(machine_serial=serial_number)
+                    is_machine_serial = True
+                except ObjectDoesNotExist:
+                    is_machine_serial = False
+                except MultipleObjectsReturned:
+                    is_machine_serial = True
+
+                if is_machine_serial:
+                    return HttpResponse("样机序列号无法扫描！")
+
+
+
 
                 url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfo/'
                 values = {
@@ -192,6 +207,9 @@ def sale_sales(request):
 
                     else:
                         show_time = active_time
+                        # print created_time
+                        # print deadline
+                        # print active_time
                         if active_time >= deadline:
                             hint = '激活，不可提现'
                             invalid = 1

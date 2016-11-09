@@ -27,8 +27,17 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 @csrf_exempt
+def bi_login(request):
+    if request.method == 'GET':
+        return render(request, 'bi/login.html', {
+            'lib_path': lib_path
+        })
+
+@csrf_exempt
 def bi_stores(request):
     if request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/bi/login')
         para = request.GET
         page = 1
         if para.__contains__('page'):
@@ -91,6 +100,8 @@ def bi_stores(request):
 @csrf_exempt
 def bi_sales(request):
     if request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/bi/login')
         para = request.GET
         page = 1
         if para.__contains__('page'):

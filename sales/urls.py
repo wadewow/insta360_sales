@@ -54,6 +54,7 @@ urlpatterns = [
 
     url(r'^cash_query$', views.cash_query, name='cash_query'),
     url(r'^service_cash$', views.service_cash, name='service_cash'),
+    url(r'^service/login$', views.service_login, name='service_login'),
 
     url(r'^guide$', views.sale_guide, name='sale_guide'),
 
@@ -72,6 +73,7 @@ urlpatterns = [
 
     url(r'^bi/stores$', views.bi_stores, name='bi_stores'),
     url(r'^bi/sales$', views.bi_sales, name='bi_sales'),
+    url(r'^bi/login$', views.bi_login, name='bi_login'),
 
 
 

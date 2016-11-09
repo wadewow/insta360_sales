@@ -203,7 +203,8 @@ def set_offset(request):
                     res_data = urllib2.urlopen(req)
                     res = res_data.read()
                     res = json.loads(res)
-                    print res
+                    if res['flag'] == 0:
+                        print machine_serial
                 except:
                     print 'setOffsetBySerial error'
     return HttpResponse('finish')

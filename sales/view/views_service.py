@@ -15,6 +15,13 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+@csrf_exempt
+def service_login(request):
+    if request.method == 'GET':
+        return render(request, 'service/login.html', {
+            'lib_path': lib_path
+        })
+
 
 @csrf_exempt
 def cash_query(request):
@@ -37,6 +44,8 @@ def cash_query(request):
         })
 
     elif request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/service/login')
         return render(request, 'service/cash_query.html', {
             'lib_path': lib_path
         })

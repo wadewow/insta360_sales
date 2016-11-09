@@ -62,6 +62,7 @@ def manager_login(request):
         print data
         if status == 200:
             request.session['manager_id'] = username
+            # del request.session['manager_id']
             return HttpResponse(content='success', status=status)
         else:
             return HttpResponse(content='账号或密码错误！', status=status)
