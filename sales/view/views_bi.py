@@ -101,7 +101,9 @@ def bi_sales(request):
         if page < 1:
             page = 1
         size = 20
-        sales = Sale.objects.filter(created_time__gt='2016-11-05', name='Insta360 Nano').order_by('-created_time')
+        now = timezone.now()
+        deadline = now - datetime.timedelta(hours=12)
+        sales = Sale.objects.filter(created_time__gt='2016-11-05', name='Insta360 Nano').exclude(valid=0, active=0, created_time__lt=deadline).order_by('-created_time')
         total = sales.count()
         page_total = total / size + (1 if (total % size) > 0 else 0)
         if page_total <=0:
@@ -115,7 +117,7 @@ def bi_sales(request):
         sales = sales[start: end]
         sales = sales.values()
         for sale in sales:
-            sale['show'] = 1
+            # sale['show'] = 1
             business_id = sale['business_id']
             store_id = sale['store_id']
             clerk_id = sale['clerk_id']
@@ -145,20 +147,19 @@ def bi_sales(request):
                 if active == 1:
                     state = '超时'
                 else:
-                    now = timezone.now()
-                    created_time = sale['created_time']
-                    deadline = created_time + datetime.timedelta(hours=12)
-                    if now >= deadline:
-                        state = '作废'
-                        sale['show'] = 0
-                    else:
-                        state = '等待激活'
+                    # now = timezone.now()
+                    # created_time = sale['created_time']
+                    # deadline = created_time + datetime.timedelta(hours=12)
+                    # if now >= deadline:
+                    #     state = '作废'
+                    #     sale['show'] = 0
+                    # else:
+                    state = '等待激活'
             sale['state'] = state
         data = {
             'total': total,
             'current_page': page,
             'page_total': page_total
-
         }
         return render(request, 'bi/sales.html', {
             'sales': sales,

@@ -35,7 +35,7 @@
   </thead>
   <tbody>
   {% for sale in sales%}
-  {% if sale.show == 1%}
+{#  {% if sale.show == 1%}#}
     <tr>
 {#      <td>{{ sale.id }}</td>#}
       <td>{{ sale.store.name }}</td>
@@ -59,7 +59,7 @@
       <td>￥{{ sale.base }}</td>
       <td>{{ sale.store.manager.name }}({{ sale.store.manager.area }})</td>
     </tr>
-  {% endif %}
+{#  {% endif %}#}
   {% endfor %}
   </tbody>
 </table>
