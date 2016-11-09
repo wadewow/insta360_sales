@@ -167,7 +167,7 @@ def manager_modify_store(request):
                     s = store.first()
                     old_machine_serial = s.machine_serial
                 except:
-                    return HttpResponse('fail')
+                    return HttpResponse('该门店不存在')
                 if len(path_join) > 0:
                     try:
                         res = store.update(
@@ -185,7 +185,7 @@ def manager_modify_store(request):
                             manager=manager
                         )
                     except:
-                        return HttpResponse('fail')
+                        return HttpResponse('修改失败')
                 else:
                     try:
                         res = store.update(
@@ -202,9 +202,9 @@ def manager_modify_store(request):
                             manager=manager
                         )
                     except:
-                        return HttpResponse('fail')
+                        return HttpResponse('修改失败')
                 if res == 0:
-                    return HttpResponse('fail')
+                    return HttpResponse('该门店不存在')
                 else:
                     shopkeeper_id = Shop.objects.get(id=store_id).business_id
                     result = {

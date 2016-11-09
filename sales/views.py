@@ -15,6 +15,7 @@ from view.views_service import *
 from view.views_bi import *
 from .util.wx_option import option
 from .util.option import lib_path
+from django.utils import timezone
 
 import json
 import sys
@@ -207,7 +208,54 @@ def set_offset(request):
                         print machine_serial
                 except:
                     print 'setOffsetBySerial error'
-    return HttpResponse('finish')
+        return HttpResponse('finish')
+
+@csrf_exempt
+def set_active(request):
+    if request.method == 'GET':
+        para = request.GET
+        if not para.__contains__('serial_number'):
+            return HttpResponse('Missing parameter serial_number')
+        serial_number = para.__getitem__('serial_number')
+        try:
+            sale = Sale.objects.get(serial_number=serial_number)
+        except:
+            return HttpResponse('No information for this serial number')
+        now = timezone.now()
+        sale.active = 1
+        sale.active_time = now
+        created_time = sale.created_time
+        active_time = now
+        base = sale.base
+        clerk_id = sale.clerk_id
+        deadline = created_time + datetime.timedelta(hours=12)
+        if active_time < deadline:
+            device_code = sale.device_code
+            if device_code == '':
+                num = 1
+            else:
+                num = Sale.objects.filter(device_code=device_code, clerk_id=clerk_id, name='Insta360 Nano').count()
+            if num < 2:
+                if base == 0:
+                    base = round(random.uniform(1, 10), 2)
+                    if base > 3:
+                        base = round((base * random.uniform(0.1, 1)), 2)
+                    if base > 5.5:
+                        base = round((base * random.uniform(0.2, 1)), 2)
+                    if base < 1:
+                        base = base * 2
+                    sale.base = base
+                    sale.valid = 1
+                    try:
+                        account = Clerk.objects.get(id=clerk_id)
+                    except:
+                        return HttpResponse("请重新注册")
+                    if sale.name != '测试商品':
+                        account.balance += base
+                    account.base += base
+                    account.save()
+        sale.save()
+        return HttpResponse('finish')
 
 @csrf_exempt
 def QR_code(request):
@@ -226,4 +274,6 @@ def test1(request):
     return render(request, 'test/test1.html', {
         'lib_path': lib_path
     })
+
+
 

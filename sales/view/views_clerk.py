@@ -181,13 +181,13 @@ def clerk_modify(request):
                         phone=phone
                     )
                 except:
-                    return HttpResponse('fail')
+                    return HttpResponse('修改失败')
                 if result == 0:
-                    return HttpResponse('fail')
+                    return HttpResponse('账号不存在，请重新注册')
                 else:
                     return HttpResponse('success')
         except:
-            return HttpResponse('error')
+            return HttpResponse('修改失败')
     elif request.method == 'GET':
         try:
             if not request.session.__contains__('clerk_id'):
@@ -239,11 +239,11 @@ def clerk_reset(request):
                     pwd=password
                 )
             except:
-                return HttpResponse('fail')
+                return HttpResponse('重置失败')
             if result == 0:
                 return HttpResponse('不存在该账号')
             else:
                 return HttpResponse('success')
         except:
-            return HttpResponse('error')
+            return HttpResponse('重置失败')
 
