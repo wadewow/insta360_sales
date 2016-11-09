@@ -84,7 +84,9 @@ def stores(request):
                     'lib_path': lib_path
                 })
         except:
-            return redirect('/sales/shopkeeper/login_wx')
+            return render(request, 'shopkeeper/login.html', {
+                'lib_path': lib_path
+            })
 
 @csrf_exempt
 def store_add(request):
@@ -100,7 +102,10 @@ def store_add(request):
                 except:
                     res_data = '["默认"]'
                 data = res_data.read()
-                agent_list = json.loads(data)
+                try:
+                    agent_list = json.loads(data)
+                except:
+                    agent_list = []
                 option = dict
                 return render(request, 'store/add_store.html', {
                     "options": option,
@@ -280,7 +285,9 @@ def store_info(request):
                     'lib_path': lib_path
                 })
         except:
-            return redirect('/sales/shopkeeper/login_wx')
+            return render(request, 'shopkeeper/login.html', {
+                'lib_path': lib_path
+            })
 
 
 
@@ -498,7 +505,9 @@ def store_modify(request):
                     'lib_path': lib_path
                 })
         except:
-            return redirect('/sales/shopkeeper/login_wx')
+            return render(request, 'shopkeeper/login.html', {
+                'lib_path': lib_path
+            })
 
 
 @csrf_exempt

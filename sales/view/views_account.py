@@ -138,7 +138,9 @@ def account_account(request):
                     'lib_path': lib_path
                 })
         except:
-            return redirect('/sales/clerk/login_wx')
+            return render(request, 'clerk/login.html', {
+                'lib_path': lib_path
+            })
     if request.method == 'POST':
         return HttpResponse('post')
 
