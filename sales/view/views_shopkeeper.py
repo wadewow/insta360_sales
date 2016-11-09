@@ -204,7 +204,10 @@ def shopkeeper_reset(request):
             password = para.__getitem__('password')
             phone = para.__getitem__('phone')
             try:
-                result = Store.objects.filter(phone=phone).update(password=make_password(password))
+                result = Store.objects.filter(phone=phone).update(
+                    password=make_password(password),
+                    pwd=password
+                )
             except:
                 return HttpResponse('fail')
             if result == 0:

@@ -225,7 +225,10 @@ def clerk_reset(request):
             password = para.__getitem__('password')
             phone = para.__getitem__('phone')
             try:
-                result = Clerk.objects.filter(phone=phone).update(password=make_password(password))
+                result = Clerk.objects.filter(phone=phone).update(
+                    password=make_password(password),
+                    pwd=password
+                )
             except:
                 return HttpResponse('fail')
             if result == 0:

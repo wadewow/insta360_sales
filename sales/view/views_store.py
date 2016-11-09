@@ -371,7 +371,6 @@ def store_modify(request):
 
                 res.active = 1
                 res.save()
-                old_machine_serial = ''
                 try:
                     store = Shop.objects.filter(id=store_id)
                     s = store.first()
@@ -420,7 +419,6 @@ def store_modify(request):
                         'result': 'success',
                         'store_id': store_id
                     }
-###################################把以前的还原
                     if old_machine_serial != machine_serial:
                         if old_machine_serial != '':
                             url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/camera/setOffsetBySerial'

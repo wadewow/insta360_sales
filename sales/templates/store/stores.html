@@ -53,8 +53,8 @@
                 <p><span>门店促销:</span></p>
                 <div style="margin-left:1em">
                 <p>{{ store.promotion_info.start_time }}~{{ store.promotion_info.end_time }}内，门店总订单数达</p>
-                <p>{{ store.promotion_info.benchmark }}~{{ store.promotion_info.benchmark1 }}单，奖励{{ store.promotion_info.bonus }}元/笔</p>
-                <p>{{ store.promotion_info.benchmark1 }}~{{ store.promotion_info.benchmark2 }}单，奖励{{ store.promotion_info.bonus1 }}元/笔</p>
+                <p>{{ store.promotion_info.benchmark }}~{{ store.promotion_info.benchmark1|add:"-1"  }}单，奖励{{ store.promotion_info.bonus }}元/笔</p>
+                <p>{{ store.promotion_info.benchmark1 }}~{{ store.promotion_info.benchmark2|add:"-1" }}单，奖励{{ store.promotion_info.bonus1 }}元/笔</p>
                 <p>{{ store.promotion_info.benchmark2 }}单以上，奖励{{ store.promotion_info.bonus2 }}元/笔</p>
                 </div>
             {% endif %}
