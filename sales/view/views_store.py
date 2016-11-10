@@ -16,7 +16,6 @@ from ..models import Manager
 from ..util.util import getCode
 from ..util.option import dict
 from ..util.option import lib_path
-from PIL import Image
 
 import json
 import os

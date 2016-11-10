@@ -7,20 +7,44 @@
     <meta name="renderer" content="webkit">
     <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
     <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <script src="//cdn.bootcss.com/moment.js/2.15.2/moment.min.js"></script>
+    <script src="//cdn.bootcss.com/pikaday/1.5.1/pikaday.min.js"></script>
+    <link href="//cdn.bootcss.com/pikaday/1.5.1/css/pikaday.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>数据走势</title>
+    <style type="text/css">
+        .right{
+            float: right;
+        }
+    </style>
 </head>
 <body>
 {% extends "bi/navigation.html" %}
 {% block title %}数据走势{% endblock %}
 {% block content %}
+    <form action="" id="query" class="mui-form--inline" style="margin-top: 10px">
+    <input type="submit" class="mui-btn mui-btn--raised right text-right" value="查询">
+        <div class="right">
+      <div class="mui-textfield right" style="">
+        <label for="end_time">To</label>
+        <input style="" type="text" required="required" id="end_time" name="end_time" placeholder="End Time">
+          </div>
+      <div class="mui-textfield right">
+        <label for="start_time">From</label>
+        <input style="" type="text" required="required" id="start_time" name="start_time" placeholder="Start Time">
+      </div>
+    </div>
+
+    </form>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
     <div id="main" style="height:600px;margin-top: 100px"></div>
         <!-- ECharts单文件引入 -->
-    <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
-    <script type="text/javascript">
+<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+<script type="text/javascript">
+    $(function () {
         // 路径配置
+        var myChart;
         require.config({
             paths: {
                 echarts: 'http://echarts.baidu.com/build/dist'
@@ -36,78 +60,124 @@
             ],
             function (ec) {
                 // 基于准备好的dom，初始化echarts图表
-                var myChart = ec.init(document.getElementById('main'), 'macarons');
+                myChart = ec.init(document.getElementById('main'), 'macarons');
                 $.get("/sales/bi/store_trend", function(data,status){
                     console.log("Data: " + data + "\nStatus: " + status);
-                    console.log(data);
-                    var x = [];
-                    var y_store = [];
-                    var y_nano = [];
-                    for(var i in data){
-                        temp = data[i];
-                        x.push(i);
-                        console.log(temp)
-                        y_store.push(temp['store']);
-                        y_nano.push(temp['nano'])
-                    }
-                    var option = {
-                        tooltip: {
-                            show: true,
-                            trigger: 'axis',
-                            // zlevel: 1,
-                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                              type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                            }
-                        },
-                        toolbox: {
-                            show: true,
-                            feature: {
-                              dataView: { show: true, readOnly: false }
-                            }
-                        },
-
-                        legend: {
-                            data:['门店总数', '日激活数']
-                        },
-                        xAxis : [
-                            {
-                                type : 'category',
-                                data : x
-                            }
-                        ],
-                        yAxis : [
-                            {
-                                type : 'value',
-                                name: '门店数'
-                            },
-                            {
-                                type : 'value',
-                                name: '激活数'
-                            }
-                        ],
-                        series : [
-                            {
-                                "name": "门店总数",
-                                "type": "line",
-                                "data": y_store,
-                                "yAxisIndex": 0
-                            },
-                            {
-                                "name": "日激活数",
-                                "type": "line",
-                                "data": y_nano,
-                                "yAxisIndex": 1
-                            }
-                        ]
-                    };
-
+                    var option = getOption(data);
                     // 为echarts对象加载数据
-                    myChart.setOption(option);
+                    myChart.setOption(option,true);
+
                 });
 
             }
         );
-    </script>
+
+
+        function getOption (data) {
+            var x = [];
+            var y_store = [];
+            var y_nano = [];
+            for(var i in data){
+                temp = data[i];
+                x.push(i);
+                y_store.push(temp['store']);
+                y_nano.push(temp['nano'])
+            }
+            var option = {
+                tooltip: {
+                    show: true,
+                    trigger: 'axis',
+                    showDelay: 0,
+                    // zlevel: 1,
+                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                      type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                      dataView: { show: true, readOnly: false }
+                    }
+                },
+
+                legend: {
+                    data:['门店总数', '日激活数']
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : x
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        name: '门店数'
+                    },
+                    {
+                        type : 'value',
+                        name: '激活数'
+                    }
+                ],
+                series : [
+                    {
+                        "name": "门店总数",
+                        "type": "line",
+                        "data": y_store,
+                        "yAxisIndex": 0
+                    },
+                    {
+                        "name": "日激活数",
+                        "type": "line",
+                        "data": y_nano,
+                        "yAxisIndex": 1
+                    }
+                ]
+            };
+            return option
+
+        }
+
+        var start_time = document.getElementById('start_time');
+        var end_time = document.getElementById('end_time');
+        {#    $('.datepicker').pikaday({#}
+        {#        format: 'YYYY-MM-DD'#}
+        {#    });#}
+
+        var picker1 = new Pikaday(
+                {
+                    field: start_time,
+                    format: 'YYYY-MM-DD',
+                    onSelect: function () {
+                    }
+                });
+
+        var picker2 = new Pikaday(
+                {
+                    field: end_time,
+                    format: 'YYYY-MM-DD',
+                    onSelect: function () {
+                    }
+                });
+
+        var form = $('form#query');
+        form.submit(function() {
+            var start = start_time.value;
+            var end = end_time.value;
+            if (start > end)
+                return false;
+            data = form.serialize();
+            $.get("/sales/bi/store_trend",data, function(data,status){
+                    console.log("Data: " + data + "\nStatus: " + status);
+                    var option = getOption(data);
+                    // 为echarts对象加载数据
+                    myChart.setOption(option,true);
+                });
+            return false
+        });
+    })
+</script>
 {% endblock %}
+
 </body>
 </html>

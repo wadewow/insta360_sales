@@ -209,13 +209,34 @@ def bi_trend(request):
 def bi_store_trend(request):
     if request.method == 'GET':
         para = request.GET
-        end_time = (timezone.now() + datetime.timedelta(days=1)).replace(hour=0,minute=0,second=0,microsecond=0)
-        start_time = end_time.replace(year=2016,month=11,day=5)
+
+        today = (timezone.now() + datetime.timedelta(days=1)).replace(hour=0,minute=0,second=0,microsecond=0)
+        begin = today.replace(year=2016,month=11,day=5)
+
+        if para.__contains__('start_time'):
+            try:
+                start_time = datetime.datetime.strptime(para.__getitem__('start_time'), '%Y-%m-%d')
+                if start_time.date() < begin.date() :
+                    start_time = begin
+            except:
+                start_time = begin
+        else:
+            start_time = begin
+        if para.__contains__('end_time'):
+            try:
+                end_time = datetime.datetime.strptime(para.__getitem__('end_time'), '%Y-%m-%d')
+                end_time = end_time + datetime.timedelta(days=1)
+            except:
+                end_time = today
+        else:
+            end_time = today
         result = collections.OrderedDict()
-        for i in range((end_time - start_time).days):
+
+        for i in range((end_time.date() - start_time.date()).days):
+
             end = (start_time + datetime.timedelta(days=(i+1)))
             start = (end - datetime.timedelta(days=1))
-            store_count = Shop.objects.filter(created_time__range=(start_time,end)).count()
+            store_count = Shop.objects.filter(created_time__range=(begin,end)).count()
             nano_count = Sale.objects.filter(active=1, name='Insta360 Nano', active_time__range=(start, end)).count()
             temp = {
                 'store': store_count,
