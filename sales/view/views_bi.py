@@ -20,6 +20,7 @@ import json
 import os
 import sys
 import urllib
+import collections
 import urllib2
 import time
 
@@ -195,3 +196,30 @@ def bi_sales(request):
             'data': data,
             'lib_path': lib_path
         })
+
+@csrf_exempt
+def bi_trend(request):
+    if request.method == 'GET':
+        return render(request, 'bi/trend.html', {
+            'lib_path': lib_path
+        })
+
+
+@csrf_exempt
+def bi_store_trend(request):
+    if request.method == 'GET':
+        para = request.GET
+        end_time = (timezone.now() + datetime.timedelta(days=1)).replace(hour=0,minute=0,second=0,microsecond=0)
+        start_time = end_time.replace(year=2016,month=11,day=5)
+        result = collections.OrderedDict()
+        for i in range((end_time - start_time).days):
+            end = (start_time + datetime.timedelta(days=(i+1)))
+            start = (end - datetime.timedelta(days=1))
+            store_count = Shop.objects.filter(created_time__range=(start_time,end)).count()
+            nano_count = Sale.objects.filter(active=1, name='Insta360 Nano', active_time__range=(start, end)).count()
+            temp = {
+                'store': store_count,
+                'nano': nano_count
+            }
+            result[start.strftime('%m-%d')] = temp
+        return JsonResponse(result, safe=False)

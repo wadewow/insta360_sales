@@ -249,13 +249,13 @@ def set_active(request):
                     try:
                         account = Clerk.objects.get(id=clerk_id)
                     except:
-                        return HttpResponse("请重新注册")
+                        return HttpResponse("No clerk information")
                     if sale.name != '测试商品':
                         account.balance += base
                     account.base += base
                     account.save()
         sale.save()
-        return HttpResponse('finish')
+        return HttpResponse('Succeed')
 
 @csrf_exempt
 def QR_code(request):

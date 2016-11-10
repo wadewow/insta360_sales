@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>数据走势</title>
+</head>
+<body>
+{% extends "bi/navigation.html" %}
+{% block title %}数据走势{% endblock %}
+{% block content %}
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="height:600px;margin-top: 100px"></div>
+        <!-- ECharts单文件引入 -->
+    <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+    <script type="text/javascript">
+        // 路径配置
+        require.config({
+            paths: {
+                echarts: 'http://echarts.baidu.com/build/dist'
+            }
+        });
+
+        // 使用
+        require(
+            [
+                'echarts',
+                'echarts/theme/macarons',
+                'echarts/chart/line' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main'), 'macarons');
+                $.get("/sales/bi/store_trend", function(data,status){
+                    console.log("Data: " + data + "\nStatus: " + status);
+                    console.log(data);
+                    var x = [];
+                    var y_store = [];
+                    var y_nano = [];
+                    for(var i in data){
+                        temp = data[i];
+                        x.push(i);
+                        console.log(temp)
+                        y_store.push(temp['store']);
+                        y_nano.push(temp['nano'])
+                    }
+                    var option = {
+                        tooltip: {
+                            show: true,
+                            trigger: 'axis',
+                            // zlevel: 1,
+                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                              type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                            }
+                        },
+                        toolbox: {
+                            show: true,
+                            feature: {
+                              dataView: { show: true, readOnly: false }
+                            }
+                        },
+
+                        legend: {
+                            data:['门店总数', '日激活数']
+                        },
+                        xAxis : [
+                            {
+                                type : 'category',
+                                data : x
+                            }
+                        ],
+                        yAxis : [
+                            {
+                                type : 'value',
+                                name: '门店数'
+                            },
+                            {
+                                type : 'value',
+                                name: '激活数'
+                            }
+                        ],
+                        series : [
+                            {
+                                "name": "门店总数",
+                                "type": "line",
+                                "data": y_store,
+                                "yAxisIndex": 0
+                            },
+                            {
+                                "name": "日激活数",
+                                "type": "line",
+                                "data": y_nano,
+                                "yAxisIndex": 1
+                            }
+                        ]
+                    };
+
+                    // 为echarts对象加载数据
+                    myChart.setOption(option);
+                });
+
+            }
+        );
+    </script>
+{% endblock %}
+</body>
+</html>

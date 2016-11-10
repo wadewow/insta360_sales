@@ -74,6 +74,8 @@ urlpatterns = [
     url(r'^bi/stores$', views.bi_stores, name='bi_stores'),
     url(r'^bi/sales$', views.bi_sales, name='bi_sales'),
     url(r'^bi/login$', views.bi_login, name='bi_login'),
+    url(r'^bi/store_trend$', views.bi_store_trend, name='bi_store_trend'),
+    url(r'^bi/trend$', views.bi_trend, name='bi_trend'),
 
 
 
