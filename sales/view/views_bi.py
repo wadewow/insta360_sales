@@ -127,6 +127,22 @@ def bi_sales(request):
             end = total
         sales = sales[start: end]
         sales = sales.values()
+
+        url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
+        req = urllib2.Request(url=url)
+        try:
+            res_data = urllib2.urlopen(req)
+        except:
+            res_data = '["默认"]'
+        data = res_data.read()
+        try:
+            agent_list = json.loads(data)
+        except:
+            agent_list = [{'custom_number':'默认'}]
+        agent_dict = {}
+        for agent in agent_list:
+            agent_dict[agent['custom_number']] = agent['company']
+
         for sale in sales:
             # sale['show'] = 1
             business_id = sale['business_id']
@@ -143,6 +159,7 @@ def bi_sales(request):
                 manager = Manager.objects.get(id=manager_id)
                 store.manager = manager
                 sale['store']= store
+                sale['agent'] = agent_dict[store.agent]
             except:
                 pass
             try:
@@ -167,6 +184,7 @@ def bi_sales(request):
                     # else:
                     state = '等待激活'
             sale['state'] = state
+
         data = {
             'total': total,
             'current_page': page,
