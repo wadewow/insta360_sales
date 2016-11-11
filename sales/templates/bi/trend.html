@@ -9,6 +9,8 @@
     <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
     <script src="//cdn.bootcss.com/moment.js/2.15.2/moment.min.js"></script>
     <script src="//cdn.bootcss.com/pikaday/1.5.1/pikaday.min.js"></script>
+    <script src="//cdn.bootcss.com/echarts/3.3.1/echarts.min.js"></script>
+    <script src="/static/js/echarts/macarons.js"></script>
     <link href="//cdn.bootcss.com/pikaday/1.5.1/css/pikaday.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
     <meta charset="UTF-8">
@@ -39,39 +41,18 @@
     </form>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
     <div id="main" style="height:600px;margin-top: 100px"></div>
-        <!-- ECharts单文件引入 -->
-<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+
 <script type="text/javascript">
     $(function () {
-        // 路径配置
         var myChart;
-        require.config({
-            paths: {
-                echarts: 'http://echarts.baidu.com/build/dist'
-            }
+        myChart = echarts.init(document.getElementById('main'), 'macarons');
+        $.get("/sales/bi/store_trend", function(data,status){
+            console.log("Data: " + data + "\nStatus: " + status);
+            var option = getOption(data);
+            // 为echarts对象加载数据
+            myChart.setOption(option,true);
+
         });
-
-        // 使用
-        require(
-            [
-                'echarts',
-                'echarts/theme/macarons',
-                'echarts/chart/line' // 使用柱状图就加载bar模块，按需加载
-            ],
-            function (ec) {
-                // 基于准备好的dom，初始化echarts图表
-                myChart = ec.init(document.getElementById('main'), 'macarons');
-                $.get("/sales/bi/store_trend", function(data,status){
-                    console.log("Data: " + data + "\nStatus: " + status);
-                    var option = getOption(data);
-                    // 为echarts对象加载数据
-                    myChart.setOption(option,true);
-
-                });
-
-            }
-        );
-
 
         function getOption (data) {
             var x = [];
@@ -140,10 +121,6 @@
 
         var start_time = document.getElementById('start_time');
         var end_time = document.getElementById('end_time');
-        {#    $('.datepicker').pikaday({#}
-        {#        format: 'YYYY-MM-DD'#}
-        {#    });#}
-
         var picker1 = new Pikaday(
                 {
                     field: start_time,
@@ -151,7 +128,6 @@
                     onSelect: function () {
                     }
                 });
-
         var picker2 = new Pikaday(
                 {
                     field: end_time,
@@ -159,7 +135,6 @@
                     onSelect: function () {
                     }
                 });
-
         var form = $('form#query');
         form.submit(function() {
             var start = start_time.value;
