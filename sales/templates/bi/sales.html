@@ -30,7 +30,6 @@
         <th>激活状态</th>
         <th>状态</th>
         <th>红包奖励</th>
-        <th>代理商</th>
         <th>销售经理</th>
     </tr>
   </thead>
@@ -58,7 +57,6 @@
 {#      <td>{% if sale.valid == 1 %}有效{% else %}{% if sale.active == 1 %}超时{% else %}等待激活{% endif %}{% endif %}</td>#}
       <td>{{ sale.state }}</td>
       <td>￥{{ sale.base }}</td>
-      <td>{{ sale.agent }}</td>
       <td>{{ sale.store.manager.name }}({{ sale.store.manager.area }})</td>
     </tr>
 {#  {% endif %}#}

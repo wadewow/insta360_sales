@@ -44,6 +44,7 @@
       <th>展台照片</th>
 {#      <th>备注</th>#}
 {#      <th>促销策略</th>#}
+      <th>代理商</th>
       <th>销售经理</th>
       <th>创建时间</th>
       <th>网店地址</th>
@@ -77,6 +78,7 @@
       </td>
 {#      <td>{{ store.remark }}</td>#}
 {#      <td>{{ store.promotion }}</td>#}
+      <td>{{ store.agent }}</td>
       <td>{{ store.manager.name }}({{ store.manager.area }})</td>
       <td style="min-width: 120px">{{ store.created_time }}</td>
       <td style="max-width: 500px">{% if store.online != 'http://' %}<a href="{{ store.online }}" title="{{ store.online }}"  target="_blank">{{ store.online|truncatechars:40 }}</a>{% endif %}</td>

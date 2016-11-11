@@ -62,6 +62,21 @@ def bi_stores(request):
             end = total
         stores = stores[start: end]
 
+        url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
+        req = urllib2.Request(url=url)
+        try:
+            res_data = urllib2.urlopen(req)
+        except:
+            res_data = '["默认"]'
+        data = res_data.read()
+        try:
+            agent_list = json.loads(data)
+        except:
+            agent_list = [{'custom_number':'默认'}]
+        agent_dict = {}
+        for agent in agent_list:
+            agent_dict[agent['custom_number']] = agent['company']
+
         for store in stores:
             new_option = {}
             option = json.loads(store.option)
@@ -74,6 +89,7 @@ def bi_stores(request):
             store.photo = photos
             business_id = store.business_id
             manager_id = store.manager
+            store.agent = agent_dict[store.agent]
             try:
                 shopkeeper = Store.objects.get(id=business_id)
                 store.business_id = shopkeeper
@@ -129,20 +145,7 @@ def bi_sales(request):
         sales = sales[start: end]
         sales = sales.values()
 
-        url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
-        req = urllib2.Request(url=url)
-        try:
-            res_data = urllib2.urlopen(req)
-        except:
-            res_data = '["默认"]'
-        data = res_data.read()
-        try:
-            agent_list = json.loads(data)
-        except:
-            agent_list = [{'custom_number':'默认'}]
-        agent_dict = {}
-        for agent in agent_list:
-            agent_dict[agent['custom_number']] = agent['company']
+
 
         for sale in sales:
             # sale['show'] = 1
@@ -160,7 +163,6 @@ def bi_sales(request):
                 manager = Manager.objects.get(id=manager_id)
                 store.manager = manager
                 sale['store']= store
-                sale['agent'] = agent_dict[store.agent]
             except:
                 pass
             try:
