@@ -6,7 +6,6 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
-from PIL import Image
 from ..models import Manager
 from ..models import Shop
 from ..models import Store
