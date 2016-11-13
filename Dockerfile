@@ -31,8 +31,6 @@ RUN mkdir -p /app && \
     ln -sf /dev/stdout /var/log/nginx/access.log && \
     ln -sf /dev/stderr /var/log/nginx/error.log
 
-VOLUME /app
-
 ADD root /
 
 # run server
@@ -41,6 +39,8 @@ COPY src/ /app
 WORKDIR /app/
 
 RUN pip install -r requirements.txt
+
+VOLUME /app/sales/static/store
 
 EXPOSE 80 443 8000
 
