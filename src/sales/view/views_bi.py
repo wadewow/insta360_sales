@@ -16,12 +16,9 @@ from ..util.option import lib_path
 
 import datetime
 import json
-import os
 import sys
-import urllib
 import collections
 import urllib2
-import time
 
 reload(sys)
 sys.setdefaultencoding('utf-8')

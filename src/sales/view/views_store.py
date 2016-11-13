@@ -7,7 +7,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.files.storage import default_storage
 from ..models import Shop
-from ..models import Clerk
 from ..models import Store
 from ..models import Sale
 from ..models import Promotion
@@ -18,8 +17,6 @@ from ..util.option import dict
 from ..util.option import lib_path
 
 import json
-import os
-import time
 import urllib
 import urllib2
 

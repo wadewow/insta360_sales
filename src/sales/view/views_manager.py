@@ -12,11 +12,9 @@ from ..util.option import dict
 from ..util.option import lib_path
 
 import json
-import os
 import sys
 import urllib
 import urllib2
-import time
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
