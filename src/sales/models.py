@@ -35,6 +35,7 @@ class Shop(models.Model):
     remark = models.CharField(max_length=200, blank=True)
     promotion = models.CharField(max_length=200, blank=True)
     manager = models.CharField(max_length=200, blank=True)
+    reason = models.CharField(max_length=500, blank=True)
 
     def __unicode__(self):
         return str(self.id)

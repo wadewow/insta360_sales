@@ -157,6 +157,15 @@
                     </div>
                 </div>
             </div>
+{#            <div class="weui-cells__title">选择该门店的理由</div>#}
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <textarea class="weui-textarea" form="modify_store" name="reason" required="required" id="reason" placeholder="请阐述选择该门店的理由，不少于200字" rows="4"></textarea>
+                        <div class="weui-textarea-counter"><span id="textNum">0</span>/200</div>
+                    </div>
+                </div>
+            </div>
             <input type="hidden" name="store_id" id="store_id" value="{{ store_info.id }}">
             <div class="weui_btn_area">
                 <input type="submit" class="weui-btn weui-btn_primary" value="确认">
@@ -217,6 +226,7 @@
             files = $("#uploaderInput")[0].files;
             $formData.append("store_id", $("#store_id").val());
             $formData.append("name", $("#name").val());
+            $formData.append("reason", $("#reason").val());
             $formData.append("city", $("#city").val());
             $formData.append("location", $("#location").val());
             $formData.append("online", $("#online").val());
@@ -462,6 +472,19 @@
 
         $("#manual").click(function(){
             $dialog.show();
+        });
+
+        $('#reason').on("input",function(){
+            var count = $('#reason').val().length;
+            var textNum = $('#textNum');
+            textNum.text(count);
+            if(count < 200) {
+                textNum.css('color','red')
+            }
+            else {
+                textNum.css('color','#b2b2b2')
+            }
+
         });
     });
 </script>

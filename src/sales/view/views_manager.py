@@ -74,6 +74,7 @@ def manager_list(request):
             return redirect('/sales/manager/login')
         else:
             manager_id = request.session['manager_id']
+            print manager_id
             store_list = Shop.objects.filter(manager=manager_id)
             for store in store_list:
                 new_option = {}
@@ -112,6 +113,7 @@ def manager_modify_store(request):
                 exhibition = para.__getitem__("exhibition")
                 machine_serial = para.__getitem__("machine_serial")
                 remark = para.__getitem__('remark')
+                reason = para.__getitem__('reason')
                 # agent = para.__getitem__("agent")
                 manager = para.__getitem__("manager")
                 try:
@@ -180,6 +182,7 @@ def manager_modify_store(request):
                             option=json.dumps(option),
                             machine_serial=machine_serial,
                             remark=remark,
+                            reason=reason,
                             # agent=agent,
                             manager=manager
                         )
@@ -197,6 +200,7 @@ def manager_modify_store(request):
                             option=json.dumps(option),
                             machine_serial=machine_serial,
                             remark=remark,
+                            reason=reason,
                             # agent=agent,
                             manager=manager
                         )
