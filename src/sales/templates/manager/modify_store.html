@@ -9,6 +9,8 @@
     <script src="//cdn.bootcss.com/h5Validate/0.9.0/jquery.h5validate.min.js"></script>
     <script src="{{ lib_path }}/static/city_picker/js/city-picker.data.js"></script>
     <script src="{{ lib_path }}/static/js/exif.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script src="{{ lib_path }}/static/js/config.js"></script>
     <script src="{{ lib_path }}/static/city_picker/js/city-picker.js"></script>
     <link href="{{ lib_path }}/static/city_picker/css/city-picker.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet">
@@ -83,6 +85,15 @@
                     <input class="weui-input" type="text" id="manager" name="manager" pattern="\S+" required="required"  placeholder="请输入销售经理编号" value="{{ store_info.manager }}">
                 </div>
             </div>
+            <div class="weui-cell weui-cell_vcode">
+                <div class="weui-cell__hd"><label class="weui-label">样机序列号</label></div>
+                <div class="weui-cell__bd">
+                    <input type="text" class="weui-input" id="machine_serial" required="required"  name="machine_serial" value="{{ store_info.machine_serial }}" placeholder="请输入样机序列号">
+                </div>
+                <div class="weui-cell__ft">
+                    <a href="javascript:;" class="weui-btn weui-btn_plain-primary" id="scan1">扫一扫</a>
+                </div>
+            </div>
             <div class="weui-cell">
                 <div class="weui-cell__hd">
                     <label class="weui-label">展台编号</label>
@@ -104,10 +115,10 @@
                     <label class="weui-label">展台配置</label>
                 </div>
                 <div class="weui-cell__bd">
-                <div class="weui-cell__hd" id="machine_serial_div"  {% if store_info.option.machine != 'true' %}style="display: none"{% endif %}>
-                    <input type="text" class="weui-input" id="machine_serial" placeholder="   请输入样机序列号" value="{{ store_info.machine_serial }}">
-                    <a href="javascript:;" class="weui-btn weui-btn_plain-primary" id="scan1">扫一扫</a>
-                </div>
+{#                <div class="weui-cell__hd" id="machine_serial_div"  {% if store_info.option.machine != 'true' %}style="display: none"{% endif %}>#}
+{#                    <input type="text" class="weui-input" id="machine_serial" placeholder="   请输入样机序列号" value="{{ store_info.machine_serial }}">#}
+{#                    <a href="javascript:;" class="weui-btn weui-btn_plain-primary" id="scan1">扫一扫</a>#}
+{#                </div>#}
                     <div class="weui-cells weui-cells_checkbox">
                     {% for key, value in options.items %}
                         <label class="weui-cell weui-check__label" for={{ key }}>
@@ -398,9 +409,9 @@
             $gallery.fadeOut(100);
         });
 
-        $("#machine").on("click", function(){
-            $("#machine_serial_div").toggle()
-        });
+{#        $("#machine").on("click", function(){#}
+{#            $("#machine_serial_div").toggle()#}
+{#        });#}
 
         $("#scan").on("click", function(){
             wx.scanQRCode({

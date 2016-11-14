@@ -81,7 +81,7 @@
 {#      <td>{{ store.remark }}</td>#}
 {#      <td>{{ store.promotion }}</td>#}
       <td>{{ store.agent }}</td>
-      <td>{{ store.manager.name }}({{ store.manager.area }})</td>
+      <td style="min-width: 70px">{{ store.manager.name }}<br>({{ store.manager.area }})</td>
       <td>{{ store.sales_count }}</td>
       <td style="min-width: 120px">{{ store.created_time }}</td>
       <td style="max-width: 500px">{% if store.online != 'http://' %}<a href="{{ store.online }}" title="{{ store.online }}"  target="_blank">{{ store.online|truncatechars:30 }}</a>{% endif %}</td>
