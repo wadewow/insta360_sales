@@ -272,9 +272,17 @@ def test(request):
 
 @csrf_exempt
 def test1(request):
-    return render(request, 'test/test1.html', {
-        'lib_path': lib_path
-    })
+    temp = time.localtime(int(1478942485))  #################
+    active_time = time.strftime("%Y-%m-%d %H:%M:%S", temp)
+    print type(temp), temp
+    print type(active_time),active_time
+
+    temp = datetime.datetime.utcfromtimestamp(int(1478942485))
+    temp = temp + datetime.timedelta(hours=8)
+    active_time = temp.strftime("%Y-%m-%d %H:%M:%S")
+    print type(temp), temp
+    print type(active_time), active_time
+    return HttpResponse(temp)
 
 
 

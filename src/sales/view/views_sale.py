@@ -172,8 +172,13 @@ def sale_sales(request):
                     active = 0
                     if active_time != '0':
                       active = 1
-                      temp = time.localtime(int(active_time))
-                      active_time = time.strftime("%Y-%m-%d %H:%M:%S", temp)
+
+                      temp = datetime.datetime.utcfromtimestamp(int(active_time))
+                      temp = temp + datetime.timedelta(hours=8)
+                      active_time = temp.strftime("%Y-%m-%d %H:%M:%S")
+
+                      # temp = time.localtime(int(active_time)) #################
+                      # active_time = time.strftime("%Y-%m-%d %H:%M:%S", temp)
                     else:
                       active_time = timezone.now()
                     sale_info = {

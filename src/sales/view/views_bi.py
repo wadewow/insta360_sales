@@ -211,7 +211,7 @@ def bi_trend(request):
 def bi_store_trend(request):
     if request.method == 'GET':
         para = request.GET
-        today = (datetime.datetime.now() + datetime.timedelta(days=1)).replace(hour=0,minute=0,second=0,microsecond=0)
+        today = (timezone.localtime(timezone.now()) + datetime.timedelta(days=1)).replace(hour=0,minute=0,second=0,microsecond=0)
         begin = today.replace(year=2016,month=11,day=5)
 
         if para.__contains__('start_time'):
