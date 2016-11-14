@@ -5,6 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from ..models import Manager
 from ..models import Shop
 from ..models import Exhibition
@@ -137,6 +138,28 @@ def manager_modify_store(request):
                 except:
                     return HttpResponse('销售经理编号无效！')
 
+                url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfo/'
+                values = {
+                    'serial_number': machine_serial
+                }
+                data = urllib.urlencode(values)
+                req = urllib2.Request(url, data=data)
+                res_data = urllib2.urlopen(req)
+                res_data = res_data.read()
+                res_data = json.loads(res_data)
+                flag = res_data['flag']
+                if not flag:
+                    return HttpResponse("样机序列号无效！")
+
+
+                try:
+                    Shop.objects.exclude(id=store_id).get(machine_serial=machine_serial)
+                    return HttpResponse('该样机已被使用！')
+                except MultipleObjectsReturned:
+                    return HttpResponse('该样机已被使用！')
+                except ObjectDoesNotExist:
+                    pass
+
 
                 option = {}
                 for index, item in enumerate(dict):
@@ -243,7 +266,7 @@ def manager_modify_store(request):
                             url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/camera/setOffsetBySerial'
                             values = {
                                 'serial_number': machine_serial,
-                                'offset': ''
+                                'offset': 0
                             }
                             try:
                                 data = urllib.urlencode(values)

@@ -149,6 +149,28 @@ def store_add(request):
                 except:
                     return HttpResponse('销售经理编号无效！')
 
+
+                url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfo/'
+                values = {
+                    'serial_number': machine_serial
+                }
+                data = urllib.urlencode(values)
+                req = urllib2.Request(url, data=data)
+                res_data = urllib2.urlopen(req)
+                res_data = res_data.read()
+                res_data = json.loads(res_data)
+                flag = res_data['flag']
+                if not flag:
+                    return HttpResponse("样机序列号无效！")
+
+                try:
+                    Shop.objects.get(machine_serial=machine_serial)
+                    return HttpResponse('该样机已被使用！')
+                except MultipleObjectsReturned:
+                    return HttpResponse('该样机已被使用！')
+                except ObjectDoesNotExist:
+                    pass
+
                 option = {}
                 for index, item in enumerate(dict):
                     if para.__contains__(item):
@@ -226,7 +248,7 @@ def store_add(request):
                     url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/camera/setOffsetBySerial'
                     values = {
                         'serial_number': machine_serial,
-                        'offset': ''
+                        'offset': 0
                     }
                     try:
                         data = urllib.urlencode(values)
@@ -334,6 +356,27 @@ def store_modify(request):
                     Manager.objects.get(id=manager)
                 except:
                     return HttpResponse('销售经理编号无效！')
+
+                url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfo/'
+                values = {
+                    'serial_number': machine_serial
+                }
+                data = urllib.urlencode(values)
+                req = urllib2.Request(url, data=data)
+                res_data = urllib2.urlopen(req)
+                res_data = res_data.read()
+                res_data = json.loads(res_data)
+                flag = res_data['flag']
+                if not flag:
+                    return HttpResponse("样机序列号无效！")
+
+                try:
+                    Shop.objects.exclude(id=store_id).get(machine_serial=machine_serial)
+                    return HttpResponse('该样机已被使用！')
+                except MultipleObjectsReturned:
+                    return HttpResponse('该样机已被使用！')
+                except ObjectDoesNotExist:
+                    pass
                 # ball = para.__getitem__("ball")
                 # machine = para.__getitem__("machine")
                 # board = para.__getitem__("board")
@@ -357,7 +400,7 @@ def store_modify(request):
                 except:
                     photo_num = 1
                 path_join = ''
-                print photo_num
+                # print photo_num
                 for i in range(0, photo_num):
                     if (not request.FILES.__contains__("photo" + str(i))) or para.__contains__('removephoto' + str(i)):
                         continue
@@ -436,8 +479,11 @@ def store_modify(request):
                                 'offset': 1
                             }
                             try:
+                                print values
                                 data = urllib.urlencode(values)
+                                print data
                                 req = urllib2.Request(url, data=data)
+                                print res_data
                                 res_data = urllib2.urlopen(req)
                                 res = res_data.read()
                                 res = json.loads(res)
@@ -449,12 +495,15 @@ def store_modify(request):
                             url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/camera/setOffsetBySerial'
                             values = {
                                 'serial_number': machine_serial,
-                                'offset': ''
+                                'offset': 0
                             }
                             try:
+                                print values
                                 data = urllib.urlencode(values)
+                                print data
                                 req = urllib2.Request(url, data=data)
                                 res_data = urllib2.urlopen(req)
+                                print res_data
                                 res = res_data.read()
                                 res = json.loads(res)
                                 print res
