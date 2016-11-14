@@ -138,18 +138,18 @@ def manager_modify_store(request):
                 except:
                     return HttpResponse('销售经理编号无效！')
 
-                url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfo/'
-                values = {
-                    'serial_number': machine_serial
-                }
-                data = urllib.urlencode(values)
-                req = urllib2.Request(url, data=data)
-                res_data = urllib2.urlopen(req)
-                res_data = res_data.read()
-                res_data = json.loads(res_data)
-                flag = res_data['flag']
-                if not flag:
-                    return HttpResponse("样机序列号无效！")
+                # url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfo/'
+                # values = {
+                #     'serial_number': machine_serial
+                # }
+                # data = urllib.urlencode(values)
+                # req = urllib2.Request(url, data=data)
+                # res_data = urllib2.urlopen(req)
+                # res_data = res_data.read()
+                # res_data = json.loads(res_data)
+                # flag = res_data['flag']
+                # if not flag:
+                #     return HttpResponse("样机序列号无效！")
 
 
                 try:
