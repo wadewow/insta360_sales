@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <title>展台序列号导入系统</title>
+    <style type="text/css">
+        body {
+            padding:10px 10px;
+        }
+        .submit {
+            float: right;
+        }
+        .textarea {
+            height:800px;
+            width:100%
+        }
+    </style>
+</head>
+<body>
+
+ <div class="mui-row">
+ <div class="mui-col-md-3">
+ </div>
+<div class="mui-col-md-3">
+    <div class="">
+    <form action="/sales/util/import_exhibition" id="import_exhibition" method="post" class="mui-form">
+    <div class="">
+        <textarea placeholder="请复制展台序列号,一行一个序列号，不要有空格、中文和标点符号,首尾不要留空行和中文" name="exhibitions" form="import_exhibition" autofocus="autofocus" required="required" class="textarea"></textarea>
+    </div>
+      <button class="mui-btn mui-btn--raised mui-btn--primary submit">添加</button>
+    </form>
+</div>
+</div>
+<div class="mui-col-md-3">
+    {% if flag == 1 %}
+  <div style="overflow-y:auto;max-height:800px;width:60%">
+      <table class="mui-table mui-table--bordered table">
+      <thead>
+        <tr>
+            <th>新增展台序列号</th>
+        </tr>
+      </thead>
+      <tbody>
+       {% for item in added %}
+    <tr>
+        <td>{{ item }}</td>
+    </tr>
+      {% endfor %}
+    </tbody>
+      </table>
+  </div>
+    {% endif %}
+  </div>
+  <div class="mui-col-md-3">
+ </div>
+  </div>
+
+</body>
+<script>
+    $(function () {
+    });
+</script>
+</html>

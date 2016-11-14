@@ -161,7 +161,7 @@
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <textarea class="weui-textarea" form="modify_store" name="reason" required="required" id="reason" placeholder="请阐述选择该门店的理由，不少于200字" rows="4"></textarea>
+                        <textarea class="weui-textarea" form="modify_store" name="reason" required="required" id="reason" placeholder="请阐述选择该门店的理由，不少于200字" rows="4">{{ store_info.reason }}</textarea>
                         <div class="weui-textarea-counter"><span id="textNum">0</span>/200</div>
                     </div>
                 </div>
@@ -474,7 +474,17 @@
             $dialog.show();
         });
 
-        $('#reason').on("input",function(){
+        var reason = $('#reason');
+        var count = reason.val().length;
+        var textNum = $('#textNum');
+        textNum.text(count);
+        if(count < 200) {
+            textNum.css('color','red')
+        }
+        else {
+            textNum.css('color','#b2b2b2')
+        }
+        reason.on("input",function(){
             var count = $('#reason').val().length;
             var textNum = $('#textNum');
             textNum.text(count);

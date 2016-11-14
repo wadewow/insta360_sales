@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <title>登录</title>
+</head>
+<body>
+<div class="login_div">
+  <form id="login">
+    <legend>登录</legend>
+    <div class="mui-textfield">
+      <input type="text" id="username"  name="username" required="required" placeholder="请输入工号">
+    </div>
+    <div class="mui-textfield">
+      <input type="password" id="password" name="password" required="required"  placeholder="请输入密码">
+    </div>
+    <input type="submit" class="mui-btn mui-btn--raised" value="登录">
+    <span id='tip' style="color:red;margin-left:10px"></span>
+  </form>
+</div>
+</body>
+<script>
+    $(function () {
+        var form = $('form#login');
+        form.submit(function(){
+            data = $('form#login').serialize();
+            $.post("/sales/manager/login", data, function(data,status){
+                if(data == 'success'){
+                    $("#tip").text('登录成功！');
+                    location.href = "/sales/manager/stores"
+                }
+                else {
+                    $("#tip").text(data);
+                }
+            });
+
+            return false
+        });
+    });
+</script>
+<style type="text/css">
+  .login_div {
+    position:absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    opacity: 0.9;
+    z-index: 999;
+    background: black;
+    font-family: 'Microsoft YaHei UI';
+  }
+  #login {
+    width: 550px;
+    height: 320px;
+    background: white;
+    margin: 200px auto;
+    padding: 30px 50px;
+    border-radius:10px;
+  }
+</style>
+</html>

@@ -8,6 +8,8 @@ from django.core.files.storage import default_storage
 from ..models import Manager
 from ..models import Shop
 from ..models import Exhibition
+from ..models import Store
+from ..models import Sale
 from ..util.option import dict
 from ..util.option import lib_path
 
@@ -63,6 +65,14 @@ def manager_login(request):
             return HttpResponse(content='success', status=status)
         else:
             return HttpResponse(content='账号或密码错误！', status=status)
+
+
+@csrf_exempt
+def manager_login_pc(request):
+    if request.method == 'GET':
+        return render(request, 'manager/login_pc.html', {
+            'lib_path': lib_path
+        })
 
 
 @csrf_exempt
@@ -281,7 +291,8 @@ def manager_modify_store(request):
                         'option': option,
                         'machine_serial': result.machine_serial,
                         'agent': result.agent,
-                        'manager': result.manager
+                        'manager': result.manager,
+                        'reason': result.reason
                     },
                     "options": dict,
                     "agent_list": agent_list,
@@ -289,3 +300,63 @@ def manager_modify_store(request):
                 })
         except:
             return redirect('/sales/manager/login')
+
+
+@csrf_exempt
+def manager_stores(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/manager/login_pc')
+        manager_id = request.session['manager_id']
+        stores = Shop.objects.filter(manager=manager_id).order_by('-created_time')
+        total = stores.count()
+
+        url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
+        req = urllib2.Request(url=url)
+        try:
+            res_data = urllib2.urlopen(req)
+        except:
+            res_data = '["默认"]'
+        data = res_data.read()
+        try:
+            agent_list = json.loads(data)
+        except:
+            agent_list = [{'custom_number':'默认'}]
+        agent_dict = {}
+        for agent in agent_list:
+            agent_dict[agent['custom_number']] = agent['company']
+        stores = stores.values()
+        for store in stores:
+            new_option = {}
+            option = json.loads(store['option'])
+            for index, item in enumerate(option):
+                n = dict[item]
+                new_option[n] = option[item]
+            store['option'] = new_option
+            photo_join = store['photo']
+            photos = photo_join.split(':')
+            store['photo'] = photos
+            business_id = store['business_id']
+            manager_id = store['manager']
+            store['agent'] = agent_dict[store['agent']]
+            try:
+                shopkeeper = Store.objects.get(id=business_id)
+                store['business_id'] = shopkeeper
+            except:
+                pass
+            try:
+                manager = Manager.objects.get(id=manager_id)
+                store['manager'] = manager
+            except:
+                pass
+            store_id = store['id']
+            sales_count = Sale.objects.filter(store_id=store_id, name='Insta360 Nano').count()
+            store['sales_count'] = sales_count
+        data = {
+            'total': total
+        }
+        return render(request, 'manager/stores.html', {
+            'stores': stores,
+            'data': data,
+            'lib_path': lib_path
+        })

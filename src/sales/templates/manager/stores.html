@@ -9,7 +9,7 @@
     <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
-    <title>Insta360 展台信息</title>
+    <title>Insta360 门店信息</title>
     <script>
     $(function () {
         $gallery = $("#gallery");
@@ -26,10 +26,8 @@
     });
     </script>
 </head>
-<body>
-{% extends "bi/navigation.html" %}
-{% block title %}门店情况{% endblock %}
-{% block content %}
+<body style="font-family: 'Microsoft YaHei UI'; padding:0 20px">
+
 <table class="mui-table mui-table--bordered">
   <thead>
     <tr>
@@ -50,6 +48,7 @@
       <th>累计销量</th>
       <th>创建时间</th>
       <th>网店地址</th>
+
     </tr>
   </thead>
   <tbody>
@@ -74,7 +73,7 @@
       <td>
           {% for photo in store.photo %}
               <ul class="weui-uploader__files uploaderFiles" id="uploaderFiles" style="margin-bottom:0;min-width:270px">
-                <li class="weui-uploader__file" style="height:50px;width:50px;background-image:url({{ photo }})"></li>
+                <li class="weui-uploader__file" style="width:50px;height:50px;background-image:url({{ photo }})"></li>
               </ul>
           {% endfor %}
       </td>
@@ -85,6 +84,7 @@
       <td>{{ store.sales_count }}</td>
       <td style="min-width: 120px">{{ store.created_time }}</td>
       <td style="max-width: 500px">{% if store.online != 'http://' %}<a href="{{ store.online }}" title="{{ store.online }}"  target="_blank">{{ store.online|truncatechars:30 }}</a>{% endif %}</td>
+
     </tr>
   {% endfor %}
 
@@ -95,22 +95,6 @@
     <div class="weui-gallery__opr">
     </div>
 </div>
-<div class="mui-container-fluid page_tool">
-    <form action="/sales/bi/stores">
-        <a href="/sales/bi/stores?page=1" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
-        <a href="/sales/bi/stores?page={{ data.current_page|add:"-1"}}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">上页</a>
-        <span class="currentPage">{{ data.current_page }}</span> / <span class="totalPage">{{ data.page_total }}</span>
-        <a href="/sales/bi/stores?page={{ data.current_page|add:"1"}}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">下页</a>
-        <a href="/sales/bi/stores?page={{ data.page_total }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">尾页</a>
-        <span>跳转到第</span>
-        <input id="skip" type="number" pattern="[0-9]+" name="page" style="width:70px" class="skip">
-        <span>页</span>
-        <input type="submit" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary" value="GO">
-        <span> 总计 </span><span>{{ data.total }}</span><span> 条</span>
-{#  <input type="hidden" id="total_page" number value="{{ data.page_total }}">#}
-    </form>
-</div>
-{% endblock %}
 </body>
 
 </html>
