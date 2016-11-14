@@ -44,7 +44,7 @@ def bi_stores(request):
                 page = 1
         if page < 1:
             page = 1
-        size = 20
+        size = 40
         stores = Shop.objects.filter(created_time__gt='2016-11-05').order_by('-created_time')
         total = stores.count()
         page_total = total / size + (1 if (total % size) > 0 else 0)
