@@ -39,8 +39,11 @@ def util_import_exhibition(request):
             if res[1]:
                 added.append(temp)
                 print temp
+
+        count = len(added)
         return render(request, 'util/import_exhibition.html', {
             'lib_path': lib_path,
             'added': added,
+            'count': count,
             'flag': 1
         })

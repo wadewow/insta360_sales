@@ -211,8 +211,7 @@ def bi_trend(request):
 def bi_store_trend(request):
     if request.method == 'GET':
         para = request.GET
-
-        today = (timezone.now() + datetime.timedelta(days=1)).replace(hour=0,minute=0,second=0,microsecond=0)
+        today = (datetime.datetime.now() + datetime.timedelta(days=1)).replace(hour=0,minute=0,second=0,microsecond=0)
         begin = today.replace(year=2016,month=11,day=5)
 
         if para.__contains__('start_time'):
@@ -238,6 +237,7 @@ def bi_store_trend(request):
 
             end = (start_time + datetime.timedelta(days=(i+1)))
             start = (end - datetime.timedelta(days=1))
+            # print end
             store_count = Shop.objects.filter(created_time__range=(begin,end)).count()
             nano_count = Sale.objects.filter(active=1, name='Insta360 Nano', active_time__range=(start, end)).count()
             temp = {
