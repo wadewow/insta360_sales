@@ -45,7 +45,14 @@ def bi_stores(request):
         if page < 1:
             page = 1
         size = 40
-        stores = Shop.objects.filter(created_time__gt='2016-11-05').order_by('-created_time')
+        sort = '-created_time'
+        if para.__contains__('sort'):
+            sort = para.__getitem__('sort')
+
+        if sort == 'province':
+            stores = Shop.objects.filter(created_time__gt='2016-11-05').order_by(sort, 'city', 'location')
+        else:
+            stores = Shop.objects.filter(created_time__gt='2016-11-05').order_by(sort)
         total = stores.count()
         page_total = total / size + (1 if (total % size) > 0 else 0)
         if page_total <=0:
@@ -103,8 +110,8 @@ def bi_stores(request):
         data = {
             'total': total,
             'current_page': page,
-            'page_total': page_total
-
+            'page_total': page_total,
+            'sort': sort
         }
         return render(request, 'bi/stores.html', {
             'stores': stores,
@@ -128,10 +135,22 @@ def bi_sales(request):
                 page = 1
         if page < 1:
             page = 1
-        size = 20
+        sort = '-created_time'
+        if para.__contains__('sort'):
+            sort = para.__getitem__('sort')
+        size = 40
         now = timezone.now()
         deadline = now - datetime.timedelta(hours=12)
-        sales = Sale.objects.filter(created_time__gt='2016-11-05', name='Insta360 Nano').exclude(valid=0, active=0, created_time__lt=deadline).order_by('-created_time')
+        # sales = Sale.objects.all()
+        # for sale in sales:
+        #     s_id = sale.store_id
+        #     s = Shop.objects.get(id=s_id)
+        #     sale.manager = s.manager
+        #     sale.save()
+        if sort == '-active':
+            sales = Sale.objects.filter(created_time__gt='2016-11-05', name='Insta360 Nano').exclude(valid=0, active=0, created_time__lt=deadline).order_by(sort, '-active_time')
+        else:
+            sales = Sale.objects.filter(created_time__gt='2016-11-05', name='Insta360 Nano').exclude(valid=0, active=0, created_time__lt=deadline).order_by(sort)
         total = sales.count()
         page_total = total / size + (1 if (total % size) > 0 else 0)
         if page_total <=0:
@@ -191,7 +210,8 @@ def bi_sales(request):
         data = {
             'total': total,
             'current_page': page,
-            'page_total': page_total
+            'page_total': page_total,
+            'sort': sort
         }
         return render(request, 'bi/sales.html', {
             'sales': sales,

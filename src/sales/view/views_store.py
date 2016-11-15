@@ -479,11 +479,8 @@ def store_modify(request):
                                 'offset': 1
                             }
                             try:
-                                print values
                                 data = urllib.urlencode(values)
-                                print data
                                 req = urllib2.Request(url, data=data)
-                                print res_data
                                 res_data = urllib2.urlopen(req)
                                 res = res_data.read()
                                 res = json.loads(res)
@@ -498,12 +495,9 @@ def store_modify(request):
                                 'offset': 0
                             }
                             try:
-                                print values
                                 data = urllib.urlencode(values)
-                                print data
                                 req = urllib2.Request(url, data=data)
                                 res_data = urllib2.urlopen(req)
-                                print res_data
                                 res = res_data.read()
                                 res = json.loads(res)
                                 print res

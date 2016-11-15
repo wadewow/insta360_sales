@@ -25,6 +25,11 @@
         });
     });
     </script>
+    <style type="text/css">
+        .sort{
+            cursor:pointer
+        }
+    </style>
 </head>
 <body>
 {% extends "bi/navigation.html" %}
@@ -34,22 +39,22 @@
   <thead>
     <tr>
 {#      <th>id</th>#}
-      <th>门店名称</th>
+      <th><a class="sort" href="/sales/bi/stores?sort=name">门店名称</a></th>
       <th>商家名称</th>
       <th>商家姓名</th>
       <th>手机号</th>
 {#      <th>代码</th>#}
-      <th>线下地址</th>
-      <th>配置</th>
-      <th>样机序列号</th>
+      <th><a class="sort" href="/sales/bi/stores?sort=province">线下地址</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-option">配置</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-machine_serial">样机序列号</a></th>
       <th>展台照片</th>
 {#      <th>备注</th>#}
 {#      <th>促销策略</th>#}
-      <th>代理商</th>
-      <th>销售经理</th>
-      <th>累计销量</th>
-      <th>创建时间</th>
-      <th>网店地址</th>
+      <th><a class="sort" href="/sales/bi/stores?sort=agent">代理商</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=manager">销售经理</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-sales_count">累计销量</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-created_time">创建时间</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-online">网店地址</a></th>
     </tr>
   </thead>
   <tbody>
@@ -96,12 +101,12 @@
     </div>
 </div>
 <div class="mui-container-fluid page_tool">
-    <form action="/sales/bi/stores">
-        <a href="/sales/bi/stores?page=1" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
-        <a href="/sales/bi/stores?page={{ data.current_page|add:"-1"}}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">上页</a>
+    <form action="/sales/bi/stores?sort={{ data.sort }}">
+        <a href="/sales/bi/stores?page=1&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
+        <a href="/sales/bi/stores?page={{ data.current_page|add:"-1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">上页</a>
         <span class="currentPage">{{ data.current_page }}</span> / <span class="totalPage">{{ data.page_total }}</span>
-        <a href="/sales/bi/stores?page={{ data.current_page|add:"1"}}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">下页</a>
-        <a href="/sales/bi/stores?page={{ data.page_total }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">尾页</a>
+        <a href="/sales/bi/stores?page={{ data.current_page|add:"1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">下页</a>
+        <a href="/sales/bi/stores?page={{ data.page_total }}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">尾页</a>
         <span>跳转到第</span>
         <input id="skip" type="number" pattern="[0-9]+" name="page" style="width:70px" class="skip">
         <span>页</span>

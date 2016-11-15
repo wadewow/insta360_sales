@@ -68,7 +68,8 @@ def sale_scan(request):
                         'active': active,
                         'serial_number': serial_number,
                         'business_id': shop.business_id,
-                        'created_time': now
+                        'created_time': now,
+                        'manager': shop.manager
                     }
                     Sale.objects.update_or_create(serial_number=serial_number, name=name, defaults=sale_info)
                     return HttpResponse('success')
@@ -133,9 +134,20 @@ def sale_scan(request):
                     'serial_number': serial_number,
                     'business_id': shop.business_id,
                     'created_time': now,
-                    'device_code': device_code
+                    'device_code': device_code,
+                    'manager': shop.manager
                 }
+                try:
+                    temp = Sale.objects.get(serial_number=serial_number, name=name)
+                    s_id = temp.store_id
+                    t_shop = Shop.objects.get(id=s_id)
+                    t_shop.sales_count = t_shop.sales_count - 1
+                    t_shop.save()
+                except:
+                    pass
                 Sale.objects.update_or_create(serial_number=serial_number, name=name, defaults=sale_info)
+                shop.sales_count = shop.sales_count + 1
+                shop.save()
                 return HttpResponse('success')
         except:
             return HttpResponse('扫描失败！')

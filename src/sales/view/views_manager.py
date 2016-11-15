@@ -84,14 +84,17 @@ def manager_list(request):
         else:
             manager_id = request.session['manager_id']
             print manager_id
-            store_list = Shop.objects.filter(manager=manager_id)
+            store_list = Shop.objects.filter(manager=manager_id).values()
             for store in store_list:
                 new_option = {}
-                option = json.loads(store.option)
+                option = json.loads(store['option'])
                 for index, item in enumerate(option):
                     n = dict[item]
                     new_option[n] = option[item]
-                store.option = new_option
+                store['option'] = new_option
+                store_id = store['id']
+                sales_count = Sale.objects.filter(store_id=store_id, name='Insta360 Nano').count()
+                store['sales_count'] = sales_count
             return render(request, 'manager/list.html', {
                 'store_list': store_list,
                 'lib_path': lib_path

@@ -36,6 +36,7 @@ class Shop(models.Model):
     promotion = models.CharField(max_length=200, blank=True)
     manager = models.CharField(max_length=200, blank=True)
     reason = models.CharField(max_length=500, blank=True)
+    sales_count = models.IntegerField(default=0)
 
     def __unicode__(self):
         return str(self.id)
@@ -71,6 +72,7 @@ class Sale(models.Model):
     base = models.FloatField(default=0.0)
     valid = models.IntegerField(default=0)
     device_code = models.CharField(max_length=200, blank=True)
+    manager = models.CharField(max_length=200, blank=True)
 
     def __unicode__(self):
         return str(self.id)
