@@ -7,6 +7,9 @@ from django.views.decorators.csrf import csrf_exempt
 from ..util.option import lib_path
 from ..models import Exhibition
 
+import urllib2
+import urllib
+import json
 import sys
 
 reload(sys)
@@ -42,6 +45,61 @@ def util_import_exhibition(request):
 
         count = len(added)
         return render(request, 'util/import_exhibition.html', {
+            'lib_path': lib_path,
+            'added': added,
+            'count': count,
+            'flag': 1
+        })
+
+
+
+@csrf_exempt
+def util_convert_type(request):
+    if request.method == 'GET':
+        return render(request, 'util/convert_type.html', {
+            'lib_path': lib_path
+        })
+    if request.method == 'POST':
+        para = request.POST
+        print para
+        if (not para.__contains__("serial_numbers")) or (not para.__contains__("type")):
+            return render(request, 'util/convert_type.html', {
+                'lib_path': lib_path
+            })
+        serial_numbers = para.__getitem__("serial_numbers")
+        type = para.__getitem__("type")
+        if type == 'abroad':
+            type = 2
+        else:
+            type = 1
+        temps = serial_numbers.split('\n')
+        added = []
+        for temp in temps:
+            temp = str(temp)
+            temp = temp.strip()
+            if not temp.startswith('INS'):
+                continue
+
+            url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/camera/setNanoedition'
+            values = {
+                'serial_number': temp,
+                'type': type
+            }
+            try:
+                data = urllib.urlencode(values)
+                req = urllib2.Request(url, data=data)
+                res_data = urllib2.urlopen(req)
+                res = res_data.read()
+                res = json.loads(res)
+                print res
+                flag = res['flag']
+                if flag == 1:
+                    added.append(temp)
+            except:
+                print 'network error'
+
+        count = len(added)
+        return render(request, 'util/convert_type.html', {
             'lib_path': lib_path,
             'added': added,
             'count': count,

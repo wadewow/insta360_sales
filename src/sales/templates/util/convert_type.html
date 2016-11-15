@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <title>序列号类型转化系统</title>
+    <style type="text/css">
+        body {
+            padding:10px 10px;
+        }
+        .submit {
+            float: right;
+        }
+        .textarea {
+            height:800px;
+            width:100%
+        }
+    </style>
+</head>
+<body>
+
+ <div class="mui-row">
+ <div class="mui-col-md-3">
+ </div>
+<div class="mui-col-md-3">
+    <div class="">
+    <form action="" id="convert_type" method="post" class="mui-form">
+    <div class="">
+        <textarea placeholder="请复制Nano序列号,一行一个序列号，不要有空格、中文和标点符号,首尾不要留空行和中文" name="serial_numbers" id="serial_numbers" form="convert_type" autofocus="autofocus" required="required" class="textarea"></textarea>
+    </div>
+        <input type="hidden" name="type" id="type">
+      <button class="mui-btn mui-btn--raised mui-btn--primary submit" id="abroad">转为国际</button>
+      <button class="mui-btn mui-btn--raised mui-btn--primary submit" id="native" style="margin-right:10px">转为国内</button>
+    </form>
+</div>
+</div>
+<div class="mui-col-md-3">
+    {% if flag == 1 %}
+  <div style="overflow-y:auto;max-height:800px;width:60%">
+      <table class="mui-table mui-table--bordered table">
+      <thead>
+        <tr>
+            <th>受到影响的Nano序列号</th>
+        </tr>
+      </thead>
+      <tbody>
+       {% for item in added %}
+    <tr>
+        <td>{{ item }}</td>
+    </tr>
+      {% endfor %}
+    </tbody>
+      </table>
+    <span>
+        共改变了{{ count }}个Nano序列号的类型
+    </span>
+  </div>
+    {% endif %}
+  </div>
+  <div class="mui-col-md-3">
+ </div>
+  </div>
+
+</body>
+<script>
+    $(function () {
+        $('.submit').click(function(){
+            val = $('#serial_numbers').val();
+            if(val=='')
+                return false;
+            type = $(this).attr('id');
+            $('#type').val(type);
+        });
+    });
+</script>
+</html>
