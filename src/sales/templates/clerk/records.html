@@ -25,7 +25,7 @@
             </div>
         </div>
     </div>
-    <div class="weui-cells records" style="overflow-y: auto" >
+    <div class="weui-cells records" style="overflow-y: auto;margin-top: 0 !important;" >
         {% for record in records %}
         <div class="weui-cell">
             <div class="weui-cell__bd">
@@ -54,20 +54,19 @@
         </div>
         {% endfor %}
     </div>
-    <div class="weui-footer weui-footer_fixed-bottom">
+    <div class="weui-footer weui-footer_fixed-bottom" style="position:static">
         <p class="">每次提现将会生成一个提现兑换码，请添加客服微信： <span style="font-weight: bold;">insta360_pay</span> ，发送提现兑换码，领取现金奖励</p>
         <a href="/sales/QR_code" class="weui-btn weui-btn_primary" style="color:white">联系客服</a>
     </div>
 </body>
 <script>
     $(function () {
-        panel = $(".records")[0];
-        footer = $(".weui-footer")[0];
-        title = $(".title")[0];
-        column = $(".column")[0];
-        console.log($(window).height());
-        $height  = $(window).height() - 200;
-        panel.setAttribute('style', 'overflow-y: auto;height:' + $height + "px" );
+        $panel = $(".records");
+        $footer = $(".weui-footer");
+        $title = $(".title");
+        $column = $(".column");
+        $height  = $(window).height() - $footer.height() - $title.height() - $column.height() - 20;
+        $panel.css('height' , $height + "px" );
 
     });
 </script>

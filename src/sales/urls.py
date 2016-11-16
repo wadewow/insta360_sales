@@ -55,6 +55,7 @@ urlpatterns = [
     url(r'^agent/login$', views.agent_login, name='agent_login'),
     url(r'^agent/list$', views.agent_list, name='agent_list'),
     url(r'^agent/sales$', views.agent_sales, name='agent_sales'),
+    url(r'^agent/search$', views.agent_search, name='agent_search'),
 
     url(r'^promotion/store_filter$', views.store_filter, name='store_filter'),
 

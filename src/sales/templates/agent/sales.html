@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
     <title>门店销售情况</title>
 </head>
-<body>
+<body style="padding: 0 0 !important;">
     <div class="container" id="container">
         <div class="page navbar js_show">
             <div class="page__bd" style="height: 100%;">
@@ -30,7 +30,7 @@
                             {% for sale in sale_list %}
                             <div class="weui-cell">
                                 <div class="weui-cell__bd">
-                                    <p><span>商品序列号: </span><span>{{ sale.serial_number }}</span></p>
+                                    <p><span>货品序列号: </span><span>{{ sale.serial_number }}</span></p>
                                     <p><span>销售时间: </span><span>{{ sale.created_time }}</span></p>
                                     <p><span>销售员: </span><span>{{ sale.clerk.name }}({{ sale.clerk.phone }})</span></p>
                                     {% if sale.illegal == 0 %}
@@ -49,7 +49,7 @@
                                 {% if sale.illegal == 1 %}
                                     <div class="weui-cell">
                                         <div class="weui-cell__bd">
-                                            <p><span>商品序列号: </span><span>{{ sale.serial_number }}</span></p>
+                                            <p><span>货品序列号: </span><span>{{ sale.serial_number }}</span></p>
                                             <p><span>销售时间: </span><span>{{ sale.created_time }}</span></p>
                                             <p><span>销售员: </span><span>{{ sale.clerk.name }}({{ sale.clerk.phone }})</span></p>
                                             <p style="color: red">违规说明：该序列号货源不属于您，而属于{{ sale.agent.company }},请联系Insta360销售经理协助解决</p>

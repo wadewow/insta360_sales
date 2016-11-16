@@ -13,6 +13,7 @@ from ..util.option import lib_path
 
 import json
 import sys
+import datetime
 import urllib
 import urllib2
 
@@ -121,3 +122,68 @@ def agent_sales(request):
             'sale_list': sale_list,
             'lib_path': lib_path
         })
+
+
+@csrf_exempt
+def agent_search(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('agent_id'):
+            return redirect('/sales/agent/login')
+        return render(request, 'agent/search.html', {
+            'lib_path': lib_path
+        })
+    if request.method == 'POST':
+        if not request.session.__contains__('agent_id'):
+            return redirect('/sales/agent/login')
+        agent_id = request.session['agent_id']
+        para = request.POST
+        if not para.__contains__('serial_number'):
+            return render(request, 'agent/search.html', {
+                'lib_path': lib_path
+            })
+        serial_number = para.__getitem__('serial_number')
+        url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/agent/getagentbyserialnumber'
+        values = {
+            'serial_numbers': serial_number
+        }
+        data = urllib.urlencode(values)
+        req = urllib2.Request(url, data=data)
+        res_data = urllib2.urlopen(req)
+        res = res_data.read()
+        res = json.loads(res)
+        result = []
+        for index in res:
+            agent = res[index]['custom_number']
+            if agent != agent_id:
+                continue
+            temp = {}
+            temp['serial_number'] = index
+            temp['sold'] = 0
+            try:
+                sale = Sale.objects.get(serial_number=index, name="Insta360 Nano")
+                business_id = sale.business_id
+                store_id = sale.store_id
+                try:
+                    business = Store.objects.get(id=business_id)
+                except:
+                    business={}
+                try:
+                    store = Shop.objects.get(id=store_id)
+                except:
+                    store={}
+                sale_info = {}
+                created_time = sale.created_time
+                created_time += datetime.timedelta(hours=8)
+                created_time = created_time.strftime('%Y-%m-%d %H:%M:%S')
+                sale_info['time'] = created_time
+                sale_info['business_name'] = business.store
+                sale_info['business_phone'] = business.phone
+                sale_info['store_name'] = store.name
+                sale_info['store_location'] = store.province + ' ' + store.city + ' ' + store.location
+                temp['sale_info'] = sale_info
+                temp['sold'] = 1
+            except:
+                pass
+            result.append(temp)
+
+        return JsonResponse(result, safe=False)

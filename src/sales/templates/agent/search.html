@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/h5Validate/0.9.0/jquery.h5validate.min.js"></script>
+    <link rel="stylesheet" href="{{ lib_path }}/static/css/global.css"/>
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_2eo5uqijf9zr529.css"/>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>货品销售情况</title>
+</head>
+<body style="padding: 0 0 !important;">
+<div class="page__bd">
+        <div class="weui-search-bar" id="searchBar">
+            <form class="weui-search-bar__form" id="search_serial">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" id="searchInput" name="serial_number" placeholder="搜索" required="required">
+                    <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+                </div>
+                <label class="weui-search-bar__label" id="searchText" style="transform-origin: 0px 0px 0px; opacity: 1; transform: scale(1, 1);">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span>
+                </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+        </div>
+        <div class="weui-cells searchbar-result" id="searchResult" style="display: none;">
+        </div>
+    </div>
+    <div class="weui-cells" id="container">
+    </div>
+<div class="weui-tabbar" style="position:fixed">
+    <a href="/sales/agent/list" class="weui-tabbar__item">
+{#        <img src="./images/icon_tabbar.png" alt="" class="weui-tabbar__icon">#}
+        <i class="iconfont  icon-dian"></i>
+        <p class="weui-tabbar__label">供货门店销售详情</p>
+    </a>
+    <a href="javascript:;" class="weui-tabbar__item weui-bar__item_on">
+{#         <img src="./images/icon_tabbar.png" alt="" class="weui-tabbar__icon">#}
+        <i class="iconfont icon-xianchangcangku"></i>
+        <p class="weui-tabbar__label">货品销售情况搜索</p>
+    </a>
+</div>
+</body>
+<script type="text/javascript">
+    $(function(){
+        var $searchBar = $('#searchBar'),
+            $searchResult = $('#searchResult'),
+            $searchText = $('#searchText'),
+            $searchInput = $('#searchInput'),
+            $searchClear = $('#searchClear'),
+            $searchCancel = $('#searchCancel');
+
+        function hideSearchResult(){
+            $searchResult.hide();
+            $searchInput.val('');
+        }
+        function cancelSearch(){
+            hideSearchResult();
+            $searchBar.removeClass('weui-search-bar_focusing');
+            $searchText.show();
+        }
+
+        $searchText.on('click', function(){
+            $searchBar.addClass('weui-search-bar_focusing');
+            $searchInput.focus();
+        });
+        $searchInput
+            .on('blur', function () {
+                if(!this.value.length) cancelSearch();
+            })
+            .on('input', function(){
+                if(this.value.length) {
+                    $searchResult.show();
+                } else {
+                    $searchResult.hide();
+                }
+            })
+        ;
+        $searchClear.on('click', function(){
+            hideSearchResult();
+            $searchInput.focus();
+        });
+        $searchCancel.on('click', function(){
+            cancelSearch();
+            $searchInput.blur();
+        });
+
+
+        $('form').h5Validate({
+            errorClass: 'invalid'
+        });
+        var form = $('form#search_serial');
+        form.submit(function(){
+            result = form.h5Validate('allValid');
+            if (!result) {
+                return false;
+            }
+            data = $('form#search_serial').serialize();
+
+            $.post("/sales/agent/search", data, function(data,status){
+                console.log("Data: " + data + "\nStatus: " + status);
+                container = $('#container');
+                var html = '';
+                var count = 0;
+                for(var index in data){
+                    var item = data[index];
+                    var serial_number = item['serial_number'];
+                    var sold = item['sold'];
+                    var content = '';
+                    if(sold == 0){
+                        content = '<div class="weui-cell"><div class="weui-cell__bd">' +
+                                    '<p><span>相机序列号: </span><span>' + serial_number +  '</span></p>' +
+                                    '<p><span>销售状态: </span><span>未扫码售出</span></p>' +
+                                  '</div></div>'
+                    }
+                    else {
+                        var info = item['sale_info'];
+                        var time = info['time'];
+                        var business_name = info['business_name'];
+                        var business_phone = info['business_phone'];
+                        var store_name = info['store_name'];
+                        var store_location = info['store_location'];
+                        content = '<div class="weui-cell"><div class="weui-cell__bd">' +
+                                    '<p><span>相机序列号: </span><span>' + serial_number +  '</span></p>' +
+                                    '<p><span>销售状态: </span><span>已扫码售出(' + time + ')</span></p>' +
+                                    '<p><span>所属商户: </span><span>' + business_name+ '(' + business_phone + ')</span></p>' +
+                                    '<p><span>销售门店: </span><span>' + store_name + '</span></p>' +
+                                    '<p><span>门店地址: </span><span>' + store_location + '</span></p>' +
+                                  '</div></div>'
+                    }
+                    html += content
+                }
+                if (html == '')
+                    html = '<div class="weui-cells__tips" style="text-align:center">无结果</div>';
+                container.html(html)
+            });
+
+            return false
+        });
+    });
+</script>
+</html>
