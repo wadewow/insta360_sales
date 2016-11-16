@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script src="{{ lib_path }}/static/js/config.js"></script>
+    <link rel="stylesheet" href="{{ lib_path }}/static/css/global.css"/>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>门店销售情况</title>
+</head>
+<body>
+    <div class="container" id="container">
+        <div class="page navbar js_show">
+            <div class="page__bd" style="height: 100%;">
+                <div class="weui-tab">
+                    <div class="weui-navbar">
+                        <div class="weui-navbar__item" id="tab1">
+                            全部订单
+                        </div>
+                        <div class="weui-navbar__item weui-bar__item_on" id="tab2">
+                            违规订单
+                        </div>
+                    </div>
+                    <div class="weui-tab__panel" id="panel1">
+                        <div class="weui-cells">
+                            {% for sale in sale_list %}
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p><span>商品序列号: </span><span>{{ sale.serial_number }}</span></p>
+                                    <p><span>销售时间: </span><span>{{ sale.created_time }}</span></p>
+                                    <p><span>销售员: </span><span>{{ sale.clerk.name }}({{ sale.clerk.phone }})</span></p>
+                                    {% if sale.illegal == 0 %}
+                                        <p style="color: green">销售订单合规</p>
+                                        {% else %}
+                                        <p style="color: red">订单违规：该序列号货源不属于您，而属于{{ sale.agent.company }},请联系Insta360销售经理协助解决</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+                     <div class="weui-tab__panel" id="panel2" style="display: none;padding-top: 50px">
+                        <div class="weui-cells">
+                            {% for sale in sale_list %}
+                                {% if sale.illegal == 1 %}
+                                    <div class="weui-cell">
+                                        <div class="weui-cell__bd">
+                                            <p><span>商品序列号: </span><span>{{ sale.serial_number }}</span></p>
+                                            <p><span>销售时间: </span><span>{{ sale.created_time }}</span></p>
+                                            <p><span>销售员: </span><span>{{ sale.clerk.name }}({{ sale.clerk.phone }})</span></p>
+                                            <p style="color: red">违规说明：该序列号货源不属于您，而属于{{ sale.agent.company }},请联系Insta360销售经理协助解决</p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    $(function () {
+        $('.weui-navbar__item').on('click', function () {
+            $(this).removeClass('weui-bar__item_on').siblings('.weui-navbar__item').addClass('weui-bar__item_on');
+            id = $(this).attr('id');
+            if(id == 'tab1') {
+                $('#panel1').css('display', 'block');
+                $('#panel2').css('display', 'none')
+            }
+            else if(id == 'tab2') {
+                $('#panel2').css('display', 'block');
+                $('#panel1').css('display', 'none')
+            }
+        });
+    });
+</script>
+</html>

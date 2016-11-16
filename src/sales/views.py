@@ -12,6 +12,7 @@ from view.views_manager import *
 from view.views_account import *
 from view.views_promotion import *
 from view.views_service import *
+from view.views_agent import *
 from view.views_util import *
 from view.views_bi import *
 from .util.wx_option import option

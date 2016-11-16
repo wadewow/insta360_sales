@@ -48,6 +48,14 @@ def bi_stores(request):
         sort = '-created_time'
         if para.__contains__('sort'):
             sort = para.__getitem__('sort')
+        #
+        # stores = Shop.objects.all()
+        # for store in stores:
+        #     id = store.id
+        #     count = Sale.objects.filter(store_id=id, name='Insta360 Nano').count()
+        #     print count
+        #     store.sales_count = count
+        #     store.save()
 
         if sort == 'province':
             stores = Shop.objects.filter(created_time__gt='2016-11-05').order_by(sort, 'city', 'location')
