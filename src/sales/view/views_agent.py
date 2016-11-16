@@ -55,7 +55,7 @@ def agent_list(request):
             return redirect('/sales/agent/login')
         else:
             agent_id = request.session['agent_id']
-            store_list = Shop.objects.filter(agent=agent_id).values()
+            store_list = Shop.objects.filter(created_time__gt='2016-11-05', agent=agent_id).values()
             for store in store_list:
                 business_id = store['business_id']
                 try:
