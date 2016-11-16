@@ -68,7 +68,7 @@
 {#      <td>{{ store.code }}</td>#}
       <td>{{ store.province }} {{ store.city }} {{ store.location }}</td>
 {#      <td>{{ store.exhibition }}</td>#}
-      <td>
+      <td style="min-width: 80px">
         {% for key, value in store.option.items %}
           <span>{% if value == "true" %}{{ key }}{% endif %} </span>
         {% endfor %}
