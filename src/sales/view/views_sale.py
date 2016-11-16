@@ -336,7 +336,7 @@ def sale_guide(request):
                     result['status'] = 1
 
                     website = shop.online
-                    if ('jd.com' in website):
+                    if ('jd.com' in website or 'weixin.crossmart' in website):
                         result['status'] = 1
                         info['type'] = 'jd'
                         info['website'] = website
@@ -421,7 +421,7 @@ def sale_guide(request):
                             result['status'] = 1
 
                             website = shop.online
-                            if ('jd.com' in website):
+                            if ('jd.com' in website or 'weixin.crossmart' in website):
                                 result['status'] = 1
                                 info['type'] = 'jd'
                                 info['website'] = website
