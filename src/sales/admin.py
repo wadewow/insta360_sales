@@ -6,9 +6,11 @@ from .models import Sale
 from .models import Token
 from .models import Exhibition
 from .models import Manager
+from .models import Agent
 from .models import CashRecord
 from .models import SaleNano
 from .models import Promotion
+from .models import SerialToInter
 
 # Register your models here.
 
@@ -33,6 +35,12 @@ class ExhibitionAdmin(admin.ModelAdmin):
 class ManagerAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'area')
 
+class AgentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'username', 'password')
+
+class SerialToInterAdmin(admin.ModelAdmin):
+    list_display = ('id', 'update_time')
+
 class SaleNanoAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'location')
 
@@ -49,6 +57,8 @@ admin.site.register(Sale, SaleAdmin)
 admin.site.register(Token, TokenAdmin)
 admin.site.register(Exhibition, ExhibitionAdmin)
 admin.site.register(Manager, ManagerAdmin)
+admin.site.register(Agent, AgentAdmin)
 admin.site.register(CashRecord, CashRecordAdmin)
 admin.site.register(SaleNano, SaleNanoAdmin)
 admin.site.register(Promotion, PromotionAdmin)
+admin.site.register(SerialToInter, SerialToInterAdmin)

@@ -9,12 +9,22 @@
     <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
     <title>Insta360 提现查询系统</title>
+    <script>
+    $(function () {
+       $("#cash").click(function () {
+           $("#wechat_form").show()
+       })
+    });
+</script>
 </head>
 <body>
-<div class="mui--text-center" style="margin-top:100px">
+{% extends "service/navigation.html" %}
+{% block title %}查询提现码{% endblock %}
+{% block content %}
+<div class="mui--text-center" style="margin-top:50px">
     <form action="/sales/cash_query" method="post" class="mui-form--inline">
       <div class="mui-textfield">
-        <input type="text" name="code"  placeholder="请输入提现兑换码" value="{{ record.code }}">
+        <input type="text" name="code" required="required" placeholder="请输入提现兑换码" value="{{ record.code }}">
       </div>
       <button class="mui-btn mui-btn--raised mui-btn--primary">查询</button>
     </form>
@@ -76,12 +86,6 @@
     <h2 style="color:red"><strong>提现码错误</strong></h2>
     </div>
 {% endif %}
+{% endblock %}
 </body>
-<script>
-    $(function () {
-       $("#cash").click(function () {
-           $("#wechat_form").show()
-       })
-    });
-</script>
 </html>

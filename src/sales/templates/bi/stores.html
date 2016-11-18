@@ -62,7 +62,7 @@
     <tr>
 {#      <td>{{ store.id }}</td>#}
       <td>{{ store.name }}</td>
-      <td>{{ store.business_id.store }}</td>
+      <td style="min-width: 80px">{{ store.business_id.store }}</td>
       <td style="min-width: 70px">{{ store.business_id.name }}</td>
       <td>{{ store.business_id.phone }}</td>
 {#      <td>{{ store.code }}</td>#}
@@ -74,7 +74,6 @@
         {% endfor %}
       </td>
       <td>{{ store.machine_serial }}</td>
-
 {#      <td>{{ store.agent }}</td>#}
       <td>
           {% for photo in store.photo %}

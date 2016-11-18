@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from ..models import Shop
 from ..models import Store
 from ..models import Clerk
+from ..models import Agent
 from ..models import Sale
 from ..util.option import lib_path
 
@@ -41,12 +42,16 @@ def agent_login(request):
         else:
             return HttpResponse("Missing parameter: password")
 
-        if True:
-            request.session['agent_id'] = username
-            return HttpResponse(content='success')
-        else:
-            return HttpResponse(content='账号或密码错误！')
-
+        try:
+            result = Agent.objects.get(username=username)
+            psw = result.password
+            if psw == password:
+                request.session['agent_id'] = username
+                return HttpResponse(content='success')
+            else:
+                return HttpResponse(content='密码错误')
+        except:
+            return HttpResponse(content='账号不存在！')
 
 @csrf_exempt
 def agent_list(request):

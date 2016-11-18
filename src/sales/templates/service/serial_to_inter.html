@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <title>Nano序列号国内转国外系统</title>
+    <script>
+    $(function () {
+        var form = $('form#serial_to_inter');
+        form.submit(function(){
+            data = $('form#serial_to_inter').serialize();
+          $.post("/sales/service/serial_to_inter", data, function(data,status){
+              console.log("Data: " + data + "\nStatus: " + status);
+              $("#tip").text(data);
+          });
+            return false
+        });
+    });
+    </script>
+</head>
+<body>
+{% extends "service/navigation.html" %}
+{% block title %}Nano序列号国内转国外系统{% endblock %}
+{% block content %}
+ <div class="mui--text-center" style="margin-top:50px">
+    <form action="" method="post" class="mui-form--inline" id="serial_to_inter">
+      <div class="mui-textfield">
+        <input type="text" name="serial_number" required="required" placeholder="Nano序列号">
+      </div>
+      <button class="mui-btn mui-btn--raised mui-btn--primary">转为国际</button>
+    </form>
+</div>
+    <div class="mui--text-center" style="margin-top:100px">
+    <h2 style="color:red"><strong id="tip"></strong></h2>
+    </div>
+{% endblock %}
+</body>
+</html>

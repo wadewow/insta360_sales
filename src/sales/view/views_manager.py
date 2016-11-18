@@ -291,6 +291,7 @@ def manager_modify_store(request):
             elif not para.__contains__('store_id'):
                 return redirect('/sales/manager/list')
             else:
+                manager_id = request.session['manager_id']
                 url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
                 req = urllib2.Request(url=url)
                 try:
@@ -301,6 +302,8 @@ def manager_modify_store(request):
                 agent_list = json.loads(data)
                 store_id = para.__getitem__('store_id')
                 result = Shop.objects.get(id=store_id)
+                if str(manager_id) != str(result.manager):
+                    return redirect('/sales/manager/list')
                 option = json.loads(result.option)
                 print option
                 return render(request, 'manager/modify_store.html', {

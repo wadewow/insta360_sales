@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
+from django.forms.models import model_to_dict
 from ..models import Manager
 from ..models import Shop
 from ..models import Store
@@ -16,6 +17,7 @@ from ..util.option import lib_path
 
 import datetime
 import json
+import urllib
 import sys
 import collections
 import urllib2
@@ -274,3 +276,81 @@ def bi_store_trend(request):
             }
             result[start.strftime('%m-%d')] = temp
         return JsonResponse(result, safe=False)
+
+
+
+@csrf_exempt
+def bi_nano_detail(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/bi/login')
+        return render(request, 'bi/nano_detail.html', {
+            'lib_path': lib_path
+        })
+    if request.method == 'POST':
+        para = request.POST
+        serial_number = para.__getitem__('serial_number')
+
+        url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/agent/getOutOfFactoryInfo'
+        values = {
+            'serial_number': serial_number,
+        }
+        exist = 0
+        agent = {}
+        factory = {}
+        try:
+            data = urllib.urlencode(values)
+            req = urllib2.Request(url, data=data)
+            res_data = urllib2.urlopen(req)
+            res = res_data.read()
+            res = json.loads(res)
+            agent = res['agent']
+            factory = res['factory']
+            exist = 1
+            if len(agent) == 0:
+                agent['flag'] = 0
+            else:
+                agent['flag'] = 1
+            if len(factory) == 0:
+                factory['flag'] = 0
+            else:
+                factory['flag'] = 1
+            if factory['flag'] == 0 and agent['flag'] == 0:
+                exist = 0
+        except:
+            pass
+
+        try:
+            sale = Sale.objects.get(serial_number=serial_number, name="Insta360 Nano")
+            store_id = sale.store_id
+            manager_id = sale.manager
+            business_id = sale.business_id
+            try:
+                store = Store.objects.get(id=store_id)
+            except:
+                store = {}
+            try:
+                manager = Manager.objects.get(id=manager_id)
+            except:
+                manager = {}
+            try:
+                business = Manager.objects.get(id=business_id)
+            except:
+                business = {}
+            sale_info = model_to_dict(sale)
+            sale_info['store'] = store
+            sale_info['manager'] = manager
+            sale_info['business'] = business
+            sale_info['flag'] = 1
+        except:
+            sale_info = {
+                'flag': 0
+            }
+        return render(request, 'bi/nano_detail.html', {
+            'serial_number': serial_number,
+            'exist': exist,
+            'agent': agent,
+            'factory': factory,
+            'sale': sale_info,
+            'lib_path': lib_path
+        })

@@ -4,8 +4,10 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
 from ..util.option import lib_path
 from ..models import Exhibition
+from ..models import SerialToInter
 
 import urllib2
 import urllib
@@ -14,6 +16,14 @@ import sys
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
+
+
+@csrf_exempt
+def util_login(request):
+    if request.method == 'GET':
+        return render(request, 'util/login.html', {
+            'lib_path': lib_path
+        })
 
 
 @csrf_exempt
@@ -51,6 +61,48 @@ def util_import_exhibition(request):
             'flag': 1
         })
 
+
+@csrf_exempt
+def util_import_nano(request):
+    if request.method == 'GET':
+        return render(request, 'util/import_nano.html', {
+            'lib_path': lib_path
+        })
+    if request.method == 'POST':
+        para = request.POST
+        if not para.__contains__("join"):
+            return render(request, 'util/import_nano.html', {
+                'lib_path': lib_path
+            })
+        join = para.__getitem__("join")
+        count = int(para.__getitem__("count"))
+        join = join[:-1]
+
+        # print join
+        url = 'http://112.124.47.228:9002/camera/agent/addSellOutData'
+        values = {
+            'sql_str': join
+        }
+        try:
+            data = urllib.urlencode(values)
+            req = urllib2.Request(url, data=data)
+            print 'asd'
+            res_data = urllib2.urlopen(req)
+            print 'qwe'
+            res = res_data.read()
+            print res
+            res = json.loads(res)
+            print res
+            flag = res['flag']
+            if flag:
+                nums = res['nums']
+                added = 2 * count - int(nums)
+                return HttpResponse('成功添加' + str(added) + '条记录')
+            else:
+                return HttpResponse('格式错误')
+        except:
+            print 'network error'
+        return HttpResponse('网络错误')
 
 
 @csrf_exempt
@@ -95,6 +147,12 @@ def util_convert_type(request):
                 flag = res['flag']
                 if flag == 1:
                     added.append(temp)
+                    if type == 2:
+                        now = timezone.now()
+                        temp = {
+                            'update_time': now
+                        }
+                        SerialToInter.objects.update_or_create(id=temp, defaults=temp)
             except:
                 print 'network error'
 

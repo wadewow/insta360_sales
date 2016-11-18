@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <title>出厂序列号导入系统</title>
+    <style type="text/css">
+        body {
+            padding:10px 10px;
+        }
+        .submit {
+            float: right;
+        }
+        .textarea {
+            height:800px;
+            width:100%
+        }
+    </style>
+    <script>
+        $(function () {
+            var join = '';
+            var count = 0;
+            $('#uploaderInput').on("change", function (e) {
+                join = '';
+                var file = e.target.files[0];
+                var reader = new FileReader();
+                reader.onload = (function(file) {
+                    return function(e) {
+                        result = this.result;
+                        lines = result.split('\n');
+                        count =0;
+                        for(var i=0;i<lines.length;i++){
+                            if(i<3){
+                                continue
+                            }
+                            var line = lines[i];
+                            var data = line.split('\t');
+                            if(data.length<2) {
+                                continue
+                            }
+                            temp = "('" + data[0] + "','" + data[1] + "','" + data[2] + "','" + data[3] + "','" + data[4] + "','" + data[5] + "','" + data[6] + "','" + data[7] + "'),";
+                            join += temp;
+                            count ++
+                        }
+                        console.log(join);
+                        $("#tip").text('加载完成，请点击导入');
+                    };
+                })(file);
+                //读取文件内容
+                reader.readAsText(file);
+            });
+
+            var form = $('form#import_nano');
+            form.submit(function(){
+                if(join=='')
+                    return false;
+                var $formData = new FormData();
+                $formData.append("join", join);
+                $formData.append("count", count);
+                $.ajax({
+                url: "/sales/util/import_nano",
+                type: "POST",
+                data: $formData,
+                timeout: 20000,
+                processData: false,  // 告诉jQuery不要去处理发送的数据
+                contentType: false   // 告诉jQuery不要去设置Content-Type请求头
+            }).done(function ( data ) {
+                  console.log("Data: " + data + "\nStatus: " + status);
+                   $("#tip").text(data);
+            }).fail(function () {
+                finish();
+                alert('网络超时')
+            });
+{#              $.post("/sales/util/import_nano", $formData, function(data,status){#}
+{#                  console.log("Data: " + data + "\nStatus: " + status);#}
+{#                   $("#tip").text(data);#}
+{#              });#}
+                return false
+            });
+        });
+    </script>
+</head>
+<body>
+{% extends "util/navigation.html" %}
+{% block title %}出厂序列号导入系统{% endblock %}
+{% block content %}
+ <div class="mui-row">
+ <div class="mui-col-md-3">
+ </div>
+<div class="mui-col-md-3">
+    <div class="mui-textfield">
+    <form action="" id="import_nano" method="post" class="mui-form">
+    <div class="">
+{#        <textarea placeholder="请复制Nano序列号,一行一个序列号，不要有空格、中文和标点符号,首尾不要留空行和中文" id="serial_numbers" name="serial_numbers" form="import_nano" autofocus="autofocus" required="required" class="textarea"></textarea>#}
+        <input type="file" id="uploaderInput" required="required">
+    </div>
+
+      <button class="mui-btn mui-btn--raised mui-btn--primary submit">导入</button>
+    </form>
+</div>
+    <div class="mui--text-center" style="margin-top:100px">
+    <h2 style="color:red"><strong id="tip"></strong></h2>
+    </div>
+</div>
+<div class="mui-col-md-3">
+  </div>
+  <div class="mui-col-md-3">
+ </div>
+  </div>
+{% endblock %}
+</body>
+</html>

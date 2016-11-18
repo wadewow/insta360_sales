@@ -105,11 +105,26 @@ class SaleNano(models.Model):
         return str(self.id)
 
 
-
 class Manager(models.Model):
     id = models.CharField(max_length=200,primary_key=True)
     name = models.CharField(max_length=200, blank=True)
     area = models.CharField(max_length=200, blank=True)
+
+    def __unicode__(self):
+        return str(self.id)
+
+
+class Agent(models.Model):
+    username = models.CharField(max_length=200, blank=True)
+    password = models.CharField(max_length=200, blank=True)
+
+    def __unicode__(self):
+        return str(self.id)
+
+
+class SerialToInter(models.Model):
+    id = models.CharField(max_length=200,primary_key=True)
+    update_time = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return str(self.id)
