@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
+    <title>Insta360 展台信息</title>
+    <script>
+    $(function () {
+        $gallery = $("#gallery");
+        $galleryImg = $("#galleryImg");
+        $uploaderFiles = $(".uploaderFiles");
+        $uploaderFiles.on("click", "li", function(){
+{#            $galleryImg.attr("style", this.getAttribute("style"));#}
+            $galleryImg.css("background-image",$(this).css("background-image"));
+            $gallery.fadeIn(100);
+        });
+        $gallery.on("click", function(){
+            $gallery.fadeOut(100);
+        });
+        var $promotion = $('#promotion');
+        $('#make_promotion').on("click", function(){
+            $promotion.show();
+            $checkboxes = $('.checkbox');
+            for(var i=0;i < $checkboxes.length;i++){
+                console.log($checkboxes[i].value + ':' + $checkboxes[i].checked)
+            }
+        });
+        $('#cancel').on("click", function(){
+            $promotion.hide();
+            return false
+        });
+        var $form = $('form#form_promotion');
+        $form.submit(function(){
+            data = $form.serialize();
+            $.post("", data, function(data,status){
+                if(data == 'success'){
+                    $("#tip").text('登录成功！');
+                }
+                else {
+                    $("#tip").text(data);
+                }
+            });
+
+            return false
+        });
+    });
+    </script>
+    <style type="text/css">
+        .sort{
+            cursor:pointer
+        }
+        #promotion{
+            width:500px;
+            height:400px;
+            position:fixed;
+            background:lightyellow;
+            right:200px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+{% extends "bi/navigation.html" %}
+{% block title %}门店情况{% endblock %}
+{% block content %}
+    <button class="mui-btn mui-btn--raised mui-btn--primary" id="make_promotion">制定促销</button>
+
+    <div id="promotion">
+        <form class="mui-form--inline" style="margin-top:50px" id="form_promotion">
+            <div class="mui-container-fluid">
+                <div class="mui-row">
+                    <div class="mui-col-md-6">
+                    <div class="mui-textfield">
+                    <input type="number">
+                    <label>一级梯度</label>
+                    </div>
+                    </div>
+                    <div class="mui-col-md-6">
+                    <div class="mui-textfield">
+                    <input type="number">
+                    <label>一级奖励</label>
+                    </div>
+                    </div>
+                </div>
+                <div class="mui-row">
+                    <div class="mui-col-md-6">
+                    <div class="mui-textfield">
+                    <input type="number">
+                    <label>二级梯度</label>
+                    </div>
+                    </div>
+                    <div class="mui-col-md-6">
+                    <div class="mui-textfield">
+                    <input type="number">
+                    <label>一级奖励</label>
+                    </div>
+                    </div>
+                </div>
+                <div class="mui-row">
+                <div class="mui-col-md-6">
+                <div class="mui-textfield">
+                <input type="number">
+                <label>三级梯度</label>
+                </div>
+                </div>
+                <div class="mui-col-md-6">
+                <div class="mui-textfield">
+                <input type="number">
+                <label>一级奖励</label>
+                </div>
+                </div>
+                </div>
+                <div class="mui-row">
+                <div class="mui-col-md-3"></div>
+                <div class="mui-col-md-3">
+                <button class="mui-btn mui-btn--raised mui-btn--danger" id="cancel">取消</button>
+                </div>
+                <div class="mui-col-md-3">
+                <button class="mui-btn mui-btn--raised mui-btn--primary">确认</button>
+                </div>
+                <div class="mui-col-md-3"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+<table class="mui-table mui-table--bordered">
+  <thead>
+    <tr>
+{#      <th>id</th>#}
+        <th>选择</th>
+      <th><a class="sort" href="/sales/bi/stores?sort=name">门店名称</a></th>
+      <th>商家名称</th>
+      <th>商家姓名</th>
+      <th>手机号</th>
+{#      <th>代码</th>#}
+      <th><a class="sort" href="/sales/bi/stores?sort=province">线下地址</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-option">配置</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-machine_serial">样机序列号</a></th>
+      <th>展台照片</th>
+{#      <th>备注</th>#}
+{#      <th>促销策略</th>#}
+      <th><a class="sort" href="/sales/bi/stores?sort=agent">代理商</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=manager">销售经理</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-sales_count">累计销量</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-created_time">创建时间</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-online">网店地址</a></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for store in stores%}
+    <tr>
+        <td>
+          <div class="mui-checkbox">
+            <label>
+              <input type="checkbox" class="checkbox" value="{{ store.id }}">
+            </label>
+          </div>
+        </td>
+{#      <td>{{ store.id }}</td>#}
+      <td>{{ store.name }}</td>
+      <td style="min-width: 80px">{{ store.business_id.store }}</td>
+      <td style="min-width: 70px">{{ store.business_id.name }}</td>
+      <td>{{ store.business_id.phone }}</td>
+{#      <td>{{ store.code }}</td>#}
+      <td>{{ store.province }} {{ store.city }} {{ store.location }}</td>
+{#      <td>{{ store.exhibition }}</td>#}
+      <td style="min-width: 80px">
+        {% for key, value in store.option.items %}
+          <span>{% if value == "true" %}{{ key }}{% endif %} </span>
+        {% endfor %}
+      </td>
+      <td>{{ store.machine_serial }}</td>
+{#      <td>{{ store.agent }}</td>#}
+      <td>
+          {% for photo in store.photo %}
+              <ul class="weui-uploader__files uploaderFiles" id="uploaderFiles" style="margin-bottom:0;min-width:270px">
+                <li class="weui-uploader__file" style="height:50px;width:50px;background-image:url({{ photo }})"></li>
+              </ul>
+          {% endfor %}
+      </td>
+{#      <td>{{ store.remark }}</td>#}
+{#      <td>{{ store.promotion }}</td>#}
+      <td style="min-width: 100px">{{ store.agent }}</td>
+      <td style="min-width: 70px">{{ store.manager.name }}<br>({{ store.manager.area }})</td>
+      <td>{{ store.sales_count }}</td>
+      <td style="min-width: 120px">{{ store.created_time }}</td>
+      <td style="max-width: 500px">{% if store.online != 'http://' %}<a href="{{ store.online }}" title="{{ store.online }}"  target="_blank">{{ store.online|truncatechars:30 }}</a>{% endif %}</td>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+<div class="weui-gallery" id="gallery">
+    <span class="weui-gallery__img" id="galleryImg" style=""></span>
+    <div class="weui-gallery__opr">
+    </div>
+</div>
+<div class="mui-container-fluid page_tool">
+    <form action="/sales/bi/stores?sort={{ data.sort }}">
+        <a href="/sales/bi/stores?page=1&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
+        <a href="/sales/bi/stores?page={{ data.current_page|add:"-1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">上页</a>
+        <span class="currentPage">{{ data.current_page }}</span> / <span class="totalPage">{{ data.page_total }}</span>
+        <a href="/sales/bi/stores?page={{ data.current_page|add:"1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">下页</a>
+        <a href="/sales/bi/stores?page={{ data.page_total }}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">尾页</a>
+        <span>跳转到第</span>
+        <input id="skip" type="number" pattern="[0-9]+" name="page" style="width:70px" class="skip">
+        <span>页</span>
+        <input type="submit" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary" value="GO">
+        <span> 总计 </span><span>{{ data.total }}</span><span> 条</span>
+{#  <input type="hidden" id="total_page" number value="{{ data.page_total }}">#}
+    </form>
+</div>
+{% endblock %}
+</body>
+
+</html>

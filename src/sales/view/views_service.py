@@ -141,10 +141,9 @@ def service_unbind_cloud(request):
                 'lib_path': lib_path
             })
         serial_number = para.__getitem__('serial_number')
-        url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/camera/setNanoedition'
+        url = 'http://api.internal.insta360.com/admin/cloud/unbundlingAccount'
         values = {
             'serial_number': serial_number,
-            'type': 2
         }
         try:
             data = urllib.urlencode(values)
@@ -154,19 +153,10 @@ def service_unbind_cloud(request):
             res = json.loads(res)
             print res
             flag = res['flag']
-            if flag == 1:
-                result = '成功设置为国际货'
-                now = timezone.now()
-                temp = {
-                    'update_time': now
-                }
-                SerialToInter.objects.update_or_create(id=serial_number, defaults=temp)
+            if flag == True:
+                result = '解绑成功'
             else:
-                data = res['data']
-                if data == 'deal fail':
-                    result = '该序列号已经是国际货'
-                else:
-                    result = '序列号不存在'
+                result = '该序列号没有绑定云播账号'
             return HttpResponse(result)
         except:
             return HttpResponse('网络错误')
