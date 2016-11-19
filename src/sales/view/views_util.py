@@ -15,6 +15,8 @@ import urllib
 import json
 import sys
 import xlrd
+from datetime import datetime
+from xlrd import xldate_as_tuple
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -81,9 +83,9 @@ def util_import_nano(request):
         path = default_storage.save(path, file)
         url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/agent/addSellOutData'
         try:
-            data = xlrd.open_workbook(path)
+            book = xlrd.open_workbook(path)
             default_storage.delete(path)
-            table = data.sheets()[0]
+            table = book.sheets()[0]
             rows = table.nrows
             join = ''
             count = 0
@@ -94,9 +96,8 @@ def util_import_nano(request):
                 if length < 8:
                     continue
                 try:
-                    temp = "('" + str(data[0]) + "','" + str(data[1]) + "','" + str(data[2]) + "','" + str(
-                        data[3]) + "','" + str(data[4]) + "','" + str(data[5]) + "','" + str(data[6]) + "','" + str(
-                        data[7]) + "'),"
+                    temp = "('" + str(datetime(*xldate_as_tuple(data[0],0)))[:-9] + "','" + str(data[1]) + "','" + str(data[2]) + "','" + str(
+                        data[3]) + "','" + str(data[4]) + "','" + str(data[5]) + "','" + str(data[6]) + "','" + str(datetime(*xldate_as_tuple(data[7],0)))[:-9] + "'),"
                 except:
                     continue
                 join += temp
@@ -123,6 +124,7 @@ def util_import_nano(request):
                         pass
             if len(join) > 3:
                 join = join[:-1]
+            # print join
             values = {
                 'sql_str': join
             }
