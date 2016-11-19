@@ -7,7 +7,10 @@
     <meta name="renderer" content="webkit">
     <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
     <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <script src="//cdn.bootcss.com/moment.js/2.15.2/moment.min.js"></script>
+    <script src="//cdn.bootcss.com/pikaday/1.5.1/pikaday.min.js"></script>
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/pikaday/1.5.1/css/pikaday.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
     <title>Insta360 展台信息</title>
     <script>
@@ -23,6 +26,22 @@
         $gallery.on("click", function(){
             $gallery.fadeOut(100);
         });
+        var start_time = document.getElementById('start_time');
+        var end_time = document.getElementById('end_time');
+        var picker1 = new Pikaday(
+                {
+                    field: start_time,
+                    format: 'YYYY-MM-DD',
+                    onSelect: function () {
+                    }
+                });
+        var picker2 = new Pikaday(
+                {
+                    field: end_time,
+                    format: 'YYYY-MM-DD',
+                    onSelect: function () {
+                    }
+                });
         var $promotion = $('#promotion');
         $('#make_promotion').on("click", function(){
             $promotion.show();
@@ -37,13 +56,25 @@
         });
         var $form = $('form#form_promotion');
         $form.submit(function(){
+            $checkbox = $(".checkbox");
+            var list = '';
+            for (var k = 0; k < $checkbox.length; k++) {
+                if ($checkbox[k].checked) {
+                    list += $checkbox[k].name + ','
+                }
+            }
+            if(list.length>0){
+                list = list.substr(0, list.length-1);
+            }
             data = $form.serialize();
+            data += '&list=' + list;
             $.post("", data, function(data,status){
                 if(data == 'success'){
-                    $("#tip").text('登录成功！');
+                    $promotion.hide();
+                    alert('设置促销成功')
                 }
                 else {
-                    $("#tip").text(data);
+                    alert('设置促销失败')
                 }
             });
 
@@ -57,10 +88,11 @@
         }
         #promotion{
             width:500px;
-            height:400px;
+            height:500px;
             position:fixed;
             background:lightyellow;
-            right:200px;
+            top:100px;
+            left:500px;
             display: none;
         }
     </style>
@@ -77,13 +109,13 @@
                 <div class="mui-row">
                     <div class="mui-col-md-6">
                     <div class="mui-textfield">
-                    <input type="number">
+                    <input type="number" required="required" name="benchmark">
                     <label>一级梯度</label>
                     </div>
                     </div>
                     <div class="mui-col-md-6">
                     <div class="mui-textfield">
-                    <input type="number">
+                    <input type="number" required="required" name="bonus">
                     <label>一级奖励</label>
                     </div>
                     </div>
@@ -91,30 +123,41 @@
                 <div class="mui-row">
                     <div class="mui-col-md-6">
                     <div class="mui-textfield">
-                    <input type="number">
+                    <input type="number" required="required" name="benchmark1">
                     <label>二级梯度</label>
                     </div>
                     </div>
                     <div class="mui-col-md-6">
                     <div class="mui-textfield">
-                    <input type="number">
-                    <label>一级奖励</label>
+                    <input type="number" required="required" name="bonus1">
+                    <label>二级奖励</label>
                     </div>
                     </div>
                 </div>
                 <div class="mui-row">
                 <div class="mui-col-md-6">
                 <div class="mui-textfield">
-                <input type="number">
+                <input type="number" required="required" name="benchmark2">
                 <label>三级梯度</label>
                 </div>
                 </div>
                 <div class="mui-col-md-6">
                 <div class="mui-textfield">
-                <input type="number">
-                <label>一级奖励</label>
+                <input type="number" required="required" name="bonus2">
+                <label>三级奖励</label>
                 </div>
                 </div>
+                </div>
+                <div class="right">
+
+                  <div class="mui-textfield right">
+                    <label for="start_time">From</label>
+                    <input style="" type="text" required="required" id="start_time" name="start_time" placeholder="Start Time">
+                  </div>
+                    <div class="mui-textfield right" style="">
+                    <label for="end_time">To</label>
+                    <input style="" type="text" required="required" id="end_time" name="end_time" placeholder="End Time">
+                      </div>
                 </div>
                 <div class="mui-row">
                 <div class="mui-col-md-3"></div>
@@ -134,22 +177,22 @@
     <tr>
 {#      <th>id</th>#}
         <th>选择</th>
-      <th><a class="sort" href="/sales/bi/stores?sort=name">门店名称</a></th>
+      <th><a class="sort" href="/sales/bi/promotion?sort=name">门店名称</a></th>
       <th>商家名称</th>
       <th>商家姓名</th>
       <th>手机号</th>
 {#      <th>代码</th>#}
-      <th><a class="sort" href="/sales/bi/stores?sort=province">线下地址</a></th>
-      <th><a class="sort" href="/sales/bi/stores?sort=-option">配置</a></th>
-      <th><a class="sort" href="/sales/bi/stores?sort=-machine_serial">样机序列号</a></th>
+      <th><a class="sort" href="/sales/bi/promotion?sort=province">线下地址</a></th>
+      <th><a class="sort" href="/sales/bi/promotion?sort=-option">配置</a></th>
+      <th><a class="sort" href="/sales/bi/promotion?sort=-machine_serial">样机序列号</a></th>
       <th>展台照片</th>
 {#      <th>备注</th>#}
 {#      <th>促销策略</th>#}
-      <th><a class="sort" href="/sales/bi/stores?sort=agent">代理商</a></th>
-      <th><a class="sort" href="/sales/bi/stores?sort=manager">销售经理</a></th>
-      <th><a class="sort" href="/sales/bi/stores?sort=-sales_count">累计销量</a></th>
-      <th><a class="sort" href="/sales/bi/stores?sort=-created_time">创建时间</a></th>
-      <th><a class="sort" href="/sales/bi/stores?sort=-online">网店地址</a></th>
+      <th><a class="sort" href="/sales/bi/promotion?sort=agent">代理商</a></th>
+      <th><a class="sort" href="/sales/bi/promotion?sort=manager">销售经理</a></th>
+      <th><a class="sort" href="/sales/bi/promotion?sort=-sales_count">累计销量</a></th>
+      <th><a class="sort" href="/sales/bi/promotion?sort=-created_time">创建时间</a></th>
+      <th><a class="sort" href="/sales/bi/promotion?sort=-online">网店地址</a></th>
     </tr>
   </thead>
   <tbody>
@@ -158,7 +201,7 @@
         <td>
           <div class="mui-checkbox">
             <label>
-              <input type="checkbox" class="checkbox" value="{{ store.id }}">
+              <input type="checkbox" class="checkbox" value="{{ store.id }}" name="{{ store.id }}" form="form_promotion">
             </label>
           </div>
         </td>
@@ -202,12 +245,12 @@
     </div>
 </div>
 <div class="mui-container-fluid page_tool">
-    <form action="/sales/bi/stores?sort={{ data.sort }}">
-        <a href="/sales/bi/stores?page=1&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
-        <a href="/sales/bi/stores?page={{ data.current_page|add:"-1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">上页</a>
+    <form action="/sales/bi/promotion?sort={{ data.sort }}">
+        <a href="/sales/bi/promotion?page=1&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
+        <a href="/sales/bi/promotion?page={{ data.current_page|add:"-1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">上页</a>
         <span class="currentPage">{{ data.current_page }}</span> / <span class="totalPage">{{ data.page_total }}</span>
-        <a href="/sales/bi/stores?page={{ data.current_page|add:"1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">下页</a>
-        <a href="/sales/bi/stores?page={{ data.page_total }}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">尾页</a>
+        <a href="/sales/bi/promotion?page={{ data.current_page|add:"1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">下页</a>
+        <a href="/sales/bi/promotion?page={{ data.page_total }}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">尾页</a>
         <span>跳转到第</span>
         <input id="skip" type="number" pattern="[0-9]+" name="page" style="width:70px" class="skip">
         <span>页</span>

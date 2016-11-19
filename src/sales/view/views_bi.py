@@ -12,6 +12,7 @@ from ..models import Shop
 from ..models import Store
 from ..models import Sale
 from ..models import Clerk
+from ..models import Promotion
 from ..models import SerialToInter
 from ..util.option import dict
 from ..util.option import lib_path
@@ -542,7 +543,23 @@ def bi_promotion(request):
             'data': data,
             'lib_path': lib_path
         })
-
+    if request.method == 'POST':
+        para = request.POST
+        print para
+        start_time = para.__getitem__('start_time')
+        end_time = para.__getitem__('end_time')
+        benchmark = para.__getitem__('benchmark')
+        benchmark1 = para.__getitem__('benchmark1')
+        benchmark2 = para.__getitem__('benchmark2')
+        bonus = para.__getitem__('bonus')
+        bonus1 = para.__getitem__('bonus1')
+        bonus2 = para.__getitem__('bonus2')
+        promotion = Promotion.objects.create(start_time=start_time,end_time=end_time,benchmark=benchmark,benchmark1=benchmark1,benchmark2=benchmark2,bonus=bonus,bonus1=bonus1,bonus2=bonus2)
+        list = para.__getitem__('list')
+        ids = list.split(',')
+        for id in ids:
+            Shop.objects.filter(id=id).update(promotion=promotion.id)
+        return HttpResponse('success')
 
 @csrf_exempt
 def bi_export(request):
