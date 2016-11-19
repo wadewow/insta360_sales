@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+from django.core.files.storage import default_storage
 from ..util.option import lib_path
 from ..models import Exhibition
 from ..models import SerialToInter
@@ -13,7 +14,7 @@ import urllib2
 import urllib
 import json
 import sys
-
+import xlrd
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -69,39 +70,110 @@ def util_import_nano(request):
             'lib_path': lib_path
         })
     if request.method == 'POST':
-        para = request.POST
-        if not para.__contains__("join"):
-            return render(request, 'util/import_nano.html', {
-                'lib_path': lib_path
-            })
-        join = para.__getitem__("join")
-        count = int(para.__getitem__("count"))
-        join = join[:-1]
+        # para = request.POST
+        # if not para.__contains__("join"):
+        #     return render(request, 'util/import_nano.html', {
+        #         'lib_path': lib_path
+        #     })
+        # print request.FILES
+        file = request.FILES.__getitem__('file')
+        path = 'sales/static/store/' + file.name
+        path = default_storage.save(path, file)
+        url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/agent/addSellOutData'
+        try:
+            data = xlrd.open_workbook(path)
+            default_storage.delete(path)
+            table = data.sheets()[0]
+            rows = table.nrows
+            join = ''
+            count = 0
+            nums = 0
+            for i in range(3, rows):
+                data = table.row_values(i)
+                length = len(data)
+                if length < 8:
+                    continue
+                try:
+                    temp = "('" + str(data[0]) + "','" + str(data[1]) + "','" + str(data[2]) + "','" + str(
+                        data[3]) + "','" + str(data[4]) + "','" + str(data[5]) + "','" + str(data[6]) + "','" + str(
+                        data[7]) + "'),"
+                except:
+                    continue
+                join += temp
+                count += 1
+
+                if count % 1000 == 0:
+                    if len(join) > 3:
+                        join = join[:-1]
+                    values = {
+                        'sql_str': join
+                    }
+                    join = ''
+                    try:
+                        data = urllib.urlencode(values)
+                        req = urllib2.Request(url, data=data)
+                        res_data = urllib2.urlopen(req)
+                        res = res_data.read()
+                        print res
+                        res = json.loads(res)
+                        flag = res['flag']
+                        if flag:
+                            nums += int(res['nums'])
+                    except:
+                        pass
+            if len(join) > 3:
+                join = join[:-1]
+            values = {
+                'sql_str': join
+            }
+            try:
+                data = urllib.urlencode(values)
+                req = urllib2.Request(url, data=data)
+                res_data = urllib2.urlopen(req)
+                res = res_data.read()
+                print res
+                res = json.loads(res)
+                flag = res['flag']
+                if flag:
+                    nums += int(res['nums'])
+            except:
+                pass
+            added = 2 * count - nums
+            result =  '新增' + str(added) + '条记录'
+            return HttpResponse(result)
+        except:
+            return HttpResponse('文件格式错误')
+
+
+
+        # join = para.__getitem__("join")
+        # count = int(para.__getitem__("count"))
+        # join = join[:-1]
 
         # print join
-        url = 'http://112.124.47.228:9002/camera/agent/addSellOutData'
-        values = {
-            'sql_str': join
-        }
-        try:
-            data = urllib.urlencode(values)
-            req = urllib2.Request(url, data=data)
-            print 'asd'
-            res_data = urllib2.urlopen(req)
-            print 'qwe'
-            res = res_data.read()
-            print res
-            res = json.loads(res)
-            flag = res['flag']
-            if flag:
-                nums = res['nums']
-                added = 2 * count - int(nums)
-                return HttpResponse('成功添加' + str(added) + '条记录')
-            else:
-                return HttpResponse('格式错误')
-        except:
-            print 'network error'
-        return HttpResponse('网络错误')
+        # url = 'http://112.124.47.228:9002/camera/agent/addSellOutData'
+        # values = {
+        #     'sql_str': join
+        # }
+        # try:
+        #     data = urllib.urlencode(values)
+        #     req = urllib2.Request(url, data=data)
+        #     print 'asd'
+        #     res_data = urllib2.urlopen(req)
+        #     print 'qwe'
+        #     res = res_data.read()
+        #     print res
+        #     res = json.loads(res)
+        #     flag = res['flag']
+        #     if flag:
+        #         nums = res['nums']
+        #         added = 2 * count - int(nums)
+        #         return HttpResponse('成功添加' + str(added) + '条记录')
+        #     else:
+        #         return HttpResponse('格式错误')
+        # except:
+        #     print 'network error'
+        # return HttpResponse('网络错误')
 
 
 @csrf_exempt

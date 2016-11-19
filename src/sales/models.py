@@ -79,7 +79,7 @@ class Sale(models.Model):
 
 
 class Token(models.Model):
-    token = models.CharField(max_length=200)
+    token = models.CharField(max_length=500)
     created_time = models.DateTimeField(auto_now=True)
     type = models.IntegerField(default=0)
 

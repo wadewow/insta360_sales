@@ -23,58 +23,64 @@
     </style>
     <script>
         $(function () {
-            var join = '';
-            var count = 0;
-            $('#uploaderInput').on("change", function (e) {
-                join = '';
-                var file = e.target.files[0];
-                var reader = new FileReader();
-                reader.onload = (function(file) {
-                    return function(e) {
-                        result = this.result;
-                        lines = result.split('\n');
-                        count =0;
-                        for(var i=0;i<lines.length;i++){
-                            if(i<3){
-                                continue
-                            }
-                            var line = lines[i];
-                            var data = line.split('\t');
-                            if(data.length<2) {
-                                continue
-                            }
-                            temp = "('" + data[0] + "','" + data[1] + "','" + data[2] + "','" + data[3] + "','" + data[4] + "','" + data[5] + "','" + data[6] + "','" + data[7] + "'),";
-                            join += temp;
-                            count ++
-                        }
-                        console.log(join);
-                        $("#tip").text('加载完成，请点击导入');
-                    };
-                })(file);
-                //读取文件内容
-                reader.readAsText(file);
-            });
+{#            var join = '';#}
+{#            var count = 0;#}
+{#            $('#uploaderInput').on("change", function (e) {#}
+{#                join = '';#}
+{#                var file = e.target.files[0];#}
+{#                var reader = new FileReader();#}
+{#                reader.onload = (function(file) {#}
+{#                    return function(e) {#}
+{#                        result = this.result;#}
+{#                        lines = result.split('\n');#}
+{#                        count =0;#}
+{#                        for(var i=0;i<lines.length;i++){#}
+{#                            if(i<3){#}
+{#                                continue#}
+{#                            }#}
+{#                            var line = lines[i];#}
+{#                            var data = line.split('\t');#}
+{#                            if(data.length<2) {#}
+{#                                continue#}
+{#                            }#}
+{#                            temp = "('" + data[0] + "','" + data[1] + "','" + data[2] + "','" + data[3] + "','" + data[4] + "','" + data[5] + "','" + data[6] + "','" + data[7] + "'),";#}
+{#                            join += temp;#}
+{#                            count ++#}
+{#                        }#}
+{#                        console.log(join);#}
+{#                        $("#tip").text('加载完成，请点击导入');#}
+{#                    };#}
+{#                })(file);#}
+{#                //读取文件内容#}
+{#                reader.readAsText(file);#}
+{#            });#}
 
             var form = $('form#import_nano');
             form.submit(function(){
-                if(join=='')
-                    return false;
+                $uploaderInput = $("#uploaderInput")[0];
+                console.log($uploaderInput);
+                $file = $uploaderInput.files[0];
+                console.log($file);
+{#                if(join=='')#}
+{#                    return false;#}
                 var $formData = new FormData();
-                $formData.append("join", join);
-                $formData.append("count", count);
+{#                $formData.append("join", join);#}
+{#                $formData.append("count", count);#}
+                $formData.append("file", $file);
                 $.ajax({
                 url: "/sales/util/import_nano",
                 type: "POST",
                 data: $formData,
-                timeout: 20000,
+                timeout: 1000000,
                 processData: false,  // 告诉jQuery不要去处理发送的数据
                 contentType: false   // 告诉jQuery不要去设置Content-Type请求头
             }).done(function ( data ) {
                   console.log("Data: " + data + "\nStatus: " + status);
                    $("#tip").text(data);
             }).fail(function () {
-                alert('网络超时')
+                $("#tip").text('网络错误');
             });
+                $("#tip").text('正在导入...');
 {#              $.post("/sales/util/import_nano", $formData, function(data,status){#}
 {#                  console.log("Data: " + data + "\nStatus: " + status);#}
 {#                   $("#tip").text(data);#}

@@ -273,17 +273,16 @@ def test(request):
 
 @csrf_exempt
 def test1(request):
-    temp = time.localtime(int(1478942485))  #################
-    active_time = time.strftime("%Y-%m-%d %H:%M:%S", temp)
-    print type(temp), temp
-    print type(active_time),active_time
-
-    temp = datetime.datetime.utcfromtimestamp(int(1478942485))
-    temp = temp + datetime.timedelta(hours=8)
-    active_time = temp.strftime("%Y-%m-%d %H:%M:%S")
-    print type(temp), temp
-    print type(active_time), active_time
-    return HttpResponse(temp)
+    shops = Shop.objects.filter(created_time__range=('2016-11-05','2016-11-12')).values('id','name','created_time')
+    for shop in shops:
+        count = Sale.objects.filter(store_id=shop['id'],name="Insta360 Nano").count()
+        shop['sale_count'] = count
+        created_time = shop['created_time']
+        created_time = created_time + datetime.timedelta(hours=8)
+        created_time = created_time.strftime("%Y-%m-%d %H:%M:%S")
+        shop['created_time'] = created_time
+        print shop['name'] + ',' + str(shop['sale_count']) + ',' + str(shop['created_time'])
+    return HttpResponse('fffff')
 
 
 
