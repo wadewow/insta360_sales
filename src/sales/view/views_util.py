@@ -92,7 +92,6 @@ def util_import_nano(request):
             res = res_data.read()
             print res
             res = json.loads(res)
-            print res
             flag = res['flag']
             if flag:
                 nums = res['nums']

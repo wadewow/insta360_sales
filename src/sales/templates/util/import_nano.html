@@ -73,7 +73,6 @@
                   console.log("Data: " + data + "\nStatus: " + status);
                    $("#tip").text(data);
             }).fail(function () {
-                finish();
                 alert('网络超时')
             });
 {#              $.post("/sales/util/import_nano", $formData, function(data,status){#}

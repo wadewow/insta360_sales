@@ -423,13 +423,21 @@ def bi_inter_list(request):
                 if not flag:
                     continue
                 active = 0
+                active_location = ''
                 active_time = res['data']['first_use_time']
                 if active_time != '0':
                     active = 1
+                    active_location = res['data']['active_location']
+                    active_location = active_location.replace(',',' ')
             except:
                 active = 0
-            serial['active'] = active
-            print active
+                active_location = ''
+            active_info = {
+                'active': active,
+                'active_location': active_location
+            }
+
+            serial['active_info'] = active_info
         return render(request, 'bi/inter_list.html', {
             'serials': serials,
             'lib_path': lib_path
