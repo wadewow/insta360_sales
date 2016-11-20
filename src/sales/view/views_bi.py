@@ -564,7 +564,7 @@ def bi_promotion(request):
 @csrf_exempt
 def bi_export(request):
     # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(content_type='text/csv')
+    response = HttpResponse(content_type='text/csv; charset=utf-8')
     response['Content-Disposition'] = 'attachment; filename="门店列表.csv"'
 
     writer = csv.writer(response)
