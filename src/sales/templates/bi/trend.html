@@ -44,8 +44,18 @@
 
 <script type="text/javascript">
     $(function () {
+        var start_time = document.getElementById('start_time');
+        var end_time = document.getElementById('end_time');
         var myChart;
         myChart = echarts.init(document.getElementById('main'), 'macarons');
+        var startTime = moment().subtract(30, 'days').format('YYYY-MM-DD');
+        var endTime = moment().format('YYYY-MM-DD');
+        start_time.value = startTime;
+        end_time.value = endTime;
+        data = {
+            start_time: startTime,
+            end_time: endTime
+        };
         $.get("/sales/bi/store_trend", function(data,status){
             console.log("Data: " + data + "\nStatus: " + status);
             var option = getOption(data);
@@ -127,8 +137,6 @@
 
         }
 
-        var start_time = document.getElementById('start_time');
-        var end_time = document.getElementById('end_time');
         var picker1 = new Pikaday(
                 {
                     field: start_time,
