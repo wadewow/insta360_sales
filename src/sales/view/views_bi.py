@@ -367,8 +367,10 @@ def bi_inter_list(request):
         if not request.session.__contains__('manager_id'):
             return redirect('/sales/bi/login')
         para = request.GET
+        sort = ''
         if para.__contains__('sort'):
             sort = para.__getitem__('sort')
+        if sort == 'id':
             serials = SerialToInter.objects.all().order_by(sort).values()
         else:
             serials = SerialToInter.objects.all().values()
@@ -443,6 +445,9 @@ def bi_inter_list(request):
             }
 
             serial['active_info'] = active_info
+        if sort == 'agent':
+            serials = list(serials)
+            serials.sort(key=lambda serial: serial['factory']['consumer'], reverse=False)
         return render(request, 'bi/inter_list.html', {
             'serials': serials,
             'lib_path': lib_path
