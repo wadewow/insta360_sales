@@ -103,7 +103,6 @@ def sale_scan(request):
                 if not flag:
                     return HttpResponse("序列号无效！")
                 active_time = res['data']['first_use_time']
-                device_code = res['data']['equipment_code']
                 now = timezone.now()
                 active = 0
                 if active_time != '0':
@@ -134,7 +133,6 @@ def sale_scan(request):
                     'serial_number': serial_number,
                     'business_id': shop.business_id,
                     'created_time': now,
-                    'device_code': device_code,
                     'manager': shop.manager
                 }
                 try:
@@ -181,6 +179,7 @@ def sale_sales(request):
                 for index, item in enumerate(res):
                     data = res[item]
                     active_time = data['first_use_time']
+                    device_code = data['equipment_code']
                     active = 0
                     if active_time != '0':
                       active = 1
@@ -196,6 +195,7 @@ def sale_sales(request):
                     sale_info = {
                       'active_time': active_time,
                       'active': active,
+                      'device_code': device_code
                     }
                     Sale.objects.update_or_create(serial_number=item, name='Insta360 Nano',defaults=sale_info)
 

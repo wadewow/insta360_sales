@@ -39,8 +39,8 @@ def bi_login(request):
 @csrf_exempt
 def bi_stores(request):
     if request.method == 'GET':
-        # if not request.session.__contains__('manager_id'):
-        #     return redirect('/sales/bi/login')
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/bi/login')
         para = request.GET
         page = 1
         if para.__contains__('page'):
@@ -138,8 +138,8 @@ def bi_stores(request):
 @csrf_exempt
 def bi_sales(request):
     if request.method == 'GET':
-        # if not request.session.__contains__('manager_id'):
-        #     return redirect('/sales/bi/login')
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/bi/login')
         para = request.GET
         page = 1
         if para.__contains__('page'):
@@ -236,6 +236,8 @@ def bi_sales(request):
 @csrf_exempt
 def bi_trend(request):
     if request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/bi/login')
         return render(request, 'bi/trend.html', {
             'lib_path': lib_path
         })
@@ -285,8 +287,8 @@ def bi_store_trend(request):
 @csrf_exempt
 def bi_nano_detail(request):
     if request.method == 'GET':
-        # if not request.session.__contains__('manager_id'):
-        #     return redirect('/sales/bi/login')
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/bi/login')
         return render(request, 'bi/nano_detail.html', {
             'lib_path': lib_path
         })
@@ -362,8 +364,8 @@ def bi_nano_detail(request):
 @csrf_exempt
 def bi_inter_list(request):
     if request.method == 'GET':
-        # if not request.session.__contains__('manager_id'):
-        #     return redirect('/sales/bi/login')
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/bi/login')
         para = request.GET
         if para.__contains__('sort'):
             sort = para.__getitem__('sort')
