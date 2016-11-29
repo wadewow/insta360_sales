@@ -36,7 +36,7 @@
       <th>商家名称</th>
       <th>商家姓名</th>
       <th>手机号</th>
-{#      <th>代码</th>#}
+      <th>代码</th>
       <th>线下地址</th>
       <th>配置</th>
       <th>样机序列号</th>
@@ -56,13 +56,13 @@
     <tr>
 {#      <td>{{ store.id }}</td>#}
       <td>{{ store.name }}</td>
-      <td>{{ store.business_id.store }}</td>
+      <td style="min-width: 80px">{{ store.business_id.store }}</td>
       <td style="min-width: 70px">{{ store.business_id.name }}</td>
       <td>{{ store.business_id.phone }}</td>
-{#      <td>{{ store.code }}</td>#}
+      <td>{{ store.code }}</td>
       <td>{{ store.province }} {{ store.city }} {{ store.location }}</td>
 {#      <td>{{ store.exhibition }}</td>#}
-      <td>
+      <td style="min-width: 80px">
         {% for key, value in store.option.items %}
           <span>{% if value == "true" %}{{ key }}{% endif %} </span>
         {% endfor %}
@@ -79,7 +79,7 @@
       </td>
       <td>{{ store.remark }}</td>
 {#      <td>{{ store.promotion }}</td>#}
-      <td>{{ store.agent }}</td>
+      <td style="min-width: 100px">{{ store.agent }}</td>
       <td style="min-width: 70px">{{ store.manager.name }}<br>({{ store.manager.area }})</td>
       <td>{{ store.sales_count }}</td>
       <td style="min-width: 120px">{{ store.created_time }}</td>

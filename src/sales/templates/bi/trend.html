@@ -58,11 +58,13 @@
             var x = [];
             var y_store = [];
             var y_nano = [];
+            var y_nano_total = [];
             for(var i in data){
                 temp = data[i];
                 x.push(i);
                 y_store.push(temp['store']);
-                y_nano.push(temp['nano'])
+                y_nano.push(temp['nano']);
+                y_nano_total.push(temp['nano_total'])
             }
             var option = {
                 tooltip: {
@@ -82,7 +84,7 @@
                 },
 
                 legend: {
-                    data:['门店总数', '日激活数']
+                    data:['门店总数', '日激活数', '总激活数']
                 },
                 xAxis : [
                     {
@@ -111,6 +113,12 @@
                         "name": "日激活数",
                         "type": "line",
                         "data": y_nano,
+                        "yAxisIndex": 1
+                    },
+                    {
+                        "name": "总激活数",
+                        "type": "line",
+                        "data": y_nano_total,
                         "yAxisIndex": 1
                     }
                 ]
