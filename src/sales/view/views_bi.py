@@ -268,13 +268,14 @@ def bi_store_trend(request):
         else:
             end_time = today
         result = collections.OrderedDict()
-        nano_total = 0
-        for i in range((end_time.date() - start_time.date()).days):
+        delta = (end_time.date() - start_time.date()).days
+        for i in range(delta):
             end = (start_time + datetime.timedelta(days=(i+1)))
-            start = (end - datetime.timedelta(days=1))
+            start = end - datetime.timedelta(days=1)
             store_count = Shop.objects.filter(created_time__range=(begin,end)).count()
             nano_count = Sale.objects.filter(active=1, name='Insta360 Nano', active_time__range=(start, end)).count()
-            nano_total += nano_count
+            month_ago = end - datetime.timedelta(days=30)
+            nano_total = Sale.objects.filter(active=1, name='Insta360 Nano', active_time__range=(month_ago, end)).count()
             temp = {
                 'store': store_count,
                 'nano': nano_count,
