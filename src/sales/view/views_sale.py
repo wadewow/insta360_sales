@@ -235,7 +235,7 @@ def sale_sales(request):
                             if device_code == '':
                                 num = 1
                             else:
-                                num = Sale.objects.filter(device_code=device_code,clerk_id=clerk_id,name='Insta360 Nano').count()
+                                num = Sale.objects.filter(device_code=device_code,clerk_id=clerk_id,name='Insta360 Nano',created_time__lte=created_time).count()
                             if num > 1:
                                 show_time = ''
                                 hint = '被重复手机激活，不可提现'
