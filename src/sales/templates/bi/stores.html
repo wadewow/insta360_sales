@@ -54,7 +54,7 @@
 {#      <th>促销策略</th>#}
       <th><a class="sort" href="/sales/bi/stores?sort=agent">代理商</a></th>
       <th><a class="sort" href="/sales/bi/stores?sort=manager">销售经理</a></th>
-      <th><a class="sort" href="/sales/bi/stores?sort=-sales_count">累计销量</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-sales_count">累计销量(有效数)</a></th>
       <th><a class="sort" href="/sales/bi/stores?sort=-created_time">创建时间</a></th>
       <th><a class="sort" href="/sales/bi/stores?sort=-online">网店地址</a></th>
     </tr>
@@ -88,7 +88,7 @@
 {#      <td>{{ store.promotion }}</td>#}
       <td style="min-width: 100px">{{ store.agent }}</td>
       <td style="min-width: 70px">{{ store.manager.name }}<br>({{ store.manager.area }})</td>
-      <td>{{ store.sales_count }}</td>
+      <td>{{ store.sales_count }}({{ store.valid_count }})</td>
       <td style="min-width: 120px">{{ store.created_time }}</td>
       <td style="max-width: 500px">{% if store.online != 'http://' %}<a href="{{ store.online }}" title="{{ store.online }}"  target="_blank">{{ store.online|truncatechars:30 }}</a>{% endif %}</td>
     </tr>

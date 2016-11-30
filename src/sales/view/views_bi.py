@@ -119,8 +119,11 @@ def bi_stores(request):
             except:
                 pass
             store_id = store['id']
-            sales_count = Sale.objects.filter(store_id=store_id, name='Insta360 Nano').count()
+            sales = Sale.objects.filter(store_id=store_id, name='Insta360 Nano')
+            sales_count = sales.count()
             store['sales_count'] = sales_count
+            valid_count = sales.filter(valid=1).count()
+            store['valid_count'] = valid_count
         data = {
             'total': total,
             'current_page': page,
@@ -206,7 +209,21 @@ def bi_sales(request):
             valid = sale['valid']
             active = sale['active']
             if valid == 1:
-                state = '生效'
+                created_time = sale['created_time']
+                device_code = sale['device_code']
+                if device_code == '':
+                    num = 1
+                else:
+                    num = Sale.objects.filter(
+                        device_code=device_code,
+                        clerk_id=clerk_id,
+                        name='Insta360 Nano',
+                        created_time__lte=created_time
+                    ).count()
+                if num > 1:
+                    state = '重复激活'
+                else:
+                    state = '生效'
             else:
                 if active == 1:
                     state = '超时'
@@ -274,12 +291,9 @@ def bi_store_trend(request):
             start = end - datetime.timedelta(days=1)
             store_count = Shop.objects.filter(created_time__range=(begin,end)).count()
             nano_count = Sale.objects.filter(active=1, name='Insta360 Nano', active_time__range=(start, end)).count()
-            month_ago = end - datetime.timedelta(days=30)
-            nano_total = Sale.objects.filter(active=1, name='Insta360 Nano', active_time__range=(month_ago, end)).count()
             temp = {
                 'store': store_count,
-                'nano': nano_count,
-                'nano_total': nano_total
+                'nano': nano_count
             }
             result[start.strftime('%m-%d')] = temp
         return JsonResponse(result, safe=False)
@@ -578,7 +592,7 @@ def bi_export(request):
 
     writer = csv.writer(response)
 
-    writer.writerow(['门店名称', '省份', '城市', '地址', '配置', '样机', '代理商', '销售经理', '累计销量', '创建时间', '创建天数', '网店地址'])
+    writer.writerow(['门店名称', '省份', '城市', '地址', '配置', '样机', '代理商', '销售经理', '累计总销量', '有效订单数', '创建时间', '创建天数', '网店地址'])
     stores = Shop.objects.filter(created_time__gt='2016-11-05').values()
     url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
     req = urllib2.Request(url=url)
@@ -618,7 +632,9 @@ def bi_export(request):
             store['manager'] = manager
         except:
             pass
-        sales_count = Sale.objects.filter(store_id=store_id, name='Insta360 Nano').count()
+        sales = Sale.objects.filter(store_id=store_id, name='Insta360 Nano')
+        sales_count = sales.count()
+        valid_count = sales.filter(valid=1).count()
         created_time = store['created_time']
         created_time += datetime.timedelta(hours=8)
         created_date = created_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -635,6 +651,7 @@ def bi_export(request):
                          store['agent'],
                          store['manager'].name + '('+ store['manager'].area +')',
                          sales_count,
+                         valid_count,
                          created_date,
                          delta,
                          store['online']])
