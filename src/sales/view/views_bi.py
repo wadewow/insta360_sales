@@ -567,7 +567,6 @@ def bi_promotion(request):
         })
     if request.method == 'POST':
         para = request.POST
-        print para
         start_time = para.__getitem__('start_time')
         end_time = para.__getitem__('end_time')
         benchmark = para.__getitem__('benchmark')
@@ -576,7 +575,33 @@ def bi_promotion(request):
         bonus = para.__getitem__('bonus')
         bonus1 = para.__getitem__('bonus1')
         bonus2 = para.__getitem__('bonus2')
-        promotion = Promotion.objects.create(start_time=start_time,end_time=end_time,benchmark=benchmark,benchmark1=benchmark1,benchmark2=benchmark2,bonus=bonus,bonus1=bonus1,bonus2=bonus2)
+        if benchmark > benchmark1 or benchmark1 > benchmark2:
+            return HttpResponse('各级梯度必须由小到大')
+        if start_time > end_time:
+            return HttpResponse('结束日期必须大于开始日期')
+
+        promotion = Promotion.objects.filter(
+            start_time=start_time,
+            end_time=end_time,
+            benchmark=benchmark,
+            benchmark1=benchmark1,
+            benchmark2=benchmark2,
+            bonus=bonus,
+            bonus1=bonus1,
+            bonus2=bonus2
+        ).first()
+
+        if promotion == None:
+            promotion = Promotion.objects.create(
+                start_time=start_time,
+                end_time=end_time,
+                benchmark=benchmark,
+                benchmark1=benchmark1,
+                benchmark2=benchmark2,
+                bonus=bonus,
+                bonus1=bonus1,
+                bonus2=bonus2
+            )
         list = para.__getitem__('list')
         ids = list.split(',')
         for id in ids:

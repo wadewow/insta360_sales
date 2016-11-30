@@ -12,7 +12,7 @@
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/pikaday/1.5.1/css/pikaday.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
-    <title>Insta360 展台信息</title>
+    <title>制定促销</title>
     <script>
     $(function () {
         $gallery = $("#gallery");
@@ -74,7 +74,7 @@
                     alert('设置促销成功')
                 }
                 else {
-                    alert('设置促销失败')
+                    alert(data)
                 }
             });
 
@@ -101,7 +101,7 @@
 {% extends "bi/navigation.html" %}
 {% block title %}门店情况{% endblock %}
 {% block content %}
-    <button class="mui-btn mui-btn--raised mui-btn--primary" id="make_promotion">制定促销</button>
+    <button class="mui-btn mui-btn--raised mui-btn--accent" id="make_promotion">制定促销</button>
 
     <div id="promotion">
         <form class="mui-form--inline" style="margin-top:50px" id="form_promotion">
@@ -109,13 +109,13 @@
                 <div class="mui-row">
                     <div class="mui-col-md-6">
                     <div class="mui-textfield">
-                    <input type="number" required="required" name="benchmark">
+                    <input type="number" required="required" pattern="^(([1-9][0-9]*)|0)$" name="benchmark">
                     <label>一级梯度</label>
                     </div>
                     </div>
                     <div class="mui-col-md-6">
                     <div class="mui-textfield">
-                    <input type="number" required="required" name="bonus">
+                    <input type="text" required="required" pattern="^(([1-9][0-9]*)|0|(([0]\.[0-9]{1,2}|[1-9][0-9]*\.\d{1,2})))$" name="bonus">
                     <label>一级奖励</label>
                     </div>
                     </div>
@@ -123,13 +123,13 @@
                 <div class="mui-row">
                     <div class="mui-col-md-6">
                     <div class="mui-textfield">
-                    <input type="number" required="required" name="benchmark1">
+                    <input type="number" required="required" pattern="^(([1-9][0-9]*)|0)$" name="benchmark1">
                     <label>二级梯度</label>
                     </div>
                     </div>
                     <div class="mui-col-md-6">
                     <div class="mui-textfield">
-                    <input type="number" required="required" name="bonus1">
+                    <input type="text" required="required" pattern="^(([1-9][0-9]*)|0|(([0]\.[0-9]{1,2}|[1-9][0-9]*\.\d{1,2})))$" name="bonus1">
                     <label>二级奖励</label>
                     </div>
                     </div>
@@ -137,19 +137,18 @@
                 <div class="mui-row">
                 <div class="mui-col-md-6">
                 <div class="mui-textfield">
-                <input type="number" required="required" name="benchmark2">
+                <input type="number" required="required" pattern="^(([1-9][0-9]*)|0)$" name="benchmark2">
                 <label>三级梯度</label>
                 </div>
                 </div>
                 <div class="mui-col-md-6">
                 <div class="mui-textfield">
-                <input type="number" required="required" name="bonus2">
+                <input type="text" required="required" pattern="^(([1-9][0-9]*)|0|(([0]\.[0-9]{1,2}|[1-9][0-9]*\.\d{1,2})))$" name="bonus2">
                 <label>三级奖励</label>
                 </div>
                 </div>
                 </div>
                 <div class="right">
-
                   <div class="mui-textfield right">
                     <label for="start_time">From</label>
                     <input style="" type="text" required="required" id="start_time" name="start_time" placeholder="Start Time">
