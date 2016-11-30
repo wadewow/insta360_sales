@@ -120,8 +120,36 @@ def bi_stores(request):
                 pass
             store_id = store['id']
             sales = Sale.objects.filter(store_id=store_id, name='Insta360 Nano')
+            today = timezone.localtime(timezone.now()).replace(
+                hour=0,
+                minute=0,
+                second=0,
+                microsecond=0
+            )
+            created_time = store['created_time']
+            one_week = today - datetime.timedelta(days=7)
+            two_week = today - datetime.timedelta(days=14)
+            three_week = today - datetime.timedelta(days=21)
+
+            if created_time >= two_week:
+                state = '试营业'
+            else:
+                one_week_sales = sales.filter(created_time__gt=one_week).count()
+                if one_week_sales > 0:
+                    state = '正常'
+                else:
+                    two_week_sales = sales.filter(created_time__gt=two_week).count()
+                    if two_week_sales > 0:
+                        state = '预警'
+                    else:
+                        three_week_sales = sales.filter(created_time__gt=three_week).count()
+                        if three_week_sales > 0:
+                            state = '问题'
+                        else:
+                            state = '放弃'
             sales_count = sales.count()
             store['sales_count'] = sales_count
+            store['state'] = state
             valid_count = sales.filter(valid=1).count()
             store['valid_count'] = valid_count
         data = {
@@ -617,7 +645,7 @@ def bi_export(request):
 
     writer = csv.writer(response)
 
-    writer.writerow(['门店名称', '省份', '城市', '地址', '配置', '样机', '代理商', '销售经理', '累计总销量', '有效订单数', '创建时间', '创建天数', '网店地址'])
+    writer.writerow(['门店名称', '商家名称', '商家姓名', '商家手机', '省份', '城市', '详细地址', '门店状态', '物料', '样机序列号' ,'展台序列号' , '代理商', '销售经理', '累计总销量', '有效订单数', '创建时间', '创建天数', '网店地址', '备注'])
     stores = Shop.objects.filter(created_time__gt='2016-11-05').values()
     url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
     req = urllib2.Request(url=url)
@@ -649,7 +677,7 @@ def bi_export(request):
         store['agent'] = agent_dict[store['agent']]
         try:
             shopkeeper = Store.objects.get(id=business_id)
-            store['business_id'] = shopkeeper
+            store['business'] = shopkeeper
         except:
             pass
         try:
@@ -658,9 +686,38 @@ def bi_export(request):
         except:
             pass
         sales = Sale.objects.filter(store_id=store_id, name='Insta360 Nano')
+
+        now = timezone.now()
+        today = timezone.localtime(now).replace(
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0
+        )
+        created_time = store['created_time']
+        one_week = today - datetime.timedelta(days=7)
+        two_week = today - datetime.timedelta(days=14)
+        three_week = today - datetime.timedelta(days=21)
+
+        if created_time >= two_week:
+            state = '试营业'
+        else:
+            one_week_sales = sales.filter(created_time__gt=one_week).count()
+            if one_week_sales > 0:
+                state = '正常'
+            else:
+                two_week_sales = sales.filter(created_time__gt=two_week).count()
+                if two_week_sales > 0:
+                    state = '预警'
+                else:
+                    three_week_sales = sales.filter(created_time__gt=three_week).count()
+                    if three_week_sales > 0:
+                        state = '问题'
+                    else:
+                        state = '放弃'
+
         sales_count = sales.count()
         valid_count = sales.filter(valid=1).count()
-        created_time = store['created_time']
         created_time += datetime.timedelta(hours=8)
         created_date = created_time.strftime('%Y-%m-%d %H:%M:%S')
         now = timezone.now()
@@ -668,17 +725,25 @@ def bi_export(request):
         if len(store['online']) < 10:
             store['online'] = ''
         writer.writerow([store['name'],
+                         store['business'].store,
+                         store['business'].name,
+                         store['business'].phone,
                          store['province'],
                          store['city'],
                          store['location'],
+                         state,
                          store['option'],
                          store['machine_serial'],
+                         store['exhibition'],
                          store['agent'],
                          store['manager'].name + '('+ store['manager'].area +')',
                          sales_count,
                          valid_count,
                          created_date,
                          delta,
-                         store['online']])
+                         store['online'],
+                         store['remark']
+                         ]
+                        )
 
     return response

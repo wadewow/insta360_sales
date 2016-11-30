@@ -34,7 +34,7 @@
 <body>
 {% extends "bi/navigation.html" %}
 {% block title %}门店情况
-<a class="mui-btn mui-btn--raised mui--pull-right" href="/sales/bi/export">导出CSV</a>
+<a class="mui-btn mui-btn--raised" href="/sales/bi/export">导出CSV</a>
 {% endblock %}
 {% block content %}
 <table class="mui-table mui-table--bordered">
@@ -42,55 +42,60 @@
     <tr>
 {#      <th>id</th>#}
       <th><a class="sort" href="/sales/bi/stores?sort=name">门店名称</a></th>
-      <th>商家名称</th>
-      <th>商家姓名</th>
-      <th>手机号</th>
-{#      <th>代码</th>#}
-      <th><a class="sort" href="/sales/bi/stores?sort=province">线下地址</a></th>
-      <th><a class="sort" href="/sales/bi/stores?sort=-option">配置</a></th>
+      <th>商家信息</th>
+{#      <th>商家姓名</th>#}
+{#      <th>手机号</th>#}
+{#      <th>门店代码</th>#}
+      <th><a class="sort" href="/sales/bi/stores?sort=province">地址</a></th>
+      <th>门店状态</th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-option">物料</a></th>
       <th><a class="sort" href="/sales/bi/stores?sort=-machine_serial">样机序列号</a></th>
+{#      <th><a class="sort" href="/sales/bi/stores?sort=exhibition">展台序列号</a></th>#}
       <th>展台照片</th>
       <th>备注</th>
 {#      <th>促销策略</th>#}
       <th><a class="sort" href="/sales/bi/stores?sort=agent">代理商</a></th>
       <th><a class="sort" href="/sales/bi/stores?sort=manager">销售经理</a></th>
-      <th><a class="sort" href="/sales/bi/stores?sort=-sales_count">累计销量(有效数)</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-sales_count">销量(有效数)</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=city">城市</a></th>
       <th><a class="sort" href="/sales/bi/stores?sort=-created_time">创建时间</a></th>
-      <th><a class="sort" href="/sales/bi/stores?sort=-online">网店地址</a></th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-online">网址</a></th>
     </tr>
   </thead>
   <tbody>
   {% for store in stores%}
     <tr>
 {#      <td>{{ store.id }}</td>#}
-      <td>{{ store.name }}</td>
-      <td style="min-width: 80px">{{ store.business_id.store }}</td>
-      <td style="min-width: 70px">{{ store.business_id.name }}</td>
-      <td>{{ store.business_id.phone }}</td>
+      <td>{{ store.name }}<br>({{ store.code }})</td>
+      <td class="mui--text-center" style="min-width: 80px">{{ store.business_id.store }}<br>（{{ store.business_id.name }}）<br>{{ store.business_id.phone }}</td>
+{#      <td style="min-width: 70px">{{ store.business_id.name }}</td>#}
+{#      <td>{{ store.business_id.phone }}</td>#}
 {#      <td>{{ store.code }}</td>#}
       <td>{{ store.province }} {{ store.city }} {{ store.location }}</td>
-{#      <td>{{ store.exhibition }}</td>#}
+      <td>{{ store.state }}</td>
       <td style="min-width: 80px">
         {% for key, value in store.option.items %}
           <span>{% if value == "true" %}{{ key }}{% endif %} </span>
         {% endfor %}
       </td>
       <td>{{ store.machine_serial }}</td>
+{#      <td>{{ store.exhibition }}</td>#}
 {#      <td>{{ store.agent }}</td>#}
       <td>
           {% for photo in store.photo %}
-              <ul class="weui-uploader__files uploaderFiles" id="uploaderFiles" style="margin-bottom:0;min-width:270px">
+              <ul class="weui-uploader__files uploaderFiles" id="uploaderFiles" style="margin-bottom:0;min-width:220px">
                 <li class="weui-uploader__file" style="height:50px;width:50px;background-image:url({{ photo }})"></li>
               </ul>
           {% endfor %}
       </td>
-      <td>{{ store.remark }}</td>
+      <td style="min-width: 80px">{{ store.remark }}</td>
 {#      <td>{{ store.promotion }}</td>#}
-      <td style="min-width: 100px">{{ store.agent }}</td>
+      <td style="min-width: 80px">{{ store.agent }}</td>
       <td style="min-width: 70px">{{ store.manager.name }}<br>({{ store.manager.area }})</td>
       <td>{{ store.sales_count }}({{ store.valid_count }})</td>
-      <td style="min-width: 120px">{{ store.created_time }}</td>
-      <td style="max-width: 500px">{% if store.online != 'http://' %}<a href="{{ store.online }}" title="{{ store.online }}"  target="_blank">{{ store.online|truncatechars:30 }}</a>{% endif %}</td>
+      <td>{{ store.city }}</td>
+      <td style="min-width: 80px">{{ store.created_time }}</td>
+      <td style="max-width: 100px">{% if store.online != 'http://' %}<a href="{{ store.online }}" title="{{ store.online }}"  target="_blank">{{ store.online|truncatechars:10}}</a>{% endif %}</td>
     </tr>
   {% endfor %}
 
