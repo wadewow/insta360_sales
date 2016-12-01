@@ -68,13 +68,13 @@
             var x = [];
             var y_store = [];
             var y_nano = [];
-            var y_nano_total = [];
+            var y_machine = [];
             for(var i in data){
                 temp = data[i];
                 x.push(i);
                 y_store.push(temp['store']);
                 y_nano.push(temp['nano']);
-                y_nano_total.push(temp['nano_total'])
+                y_machine.push(temp['machine']);
             }
             var option = {
                 tooltip: {
@@ -94,7 +94,7 @@
                 },
 
                 legend: {
-                    data:['门店总数', '日激活量']
+                    data:['门店总数', '样机总数','日激活量']
                 },
                 xAxis : [
                     {
@@ -105,7 +105,7 @@
                 yAxis : [
                     {
                         type : 'value',
-                        name: '门店数'
+                        name: '门店/样机数'
                     },
                     {
                         type : 'value',
@@ -117,6 +117,12 @@
                         "name": "门店总数",
                         "type": "line",
                         "data": y_store,
+                        "yAxisIndex": 0
+                    },
+                    {
+                        "name": "样机总数",
+                        "type": "line",
+                        "data": y_machine,
                         "yAxisIndex": 0
                     },
                     {

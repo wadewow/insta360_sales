@@ -381,6 +381,8 @@ def bi_store_trend(request):
             try:
                 end_time = datetime.datetime.strptime(para.__getitem__('end_time'), '%Y-%m-%d')
                 end_time = end_time + datetime.timedelta(days=1)
+                if end_time.date() > today.date() :
+                    end_time = today
             except:
                 end_time = today
         else:
@@ -390,11 +392,14 @@ def bi_store_trend(request):
         for i in range(delta):
             end = (start_time + datetime.timedelta(days=(i+1)))
             start = end - datetime.timedelta(days=1)
-            store_count = Shop.objects.filter(created_time__range=(begin,end)).count()
+            stores = Shop.objects.filter(created_time__range=(begin,end))
+            store_count = stores.count()
+            machine_count = stores.exclude(machine_serial='').count()
             nano_count = Sale.objects.filter(active=1, name='Insta360 Nano', active_time__range=(start, end)).count()
             temp = {
                 'store': store_count,
-                'nano': nano_count
+                'nano': nano_count,
+                'machine': machine_count
             }
             result[start.strftime('%m-%d')] = temp
         return JsonResponse(result, safe=False)
