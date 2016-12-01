@@ -73,6 +73,7 @@ class Sale(models.Model):
     valid = models.IntegerField(default=0)
     device_code = models.CharField(max_length=200, blank=True)
     manager = models.CharField(max_length=200, blank=True)
+    province = models.CharField(max_length=200, blank=True)
 
     def __unicode__(self):
         return str(self.id)

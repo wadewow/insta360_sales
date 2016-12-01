@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <script src="//cdn.bootcss.com/moment.js/2.15.2/moment.min.js"></script>
+    <script src="//cdn.bootcss.com/pikaday/1.5.1/pikaday.min.js"></script>
+    <script src="//cdn.bootcss.com/echarts/3.3.1/echarts.min.js"></script>
+    <script src="/static/js/echarts/macarons.js"></script>
+    <script src="/static/js/echarts/china.js"></script>
+    <link href="//cdn.bootcss.com/pikaday/1.5.1/css/pikaday.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>分布地图</title>
+    <style type="text/css">
+        .right{
+            float: right;
+        }
+    </style>
+</head>
+<body>
+{% extends "bi/navigation.html" %}
+{% block title %}分布地图{% endblock %}
+{% block content %}
+    <form action="" id="query" class="mui-form--inline" style="margin-top: 10px">
+    <input type="submit" class="mui-btn mui-btn--raised right text-right" value="查询">
+        <div class="right">
+      <div class="mui-textfield right" style="">
+        <label for="end_time">To</label>
+        <input style="" type="text" required="required" id="end_time" name="end_time" placeholder="End Time">
+          </div>
+      <div class="mui-textfield right">
+        <label for="start_time">From</label>
+        <input style="" type="text" required="required" id="start_time" name="start_time" placeholder="Start Time">
+      </div>
+    </div>
+
+    </form>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="height:600px;margin-top: 100px"></div>
+
+<script type="text/javascript">
+    $(function () {
+        var start_time = document.getElementById('start_time');
+        var end_time = document.getElementById('end_time');
+        var myChart;
+        myChart = echarts.init(document.getElementById('main'), 'macarons');
+        var startTime = moment().subtract(30, 'days').format('YYYY-MM-DD');
+        var endTime = moment().format('YYYY-MM-DD');
+        start_time.value = startTime;
+        end_time.value = endTime;
+        data = {
+            start_time: startTime,
+            end_time: endTime
+        };
+        $.get("/sales/bi/sales_map", function(data,status){
+            var option = getOption(data);
+            // 为echarts对象加载数据
+            myChart.setOption(option,true);
+
+        });
+
+        function getOption (data) {
+            var old_option = myChart.getOption();
+            var legend = {
+                    orient: 'horizontal',
+                    left: 'center',
+                    data:['门店','样机','销量'],
+                    selectedMode: 'single'
+                };
+            if(typeof(old_option)!="undefined") {
+                legend = old_option.legend;
+            }
+            var store_data = data['store'];
+            var machine_data = data['machine'];
+            var sale_data = data['sale'];
+            var option = {
+{#                title : {#}
+{#                    text: '分布地区',#}
+{#                    left: 'center'#}
+{#                },#}
+                tooltip : {
+                    trigger: 'item'
+                },
+                legend: legend,
+                visualMap: {
+                    min: 0,
+                    max: 50,
+                    left: 'left',
+                    top: 'bottom',
+                    text:['高','低'],           // 文本，默认为数值文本
+                    calculable : true
+                },
+                toolbox: {
+                    show: true,
+                    left: 'right',
+                    top: 'top',
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                series: [{
+                    name: '门店',
+                    type: 'map',
+                    mapType: 'china',
+                    roam: true,
+                    label: {
+                        normal: {
+                            show: true
+                        },
+                        emphasis: {
+                            show: true
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                          areaColor: '#fff',
+                          borderColor: '#ccc'
+                        },
+                        emphasis: {
+                          areaColor: '#FFFF00'
+                        }
+                    },
+                    data:store_data
+                }, {
+                    name: '样机',
+                    type: 'map',
+                    mapType: 'china',
+                    roam: true,
+                    label: {
+                        normal: {
+                            show: true
+                        },
+                        emphasis: {
+                            show: true
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                          areaColor: '#fff',
+                          borderColor: '#ccc'
+                        },
+                        emphasis: {
+                          areaColor: '#FFFF00'
+                        }
+                    },
+                    data:machine_data
+                }, {
+                    name: '销量',
+                    type: 'map',
+                    mapType: 'china',
+                    roam: true,
+                    label: {
+                        normal: {
+                            show: true
+                        },
+                        emphasis: {
+                            show: true
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                          areaColor: '#fff',
+                          borderColor: '#ccc'
+                        },
+                        emphasis: {
+                          areaColor: '#FFFF00'
+                        }
+                    },
+                    data:sale_data
+                }
+                ]
+            };
+            return option
+
+        }
+
+        var picker1 = new Pikaday(
+                {
+                    field: start_time,
+                    format: 'YYYY-MM-DD',
+                    onSelect: function () {
+                    }
+                });
+        var picker2 = new Pikaday(
+                {
+                    field: end_time,
+                    format: 'YYYY-MM-DD',
+                    onSelect: function () {
+                    }
+                });
+        var form = $('form#query');
+        form.submit(function() {
+            var start = start_time.value;
+            var end = end_time.value;
+            if (start > end)
+                return false;
+            data = form.serialize();
+            $.get("/sales/bi/sales_map",data, function(data,status){
+                    var option = getOption(data);
+                    // 为echarts对象加载数据
+                    myChart.setOption(option,true);
+                });
+            return false
+        });
+    })
+</script>
+{% endblock %}
+
+</body>
+</html>

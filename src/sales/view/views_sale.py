@@ -69,7 +69,8 @@ def sale_scan(request):
                         'serial_number': serial_number,
                         'business_id': shop.business_id,
                         'created_time': now,
-                        'manager': shop.manager
+                        'manager': shop.manager,
+                        'province': shop.province
                     }
                     Sale.objects.update_or_create(serial_number=serial_number, name=name, defaults=sale_info)
                     return HttpResponse('success')
@@ -133,7 +134,8 @@ def sale_scan(request):
                     'serial_number': serial_number,
                     'business_id': shop.business_id,
                     'created_time': now,
-                    'manager': shop.manager
+                    'manager': shop.manager,
+                    'province': shop.province
                 }
                 try:
                     temp = Sale.objects.get(serial_number=serial_number, name=name)
@@ -486,7 +488,8 @@ def sale_test(request):
                     'active': active,
                     'serial_number': serial_number,
                     'business_id': shop.business_id,
-                    'created_time': now
+                    'created_time': now,
+                    'province': shop.province
                 }
                 Sale.objects.update_or_create(serial_number=serial_number, name=name, defaults=sale_info)
                 return HttpResponse('success')

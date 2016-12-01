@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
+from django.db.models.aggregates import Count
 from django.forms.models import model_to_dict
 from ..models import Manager
 from ..models import Shop
@@ -402,6 +403,91 @@ def bi_store_trend(request):
                 'machine': machine_count
             }
             result[start.strftime('%m-%d')] = temp
+        return JsonResponse(result, safe=False)
+
+@csrf_exempt
+def bi_map(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/bi/login')
+        return render(request, 'bi/map.html', {
+            'lib_path': lib_path
+        })
+
+
+@csrf_exempt
+def bi_sales_map(request):
+    if request.method == 'GET':
+        para = request.GET
+        today = (timezone.localtime(timezone.now()) + datetime.timedelta(days=1)).replace(hour=0,minute=0,second=0,microsecond=0)
+        begin = today.replace(year=2016,month=11,day=5)
+
+        if para.__contains__('start_time'):
+            try:
+                start_time = datetime.datetime.strptime(para.__getitem__('start_time'), '%Y-%m-%d')
+                if start_time.date() < begin.date() :
+                    start_time = begin
+            except:
+                start_time = begin
+        else:
+            start_time = begin
+        if para.__contains__('end_time'):
+            try:
+                end_time = datetime.datetime.strptime(para.__getitem__('end_time'), '%Y-%m-%d')
+                end_time = end_time + datetime.timedelta(days=1)
+                if end_time.date() > today.date() :
+                    end_time = today
+            except:
+                end_time = today
+        else:
+            end_time = today
+
+        result = {}
+        stores = Shop.objects.filter(created_time__range=(start_time,end_time))
+        store_count = stores.values('province').annotate(store_count=Count('id'))
+        machine_count = stores.exclude(machine_serial='').values('province').annotate(machine_count=Count('id'))
+        sale_count = Sale.objects.filter(created_time__range=(start_time,end_time)).values('province').annotate(sale_count=Count('id'))
+        store_data = []
+        for item in store_count:
+            name = item['province']
+            if '内蒙古' in name or '黑龙江' in name:
+                name = name[0:3]
+            else:
+                name = name[0:2]
+            temp = {
+                'name': name,
+                'value': item['store_count']
+            }
+            store_data.append(temp)
+
+        machine_data = []
+        for item in machine_count:
+            name = item['province']
+            if '内蒙古' in name or '黑龙江' in name:
+                name = name[0:3]
+            else:
+                name = name[0:2]
+            temp = {
+                'name': name,
+                'value': item['machine_count']
+            }
+            machine_data.append(temp)
+
+        sale_data = []
+        for item in sale_count:
+            name = item['province']
+            if '内蒙古' in name or '黑龙江' in name:
+                name = name[0:3]
+            else:
+                name = name[0:2]
+            temp = {
+                'name': name,
+                'value': item['sale_count']
+            }
+            sale_data.append(temp)
+        result['store'] = store_data
+        result['machine'] = machine_data
+        result['sale'] = sale_data
         return JsonResponse(result, safe=False)
 
 
