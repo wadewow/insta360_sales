@@ -85,6 +85,7 @@ urlpatterns = [
     url(r'^util/login$', views.util_login, name='util_login'),
 
     url(r'^bi/stores$', views.bi_stores, name='bi_stores'),
+    url(r'^bi/managers$', views.bi_managers, name='bi_managers'),
     url(r'^bi/sales$', views.bi_sales, name='bi_sales'),
     url(r'^bi/login$', views.bi_login, name='bi_login'),
     url(r'^bi/store_trend$', views.bi_store_trend, name='bi_store_trend'),

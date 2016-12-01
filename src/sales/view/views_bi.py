@@ -5,7 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.core.files.storage import default_storage
+from django.db.models import Sum
 from django.forms.models import model_to_dict
 from ..models import Manager
 from ..models import Shop
@@ -164,6 +164,79 @@ def bi_stores(request):
             'lib_path': lib_path
         })
 
+
+@csrf_exempt
+def bi_managers(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/bi/login')
+        para = request.GET
+        managers = Manager.objects.exclude(name='')
+        if para.__contains__('sort'):
+            sort = para.__getitem__('sort')
+            managers = managers.order_by(sort)
+
+        managers = managers.values()
+        for manager in managers:
+            manager_id = manager['id']
+            stores = Shop.objects.filter(manager=manager_id, created_time__gt='2016-11-05')
+            store_count = stores.count()
+            store_sales = stores.aggregate(store_sales=Sum('sales_count'))
+            store_sales = store_sales['store_sales']
+            if store_sales == None:
+                store_sales = 0
+            machine_count = stores.exclude(machine_serial='').count()
+            today = timezone.localtime(timezone.now()).replace(
+                hour=0,
+                minute=0,
+                second=0,
+                microsecond=0
+            )
+            one_week = today - datetime.timedelta(days=7)
+            two_week = today - datetime.timedelta(days=14)
+            three_week = today - datetime.timedelta(days=21)
+            trial = 0
+            normal= 0
+            warn = 0
+            problem = 0
+            abandon = 0
+            for store in stores:
+                store_id = store.id
+                sales = Sale.objects.filter(store_id=store_id, name='Insta360 Nano')
+                created_time = store.created_time
+                if created_time >= two_week:
+                    trial += 1
+                else:
+                    one_week_sales = sales.filter(created_time__gt=one_week).count()
+                    if one_week_sales > 0:
+                        normal += 1
+                    else:
+                        two_week_sales = sales.filter(created_time__gt=two_week).count()
+                        if two_week_sales > 0:
+                            warn += 1
+                        else:
+                            three_week_sales = sales.filter(created_time__gt=three_week).count()
+                            if three_week_sales > 0:
+                                problem += 1
+                            else:
+                                abandon += 1
+
+            manager['store_count'] = store_count
+            manager['store_sales'] = store_sales
+            manager['machine_count'] = machine_count
+            manager['trial'] = trial
+            manager['normal'] = normal
+            manager['warn'] = warn
+            manager['problem'] = problem
+            manager['abandon'] = abandon
+        if para.__contains__('i_sort'):
+            i_sort = para.__getitem__('i_sort')
+            managers = list(managers)
+            managers.sort(key=lambda manager: manager[i_sort], reverse=True)
+        return render(request, 'bi/managers.html', {
+            'managers': managers,
+            'lib_path': lib_path
+        })
 
 
 @csrf_exempt

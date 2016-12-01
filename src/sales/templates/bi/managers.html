@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <title>销售经理情况</title>
+    <style type="text/css">
+        .sort{
+            cursor:pointer
+        }
+    </style>
+</head>
+<body>
+{% extends "bi/navigation.html" %}
+{% block title %}销售经理情况
+{#<a class="mui-btn mui-btn--raised" href="/sales/bi/export">导出CSV</a>#}
+{% endblock %}
+{% block content %}
+<table class="mui-table mui-table--bordered">
+  <thead>
+    <tr>
+        <th><a class="sort" href="/sales/bi/managers?sort=id">工号</a></th>
+        <th><a class="sort" href="/sales/bi/managers?sort=name">姓名</a></th>
+        <th><a class="sort" href="/sales/bi/managers?sort=area">地区</a></th>
+        <th><a class="sort" href="/sales/bi/managers?i_sort=store_count">门店数</a></th>
+        <th><a class="sort" href="/sales/bi/managers?i_sort=store_sales">累计销量</a></th>
+        <th><a class="sort" href="/sales/bi/managers?i_sort=machine_count">累计样机数</a></th>
+        <th><a class="sort" href="/sales/bi/managers?i_sort=trial">试营业门店</a></th>
+        <th><a class="sort" href="/sales/bi/managers?i_sort=normal">正常门店</a></th>
+        <th><a class="sort" href="/sales/bi/managers?i_sort=warn">预警门店</a></th>
+        <th><a class="sort" href="/sales/bi/managers?i_sort=problem">问题门店</a></th>
+        <th><a class="sort" href="/sales/bi/managers?i_sort=abandon">放弃门店</a></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for manager in managers%}
+    <tr>
+        <td>{{ manager.id }}</td>
+        <td>{{ manager.name }}</td>
+        <td>{{ manager.area }}</td>
+        <td>{{ manager.store_count }}</td>
+        <td>{{ manager.store_sales }}</td>
+        <td>{{ manager.machine_count }}</td>
+        <td>{{ manager.trial }}</td>
+        <td>{{ manager.normal }}</td>
+        <td>{{ manager.warn }}</td>
+        <td>{{ manager.problem }}</td>
+        <td>{{ manager.abandon }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+</body>
+
+</html>
