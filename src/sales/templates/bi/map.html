@@ -26,7 +26,14 @@
 {% extends "bi/navigation.html" %}
 {% block title %}分布地图{% endblock %}
 {% block content %}
-    <form action="" id="query" class="mui-form--inline" style="margin-top: 10px">
+    <form action="" id="query" class=" mui-form--inline" style="margin-top: 10px">
+    <div style="display: inline">
+        <a id="0" class="mui-btn mui-btn--primary mui-btn--small period" data-value='0'>今天</a>
+        <a id="1" class="mui-btn mui-btn--primary mui-btn--small period" data-value='1'>昨天</a>
+        <a id="7" class="mui-btn mui-btn--primary mui-btn--small period" data-value='7'>最近7天</a>
+        <a id="30" class="mui-btn mui-btn--primary mui-btn--small period active" data-value='30'>最近30天</a>
+        <a id="100" class="mui-btn mui-btn--primary mui-btn--small period" data-value='100'>全部</a>
+      </div>
     <input type="submit" class="mui-btn mui-btn--raised right text-right" value="查询">
         <div class="right">
       <div class="mui-textfield right" style="">
@@ -198,6 +205,8 @@
                 });
         var form = $('form#query');
         form.submit(function() {
+            var buttons = $('.period');
+            buttons.removeClass('active');
             var start = start_time.value;
             var end = end_time.value;
             if (start > end)
@@ -210,8 +219,69 @@
                 });
             return false
         });
+
+        $('.period').click(function() {
+            var buttons = $('.period');
+            buttons.removeClass('active');
+            $(this).addClass('active');
+            var val = $(this).attr('data-value');
+            var start, end;
+            switch(val)
+            {
+                case '0': {
+                    start = moment().format('YYYY-MM-DD');
+                    end = start;
+                    break;
+                }
+                case '1': {
+                    start = moment().subtract(1, 'days').format('YYYY-MM-DD');
+                    end = start;
+                    break;
+                }
+                case '7': {
+                    start = moment().subtract(7, 'days').format('YYYY-MM-DD');
+                    end = moment().format('YYYY-MM-DD');
+                    break;
+                }
+                case '30': {
+                    start = moment().subtract(30, 'days').format('YYYY-MM-DD');
+                    end = moment().format('YYYY-MM-DD');
+                    break;
+                }
+                case '100': {
+                    start = '2016-11-05';
+                    end = moment().format('YYYY-MM-DD');
+                    break;
+                }
+                default: {
+                    start = moment().subtract(30, 'days').format('YYYY-MM-DD');
+                    end = moment().format('YYYY-MM-DD');
+                }
+
+            }
+            start_time.value = start;
+            end_time.value = end;
+            var data = {
+                start_time: start,
+                end_time: end
+            };
+            $.get("/sales/bi/sales_map",data , function(data,status){
+                var option = getOption(data);
+                // 为echarts对象加载数据
+                myChart.setOption(option,true);
+            });
+
+        });
     })
 </script>
+<style type="text/css">
+.active {
+  background: #EE7700
+}
+.active:hover {
+  background: #EE7700
+}
+</style>
 {% endblock %}
 
 </body>
