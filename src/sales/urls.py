@@ -60,9 +60,11 @@ urlpatterns = [
     url(r'^promotion/store_filter$', views.store_filter, name='store_filter'),
 
     url(r'^cash_query$', views.cash_query, name='cash_query'),
+    url(r'^service/cloud_query$', views.service_cloud_query, name='service_cloud_query'),
     url(r'^service_cash$', views.service_cash, name='service_cash'),
     url(r'^service/serial_to_inter$', views.service_serial_to_inter, name='service_serial_to_inter'),
     url(r'^service/unbind_cloud$', views.service_unbind_cloud, name='service_unbind_cloud'),
+    url(r'^service/cloud_home$', views.service_cloud_home, name='service_cloud_home'),
     url(r'^service/login$', views.service_login, name='service_login'),
 
     url(r'^guide$', views.sale_guide, name='sale_guide'),
@@ -96,4 +98,6 @@ urlpatterns = [
     url(r'^bi/inter_list$', views.bi_inter_list, name='bi_inter_list'),
     url(r'^bi/export$', views.bi_export, name='bi_export'),
     url(r'^bi/promotion$', views.bi_promotion, name='bi_promotion'),
+
+    url(r'^wx/wx_mass_message$', views.wx_mass_message, name='wx_mass_message'),
 ]

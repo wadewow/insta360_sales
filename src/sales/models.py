@@ -37,6 +37,7 @@ class Shop(models.Model):
     manager = models.CharField(max_length=200, blank=True)
     reason = models.CharField(max_length=500, blank=True)
     sales_count = models.IntegerField(default=0)
+    bonus = models.FloatField(default=0.0)
 
     def __unicode__(self):
         return str(self.id)

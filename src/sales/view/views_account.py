@@ -214,8 +214,6 @@ def account_cash(request):
                 'code': code,
                 'money': money
             }
-            print money
-            print money == 0
             if money == 0:
                 return JsonResponse(result, safe=False)
 
@@ -229,10 +227,17 @@ def account_cash(request):
                 name=clerk.name,
                 phone=clerk.phone
             )
+            try:
+                store = Shop.objects.get(id=account.store_id)
+                store.bonus = store.bonus + account.bonus
+                store.save()
+            except:
+                pass
             account.balance = 0
             account.bonus = 0
             account.base = 0
             account.save()
+
             return JsonResponse(result, safe=False)
 
 

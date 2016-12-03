@@ -186,6 +186,11 @@ def bi_managers(request):
             store_sales = store_sales['store_sales']
             if store_sales == None:
                 store_sales = 0
+
+            bonus = stores.aggregate(bonus=Sum('bonus'))
+            bonus = bonus['bonus']
+            if bonus == None:
+                bonus = 0
             machine_count = stores.exclude(machine_serial='').count()
             today = timezone.localtime(timezone.now()).replace(
                 hour=0,
@@ -226,6 +231,7 @@ def bi_managers(request):
             manager['store_sales'] = store_sales
             manager['machine_count'] = machine_count
             manager['trial'] = trial
+            manager['bonus'] = bonus
             manager['normal'] = normal
             manager['warn'] = warn
             manager['problem'] = problem
@@ -809,7 +815,7 @@ def bi_export(request):
 
     writer = csv.writer(response)
 
-    writer.writerow(['门店名称', '商家名称', '商家姓名', '商家手机', '省份', '城市', '详细地址', '门店状态', '物料', '样机序列号' ,'展台序列号' , '代理商', '销售经理', '累计总销量', '有效订单数', '创建时间', '创建天数', '网店地址', '备注'])
+    writer.writerow(['门店名称', '商家名称', '商家姓名', '商家手机', '省份', '城市', '详细地址', '门店状态', '累计促销费用', '物料', '样机序列号' ,'展台序列号' , '代理商', '销售经理', '累计总销量', '有效订单数', '创建时间', '创建天数', '网店地址', '备注'])
     stores = Shop.objects.filter(created_time__gt='2016-11-05').values()
     url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
     req = urllib2.Request(url=url)
@@ -896,6 +902,7 @@ def bi_export(request):
                          store['city'],
                          store['location'],
                          state,
+                         store['bonus'],
                          store['option'],
                          store['machine_serial'],
                          store['exhibition'],

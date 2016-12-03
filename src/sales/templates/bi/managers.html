@@ -30,6 +30,7 @@
         <th><a class="sort" href="/sales/bi/managers?i_sort=store_count">门店数</a></th>
         <th><a class="sort" href="/sales/bi/managers?i_sort=store_sales">累计销量</a></th>
         <th><a class="sort" href="/sales/bi/managers?i_sort=machine_count">累计样机数</a></th>
+        <th><a class="sort" href="/sales/bi/managers?i_sort=bonus">累计促销费用</a></th>
         <th><a class="sort" href="/sales/bi/managers?i_sort=trial">试营业门店</a></th>
         <th><a class="sort" href="/sales/bi/managers?i_sort=normal">正常门店</a></th>
         <th><a class="sort" href="/sales/bi/managers?i_sort=warn">预警门店</a></th>
@@ -46,6 +47,7 @@
         <td>{{ manager.store_count }}</td>
         <td>{{ manager.store_sales }}</td>
         <td>{{ manager.machine_count }}</td>
+        <td>￥{{ manager.bonus }}</td>
         <td>{{ manager.trial }}</td>
         <td>{{ manager.normal }}</td>
         <td>{{ manager.warn }}</td>

@@ -18,7 +18,7 @@ class StoreAdmin(admin.ModelAdmin):
     list_display = ('id', 'store', 'name', 'password', 'phone', 'manager', 'created_time', 'pwd', 'openid')
 
 class ShopAdmin(admin.ModelAdmin):
-    list_display = ('id', 'business_id', 'code', 'name', 'online', 'province', 'city', 'location', 'exhibition', 'option', 'agent', 'photo','machine_serial', 'remark', 'created_time', 'promotion', 'manager', 'reason', 'sales_count')
+    list_display = ('id', 'business_id', 'code', 'name', 'online', 'province', 'city', 'location', 'exhibition', 'option', 'agent', 'photo','machine_serial', 'remark', 'created_time', 'promotion', 'manager', 'reason', 'sales_count', 'bonus')
 
 class ClerkAdmin(admin.ModelAdmin):
     list_display = ('id', 'store_id', 'name', 'password', 'phone', 'created_time', 'update_time', 'base', 'bonus', 'balance', 'promotion', 'pwd', 'openid')

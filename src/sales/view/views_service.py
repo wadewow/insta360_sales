@@ -13,6 +13,7 @@ from ..models import SerialToInter
 
 import urllib
 import urllib2
+import datetime
 import json
 import sys
 
@@ -127,6 +128,51 @@ def service_serial_to_inter(request):
 
 
 @csrf_exempt
+def service_cloud_query(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/service/login')
+        return render(request, 'service/unbind_cloud.html', {
+            'lib_path': lib_path
+        })
+    if request.method == 'POST':
+        para = request.POST
+        words = para.get('words','')
+        url = 'http://statistics.internal.insta360.com/api/cloud/getCloudUserInfo'
+        values = {
+            'words': words,
+        }
+        try:
+            data = urllib.urlencode(values)
+            req = urllib2.Request(url, data=data)
+            res_data = urllib2.urlopen(req)
+            res = res_data.read()
+            res = json.loads(res)
+            flag = res['flag']
+            record = res['info']
+            timestamp = record['register_time'][:-3]
+            temp = datetime.datetime.utcfromtimestamp(int(timestamp))
+            register_time = temp + datetime.timedelta(hours=8)
+            record['register_time'] = register_time
+            if not flag:
+                return render(request, 'service/unbind_cloud.html', {
+                    'exsit': 0,
+                    'lib_path': lib_path
+                })
+        except:
+            return render(request, 'service/unbind_cloud.html', {
+                'exsit': 0,
+                'lib_path': lib_path
+            })
+
+        return render(request, 'service/unbind_cloud.html', {
+            'exsit': 1,
+            'record': record,
+            'lib_path': lib_path
+        })
+
+
+@csrf_exempt
 def service_unbind_cloud(request):
     if request.method == 'GET':
         if not request.session.__contains__('manager_id'):
@@ -136,12 +182,13 @@ def service_unbind_cloud(request):
         })
     if request.method == 'POST':
         para = request.POST
+        print para
         if not para.__contains__('serial_number'):
             return render(request, 'service/unbind_cloud.html', {
                 'lib_path': lib_path
             })
         serial_number = para.__getitem__('serial_number')
-        url = 'http://api.internal.insta360.com/admin/cloud/unbundlingAccount'
+        url = 'http://statistics.internal.insta360.com/api/cloud/unbundlingAccount'
         values = {
             'serial_number': serial_number,
         }
@@ -160,3 +207,47 @@ def service_unbind_cloud(request):
             return HttpResponse(result)
         except:
             return HttpResponse('网络错误')
+
+
+@csrf_exempt
+def service_cloud_home(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/service/login')
+        url = 'http://statistics.internal.insta360.com/api/cloud/getHomePageInfo'
+        try:
+            req = urllib2.Request(url)
+            res_data = urllib2.urlopen(req)
+            res = res_data.read()
+            records = json.loads(res)
+        except:
+            return render(request, 'service/cloud_home.html', {
+                'lib_path': lib_path
+            })
+
+        return render(request, 'service/cloud_home.html', {
+            'records': records,
+            'lib_path': lib_path
+        })
+
+    if request.method == 'POST':
+        data = request.body
+        url = 'http://statistics.internal.insta360.com/api/cloud/setHomePage'
+        try:
+            req = urllib2.Request(url, data=data)
+            res_data = urllib2.urlopen(req)
+            res = res_data.read()
+            res = json.loads(res)
+            print res
+            flag = res['flag']
+            if flag:
+                return HttpResponse('保存成功')
+            else:
+                info = res['info']
+                information = '\n'
+                for i in info:
+                    information += i + '\n'
+                return HttpResponse('保存失败,以下网址有误' + information)
+        except:
+            return HttpResponse('保存失败')
+

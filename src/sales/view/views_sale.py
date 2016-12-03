@@ -219,7 +219,7 @@ def sale_sales(request):
                     if active==0:
                         if now >= deadline:
                             hint = '未在12小时内激活，不可提现'
-                            invalid = 1
+                            invalid = 0
                         else:
                             show_time = deadline
                             hint = '之前激活可提现'
@@ -231,7 +231,7 @@ def sale_sales(request):
                         # print active_time
                         if active_time >= deadline:
                             hint = '激活，不可提现'
-                            invalid = 1
+                            invalid = 0
                         else:
                             device_code = sale['device_code']
                             if device_code == '':

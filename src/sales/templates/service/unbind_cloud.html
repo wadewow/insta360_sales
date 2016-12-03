@@ -11,15 +11,18 @@
     <title>解绑云播账户序列号</title>
     <script>
     $(function () {
-        var form = $('form#unbind_cloud');
-        form.submit(function(){
-            data = $('form#unbind_cloud').serialize();
-          $.post("/sales/service/unbind_cloud", data, function(data,status){
-              console.log("Data: " + data + "\nStatus: " + status);
-              $("#tip").text(data);
-          });
-            return false
-        });
+        $('#unbind').click(function () {
+            var serial_number = $('#serial_number').text();
+            data = {
+                'serial_number': serial_number
+            };
+            $.post("/sales/service/unbind_cloud", data, function(data,status){
+                $("#tip").text(data);
+                if (data == '解绑成功') {
+                    $("#bind_div").hide()
+                }
+            });
+        })
     });
     </script>
 </head>
@@ -28,16 +31,60 @@
 {% block title %}解绑云播账户序列号{% endblock %}
 {% block content %}
  <div class="mui--text-center" style="margin-top:50px">
-    <form action="" method="post" class="mui-form--inline" id="unbind_cloud">
+    <form action="/sales/service/cloud_query" method="post" class="mui-form--inline" id="cloud_query">
       <div class="mui-textfield">
-        <input type="text" name="serial_number" required="required" placeholder="云播账户序列号">
+        <input type="text" name="words" required="required" placeholder="邮箱/序列号">
       </div>
-      <button class="mui-btn mui-btn--raised mui-btn--primary">解绑</button>
+      <button class="mui-btn mui-btn--raised mui-btn--primary">查询</button>
     </form>
 </div>
-    <div class="mui--text-center" style="margin-top:100px">
-    <h2 style="color:red"><strong id="tip"></strong></h2>
+    {% if exsit == 1 %}
+    <div class="mui--align-middle" style="max-width:500px;margin: 100px auto;font-size:16px">
+<table class="mui-table mui-table--bordered">
+  <tbody>
+    <tr>
+      <td><strong>邮箱</strong></td>
+      <td>{{ record.email }}</td>
+    </tr>
+    <tr>
+      <td><strong>昵称</strong></td>
+      <td>{{ record.nickname }}</td>
+    </tr>
+    <tr>
+      <td><strong>绑定序列号</strong></td>
+      <td>
+          <div id="bind_div">
+          <span id="serial_number">{{ record.bind_info }}</span>
+          {% if record.bind_info != ''%}
+              <button class="mui-btn mui-btn--raised mui-btn--primary" id="unbind">解绑</button>
+          {% endif %}
+          </div>
+      </td>
+
+    </tr>
+    <tr>
+      <td><strong>激活状态</strong></td>
+      <td>{{ record.active_state }}</td>
+    </tr>
+    <tr>
+      <td><strong>优酷绑定状态</strong></td>
+      <td>{{ record.youku_bind_state }}</td>
+    </tr>
+    <tr>
+      <td><strong>注册时间</strong></td>
+      <td>{{ record.register_time }}</td>
+    </tr>
+  </tbody>
+</table>
     </div>
+{% elif exsit == 0%}
+    <div class="mui--text-center" style="margin-top:100px">
+    <h2 style="color:red"><strong>账号不存在</strong></h2>
+    </div>
+{% endif %}
+ <div class="mui--text-center" style="margin-top:30px">
+    <h2 style="color:red"><strong id="tip"></strong></h2>
+ </div>
 {% endblock %}
 </body>
 </html>

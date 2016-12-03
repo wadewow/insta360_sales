@@ -13,6 +13,7 @@ from view.views_account import *
 from view.views_promotion import *
 from view.views_service import *
 from view.views_agent import *
+from view.views_wx import *
 from view.views_util import *
 from view.views_bi import *
 from .util.wx_option import option
@@ -273,17 +274,7 @@ def test(request):
 
 @csrf_exempt
 def test1(request):
-    sales = Sale.objects.all()
-    for sale in sales:
-        store_id = sale.store_id
-        try:
-            store = Shop.objects.get(id=store_id)
-            province = store.province
-            print province
-            sale.province = province
-            sale.save()
-        except:
-            pass
+    # Shop.objects.filter(province='上海市').update(online='https://h5.m.taobao.com/awp/core/detail.htm?id=540118913635')
     return HttpResponse('fffff')
 
 

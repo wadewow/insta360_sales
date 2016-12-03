@@ -48,6 +48,7 @@
 {#      <th>门店代码</th>#}
       <th><a class="sort" href="/sales/bi/stores?sort=province">地址</a></th>
       <th>门店状态</th>
+      <th><a class="sort" href="/sales/bi/stores?sort=-bonus">累计促销费用</a></th>
       <th><a class="sort" href="/sales/bi/stores?sort=-option">物料</a></th>
       <th><a class="sort" href="/sales/bi/stores?sort=-machine_serial">样机序列号</a></th>
 {#      <th><a class="sort" href="/sales/bi/stores?sort=exhibition">展台序列号</a></th>#}
@@ -73,6 +74,7 @@
 {#      <td>{{ store.code }}</td>#}
       <td>{{ store.province }} {{ store.city }} {{ store.location }}</td>
       <td>{{ store.state }}</td>
+      <td>￥{{ store.bonus }}</td>
       <td style="min-width: 80px">
         {% for key, value in store.option.items %}
           <span>{% if value == "true" %}{{ key }}{% endif %} </span>
