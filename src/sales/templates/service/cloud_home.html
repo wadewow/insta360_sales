@@ -22,9 +22,17 @@
             $.post("/sales/service/cloud_home", data, function(data,status){
                 alert(data);
             });
+        });
+
+        $('.preview').click(function (){
+            var $a_id = $(this).attr('id');
+            var $input_id = $a_id.replace('a', 'input');
+            var link = $('#'+$input_id).val();
+            $(this).attr('href',link)
         })
     });
     </script>
+
 </head>
 <body>
 {% extends "service/navigation.html" %}
@@ -37,6 +45,7 @@
     <tr>
         <th>序号</th>
         <th>内容</th>
+        <th></th>
     </tr>
   </thead>
   <tbody>
@@ -45,8 +54,11 @@
         <td>{{ record.sort_value }}</td>
         <td>
             <div class="mui-textfield">
-            <input class="site" type="text" required="required" value="{{ record.page_url }}">
+                <input id="input{{ forloop.counter }}" class="site" type="text" required="required" onfocus="this.select()" value="{{ record.page_url }}">
             </div>
+        </td>
+        <td>
+            <a target="_blank" id="a{{ forloop.counter }}" class="mui-btn mui-btn--raised mui-btn--primary preview">预览</a>
         </td>
     </tr>
   {% endfor %}

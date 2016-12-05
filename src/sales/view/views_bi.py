@@ -752,6 +752,9 @@ def bi_promotion(request):
             store_id = store['id']
             sales_count = Sale.objects.filter(store_id=store_id, name='Insta360 Nano').count()
             store['sales_count'] = sales_count
+        promotions = Promotion.objects.all()
+        for promotion in promotions:
+            promotion.id = str(promotion.id)
         data = {
             'total': total,
             'current_page': page,
@@ -759,12 +762,14 @@ def bi_promotion(request):
             'sort': sort
         }
         return render(request, 'bi/promotion.html', {
+            'promotions':promotions,
             'stores': stores,
             'data': data,
             'lib_path': lib_path
         })
     if request.method == 'POST':
         para = request.POST
+        name= para.__getitem__('name')
         start_time = para.__getitem__('start_time')
         end_time = para.__getitem__('end_time')
         benchmark = para.__getitem__('benchmark')
@@ -778,7 +783,8 @@ def bi_promotion(request):
         if start_time > end_time:
             return HttpResponse('结束日期必须大于开始日期')
 
-        promotion = Promotion.objects.filter(
+        old_promotion_set = Promotion.objects.filter(
+            name=name,
             start_time=start_time,
             end_time=end_time,
             benchmark=benchmark,
@@ -787,23 +793,35 @@ def bi_promotion(request):
             bonus=bonus,
             bonus1=bonus1,
             bonus2=bonus2
-        ).first()
+        )
 
-        if promotion == None:
-            promotion = Promotion.objects.create(
-                start_time=start_time,
-                end_time=end_time,
-                benchmark=benchmark,
-                benchmark1=benchmark1,
-                benchmark2=benchmark2,
-                bonus=bonus,
-                bonus1=bonus1,
-                bonus2=bonus2
-            )
-        list = para.__getitem__('list')
-        ids = list.split(',')
-        for id in ids:
-            Shop.objects.filter(id=id).update(promotion=promotion.id)
+        if not old_promotion_set.exists():
+            try:
+                Promotion.objects.create(
+                    start_time=start_time,
+                    end_time=end_time,
+                    benchmark=benchmark,
+                    benchmark1=benchmark1,
+                    benchmark2=benchmark2,
+                    bonus=bonus,
+                    bonus1=bonus1,
+                    bonus2=bonus2
+                )
+            except:
+                return HttpResponse('添加失败')
+        return HttpResponse('success')
+
+@csrf_exempt
+def bi_apply(request):
+    if request.method == 'POST':
+        para = request.POST
+        for item in para:
+            try:
+                store_id= str(item)
+                promotion_id = para.__getitem__(store_id)
+                Shop.objects.filter(id=store_id).update(promotion=promotion_id)
+            except:
+                continue
         return HttpResponse('success')
 
 @csrf_exempt
@@ -815,7 +833,7 @@ def bi_export(request):
 
     writer = csv.writer(response)
 
-    writer.writerow(['门店名称', '商家名称', '商家姓名', '商家手机', '省份', '城市', '详细地址', '门店状态', '累计促销费用', '物料', '样机序列号' ,'展台序列号' , '代理商', '销售经理', '累计总销量', '有效订单数', '创建时间', '创建天数', '网店地址', '备注'])
+    writer.writerow(['门店名称', '门店代码', '商家名称', '商家姓名', '商家手机', '省份', '城市', '详细地址', '门店状态', '累计促销费用', '物料', '样机序列号' ,'展台序列号' , '代理商', '销售经理', '累计总销量', '有效订单数', '创建时间', '创建天数', '网店地址', '备注'])
     stores = Shop.objects.filter(created_time__gt='2016-11-05').values()
     url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
     req = urllib2.Request(url=url)
@@ -895,6 +913,7 @@ def bi_export(request):
         if len(store['online']) < 10:
             store['online'] = ''
         writer.writerow([store['name'],
+                         store['code'],
                          store['business'].store,
                          store['business'].name,
                          store['business'].phone,
@@ -916,5 +935,4 @@ def bi_export(request):
                          store['remark']
                          ]
                         )
-
     return response

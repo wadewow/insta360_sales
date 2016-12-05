@@ -48,7 +48,7 @@ class CashRecordAdmin(admin.ModelAdmin):
     list_display = ('id', 'clerk_id', 'name', 'phone', 'base', 'bonus', 'money', 'code', 'created_time', 'wechat')
 
 class PromotionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'start_time', 'end_time', 'created_time', 'benchmark', 'bonus', 'benchmark1', 'bonus1', 'benchmark2', 'bonus2')
+    list_display = ('id', 'name', 'start_time', 'end_time', 'created_time', 'benchmark', 'bonus', 'benchmark1', 'bonus1', 'benchmark2', 'bonus2')
 
 admin.site.register(Store, StoreAdmin)
 admin.site.register(Shop, ShopAdmin)

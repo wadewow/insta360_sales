@@ -3,6 +3,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
@@ -18,6 +19,9 @@ import json
 import sys
 import urllib
 import urllib2
+import codecs
+import datetime
+import csv
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -337,7 +341,14 @@ def manager_stores(request):
         if not request.session.__contains__('manager_id'):
             return redirect('/sales/manager/login_pc')
         manager_id = request.session['manager_id']
-        stores = Shop.objects.filter(manager=manager_id).order_by('-created_time')
+        para = request.GET
+        sort = '-created_time'
+        if para.__contains__('sort'):
+            sort = para.__getitem__('sort')
+        if sort == 'province':
+            stores = Shop.objects.filter(manager=manager_id).order_by(sort, 'city', 'location')
+        else:
+            stores = Shop.objects.filter(manager=manager_id).order_by(sort)
         total = stores.count()
 
         url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
@@ -379,8 +390,11 @@ def manager_stores(request):
             except:
                 pass
             store_id = store['id']
-            sales_count = Sale.objects.filter(store_id=store_id, name='Insta360 Nano').count()
+            sales = Sale.objects.filter(store_id=store_id, name='Insta360 Nano')
+            sales_count = sales.count()
             store['sales_count'] = sales_count
+            valid_count = sales.filter(valid=1).count()
+            store['valid_count'] = valid_count
         data = {
             'total': total
         }
@@ -389,3 +403,88 @@ def manager_stores(request):
             'data': data,
             'lib_path': lib_path
         })
+
+
+@csrf_exempt
+def manager_export(request):
+    if not request.session.__contains__('manager_id'):
+        return redirect('/sales/manager/login_pc')
+    manager_id = request.session['manager_id']
+    response = HttpResponse(content_type='text/csv')
+    response.write(codecs.BOM_UTF8)
+    response['Content-Disposition'] = 'attachment; filename="销售经理门店列表.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['门店名称', '门店代码', '商家名称', '商家姓名', '商家手机', '省份', '城市', '详细地址', '配置', '样机序列号' ,'展台序列号' , '代理商', '销售经理', '累计总销量', '有效订单数', '创建时间', '创建天数', '网店地址', '备注'])
+    stores = Shop.objects.filter(manager=manager_id).values()
+    url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
+    req = urllib2.Request(url=url)
+    try:
+        res_data = urllib2.urlopen(req)
+    except:
+        res_data = '["默认"]'
+    data = res_data.read()
+    try:
+        agent_list = json.loads(data)
+    except:
+        agent_list = [{'custom_number': '默认'}]
+    agent_dict = {}
+    for agent in agent_list:
+        agent_dict[agent['custom_number']] = agent['company']
+    for store in stores:
+        store_id = store['id']
+        new_option = ''
+        option = json.loads(store['option'])
+        for index, item in enumerate(option):
+            if option[item] == 'true':
+                new_option += dict[item] + ' '
+        store['option'] = new_option
+        photo_join = store['photo']
+        photos = photo_join.split(':')
+        store['photo'] = photos
+        business_id = store['business_id']
+        manager_id = store['manager']
+        store['agent'] = agent_dict[store['agent']]
+        try:
+            shopkeeper = Store.objects.get(id=business_id)
+            store['business'] = shopkeeper
+        except:
+            pass
+        try:
+            manager = Manager.objects.get(id=manager_id)
+            store['manager'] = manager
+        except:
+            pass
+        sales = Sale.objects.filter(store_id=store_id, name='Insta360 Nano')
+        created_time = store['created_time']
+
+        sales_count = sales.count()
+        valid_count = sales.filter(valid=1).count()
+        created_time += datetime.timedelta(hours=8)
+        created_date = created_time.strftime('%Y-%m-%d %H:%M:%S')
+        now = timezone.now()
+        delta = (now - created_time).days + 1
+        if len(store['online']) < 10:
+            store['online'] = ''
+        writer.writerow([store['name'],
+                         store['code'],
+                         store['business'].store,
+                         store['business'].name,
+                         store['business'].phone,
+                         store['province'],
+                         store['city'],
+                         store['location'],
+                         store['option'],
+                         store['machine_serial'],
+                         store['exhibition'],
+                         store['agent'],
+                         store['manager'].name + '('+ store['manager'].area +')',
+                         sales_count,
+                         valid_count,
+                         created_date,
+                         delta,
+                         store['online'],
+                         store['remark']
+                         ]
+                        )
+    return response

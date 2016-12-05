@@ -12,20 +12,19 @@
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/pikaday/1.5.1/css/pikaday.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
-    <title>制定促销</title>
+    <title>促销管理</title>
     <script>
     $(function () {
-        $gallery = $("#gallery");
-        $galleryImg = $("#galleryImg");
-        $uploaderFiles = $(".uploaderFiles");
-        $uploaderFiles.on("click", "li", function(){
-{#            $galleryImg.attr("style", this.getAttribute("style"));#}
-            $galleryImg.css("background-image",$(this).css("background-image"));
-            $gallery.fadeIn(100);
-        });
-        $gallery.on("click", function(){
-            $gallery.fadeOut(100);
-        });
+{#        $gallery = $("#gallery");#}
+{#        $galleryImg = $("#galleryImg");#}
+{#        $uploaderFiles = $(".uploaderFiles");#}
+{#        $uploaderFiles.on("click", "li", function(){#}
+{#            $galleryImg.css("background-image",$(this).css("background-image"));#}
+{#            $gallery.fadeIn(100);#}
+{#        });#}
+{#        $gallery.on("click", function(){#}
+{#            $gallery.fadeOut(100);#}
+{#        });#}
         var start_time = document.getElementById('start_time');
         var end_time = document.getElementById('end_time');
         var picker1 = new Pikaday(
@@ -45,10 +44,6 @@
         var $promotion = $('#promotion');
         $('#make_promotion').on("click", function(){
             $promotion.show();
-            $checkboxes = $('.checkbox');
-            for(var i=0;i < $checkboxes.length;i++){
-                console.log($checkboxes[i].value + ':' + $checkboxes[i].checked)
-            }
         });
         $('#cancel').on("click", function(){
             $promotion.hide();
@@ -56,28 +51,31 @@
         });
         var $form = $('form#form_promotion');
         $form.submit(function(){
-            $checkbox = $(".checkbox");
-            var list = '';
-            for (var k = 0; k < $checkbox.length; k++) {
-                if ($checkbox[k].checked) {
-                    list += $checkbox[k].name + ','
-                }
-            }
-            if(list.length>0){
-                list = list.substr(0, list.length-1);
-            }
-            data = $form.serialize();
-            data += '&list=' + list;
+            var data = $form.serialize();
             $.post("", data, function(data,status){
                 if(data == 'success'){
                     $promotion.hide();
-                    alert('设置促销成功')
+                    alert('成功添加促销');
+                    location.reload()
                 }
                 else {
                     alert(data)
                 }
             });
+            return false
+        });
 
+        var $apply = $('form#apply');
+        $apply.submit(function(){
+            var data = $apply.serialize();
+            $.post("/sales/bi/apply", data, function(data,status){
+                if(data == 'success'){
+                    alert('成功应用促销');
+                }
+                else {
+                    alert(data)
+                }
+            });
             return false
         });
     });
@@ -99,13 +97,22 @@
 </head>
 <body>
 {% extends "bi/navigation.html" %}
-{% block title %}门店情况{% endblock %}
+{% block title %}促销管理{% endblock %}
 {% block content %}
-    <button class="mui-btn mui-btn--raised mui-btn--accent" id="make_promotion">制定促销</button>
+    <button class="mui-btn mui-btn--raised mui-btn--accent" id="make_promotion">添加促销策略</button>
 
     <div id="promotion">
         <form class="mui-form--inline" style="margin-top:50px" id="form_promotion">
+
             <div class="mui-container-fluid">
+                <div class="mui-row">
+                   <div class="mui-col-md-12">
+                       <div class="mui-textfield">
+                          <label>促销名称</label>
+                          <input type="text" required="required" name="name">
+                       </div>
+                   </div>
+                </div>
                 <div class="mui-row">
                     <div class="mui-col-md-6">
                     <div class="mui-textfield">
@@ -174,8 +181,44 @@
 <table class="mui-table mui-table--bordered">
   <thead>
     <tr>
+        <th>促销名称</th>
+        <th>开始</th>
+        <th>结束</th>
+        <th>一级梯度</th>
+        <th>二级梯度</th>
+        <th>三级梯度</th>
+        <th>一级奖励</th>
+        <th>二级奖励</th>
+        <th>三级奖励</th>
+        <th>创建时间</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for promotion in promotions%}
+    <tr>
+      <td>{{ promotion.name }}</td>
+      <td>{{ promotion.start_time }}</td>
+      <td>{{ promotion.end_time }}</td>
+      <td>{{ promotion.benchmark }}</td>
+      <td>{{ promotion.benchmark1 }}</td>
+      <td>{{ promotion.benchmark2 }}</td>
+      <td>￥{{ promotion.bonus }}</td>
+      <td>￥{{ promotion.bonus1 }}</td>
+      <td>￥{{ promotion.bonus2 }}</td>
+      <td>{{ promotion.created_time }}</td>
+   </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+<form action="/sales/bi/apply" id="apply">
+    <button class="mui-btn mui-btn--raised mui-btn--accent" id="save">保存</button>
+</form>
+<table class="mui-table mui-table--bordered">
+  <thead>
+    <tr>
 {#      <th>id</th>#}
-        <th>选择</th>
+      <th>促销</th>
       <th><a class="sort" href="/sales/bi/promotion?sort=name">门店名称</a></th>
       <th>商家名称</th>
 {#      <th>商家姓名</th>#}
@@ -184,9 +227,8 @@
       <th><a class="sort" href="/sales/bi/promotion?sort=province">线下地址</a></th>
       <th><a class="sort" href="/sales/bi/promotion?sort=-option">配置</a></th>
       <th><a class="sort" href="/sales/bi/promotion?sort=-machine_serial">样机序列号</a></th>
-      <th>展台照片</th>
+{#      <th>展台照片</th>#}
 {#      <th>备注</th>#}
-{#      <th>促销策略</th>#}
       <th><a class="sort" href="/sales/bi/promotion?sort=agent">代理商</a></th>
       <th><a class="sort" href="/sales/bi/promotion?sort=manager">销售经理</a></th>
       <th><a class="sort" href="/sales/bi/promotion?sort=-sales_count">累计销量</a></th>
@@ -197,11 +239,15 @@
   <tbody>
   {% for store in stores%}
     <tr>
-        <td>
-          <div class="mui-checkbox">
-            <label>
-              <input type="checkbox" class="checkbox" value="{{ store.id }}" name="{{ store.id }}" form="form_promotion">
-            </label>
+        <td style="min-width: 140px">
+
+          <div class="mui-select">
+            <select name="{{ store.id }}" form="apply">
+                <option value="">无促销</option>
+                {% for promotion in promotions%}
+                  <option value="{{ promotion.id }}" {% if store.promotion == promotion.id %}selected="selected"{% endif %}>{{ promotion.name }}</option>
+                {% endfor %}
+            </select>
           </div>
         </td>
 {#      <td>{{ store.id }}</td>#}
@@ -219,15 +265,14 @@
       </td>
       <td>{{ store.machine_serial }}</td>
 {#      <td>{{ store.agent }}</td>#}
-      <td>
-          {% for photo in store.photo %}
-              <ul class="weui-uploader__files uploaderFiles" id="uploaderFiles" style="margin-bottom:0;min-width:270px">
-                <li class="weui-uploader__file" style="height:50px;width:50px;background-image:url({{ photo }})"></li>
-              </ul>
-          {% endfor %}
-      </td>
+{#      <td>#}
+{#          {% for photo in store.photo %}#}
+{#              <ul class="weui-uploader__files uploaderFiles" id="uploaderFiles" style="margin-bottom:0;min-width:270px">#}
+{#                <li class="weui-uploader__file" style="height:50px;width:50px;background-image:url({{ photo }})"></li>#}
+{#              </ul>#}
+{#          {% endfor %}#}
+{#      </td>#}
 {#      <td>{{ store.remark }}</td>#}
-{#      <td>{{ store.promotion }}</td>#}
       <td style="min-width: 100px">{{ store.agent }}</td>
       <td style="min-width: 70px">{{ store.manager.name }}<br>({{ store.manager.area }})</td>
       <td>{{ store.sales_count }}</td>
@@ -255,7 +300,6 @@
         <span>页</span>
         <input type="submit" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary" value="GO">
         <span> 总计 </span><span>{{ data.total }}</span><span> 条</span>
-{#  <input type="hidden" id="total_page" number value="{{ data.page_total }}">#}
     </form>
 </div>
 {% endblock %}

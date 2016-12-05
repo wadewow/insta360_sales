@@ -9,7 +9,7 @@
     <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
-    <title>Insta360 门店信息</title>
+    <title>销售经理门店信息</title>
     <script>
     $(function () {
         $gallery = $("#gallery");
@@ -25,29 +25,34 @@
         });
     });
     </script>
+    <style type="text/css">
+    .sort{
+        cursor:pointer
+    }
+    </style>
 </head>
 <body style="font-family: 'Microsoft YaHei UI'; padding:0 20px">
-
+<a class="mui-btn mui-btn--raised" href="/sales/manager/export">导出CSV</a>
 <table class="mui-table mui-table--bordered">
   <thead>
     <tr>
 {#      <th>id</th>#}
-      <th>门店名称</th>
-      <th>商家名称</th>
-      <th>商家姓名</th>
-      <th>手机号</th>
-      <th>代码</th>
-      <th>线下地址</th>
-      <th>配置</th>
-      <th>样机序列号</th>
+      <th><a class="sort" href="/sales/manager/stores?sort=name">门店名称</a></th>
+      <th>商家信息/th>
+{#      <th>商家姓名</th>#}
+{#      <th>手机号</th>#}
+{#      <th>代码</th>#}
+      <th><a class="sort" href="/sales/manager/stores?sort=province">地址</a></th>
+      <th><a class="sort" href="/sales/manager/stores?sort=-option">配置</a></th>
+      <th><a class="sort" href="/sales/manager/stores?sort=-machine_serial">样机序列号</a></th>
       <th>展台照片</th>
       <th>备注</th>
 {#      <th>促销策略</th>#}
-      <th>代理商</th>
+      <th><a class="sort" href="/sales/manager/stores?sort=agent">代理商</a></th>
       <th>销售经理</th>
-      <th>累计销量</th>
-      <th>创建时间</th>
-      <th>网店地址</th>
+      <th><a class="sort" href="/sales/manager/stores?sort=-sales_count">销量(有效数)</a></th>
+      <th><a class="sort" href="/sales/manager/stores?sort=-created_time">创建时间</a></th>
+      <th><a class="sort" href="/sales/manager/stores?sort=-online">网店地址</a></th>
 
     </tr>
   </thead>
@@ -55,11 +60,11 @@
   {% for store in stores%}
     <tr>
 {#      <td>{{ store.id }}</td>#}
-      <td>{{ store.name }}</td>
-      <td style="min-width: 80px">{{ store.business_id.store }}</td>
-      <td style="min-width: 70px">{{ store.business_id.name }}</td>
-      <td>{{ store.business_id.phone }}</td>
-      <td>{{ store.code }}</td>
+      <td>{{ store.name }}<br>({{ store.code }})<</td>
+      <td class="mui--text-center" style="min-width: 80px">{{ store.business_id.store }}<br>（{{ store.business_id.name }}）<br>{{ store.business_id.phone }}</td>
+{#      <td style="min-width: 70px">{{ store.business_id.name }}</td>#}
+{#      <td>{{ store.business_id.phone }}</td>#}
+{#      <td>{{ store.code }}</td>#}
       <td>{{ store.province }} {{ store.city }} {{ store.location }}</td>
 {#      <td>{{ store.exhibition }}</td>#}
       <td style="min-width: 80px">
@@ -69,7 +74,6 @@
       </td>
       <td>{{ store.machine_serial }}</td>
 
-{#      <td>{{ store.agent }}</td>#}
       <td>
           {% for photo in store.photo %}
               <ul class="weui-uploader__files uploaderFiles" id="uploaderFiles" style="margin-bottom:0;min-width:270px">
@@ -81,10 +85,9 @@
 {#      <td>{{ store.promotion }}</td>#}
       <td style="min-width: 100px">{{ store.agent }}</td>
       <td style="min-width: 70px">{{ store.manager.name }}<br>({{ store.manager.area }})</td>
-      <td>{{ store.sales_count }}</td>
+      <td>{{ store.sales_count }}({{ store.valid_count }})</td>
       <td style="min-width: 120px">{{ store.created_time }}</td>
-      <td style="max-width: 500px">{% if store.online != 'http://' %}<a href="{{ store.online }}" title="{{ store.online }}"  target="_blank">{{ store.online|truncatechars:30 }}</a>{% endif %}</td>
-
+      <td style="max-width: 200px">{% if store.online != 'http://' %}<a href="{{ store.online }}" title="{{ store.online }}"  target="_blank">{{ store.online|truncatechars:30 }}</a>{% endif %}</td>
     </tr>
   {% endfor %}
 

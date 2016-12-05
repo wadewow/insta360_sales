@@ -148,6 +148,7 @@ class CashRecord(models.Model):
 
 
 class Promotion(models.Model):
+    name = models.CharField(max_length=200, blank=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     created_time = models.DateTimeField(auto_now_add=True)
