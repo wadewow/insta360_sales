@@ -64,19 +64,11 @@ def bi_login(request):
             return HttpResponse(content='账号或密码错误！')
         status = res_data.code
         if status == 200:
-            # list = [
-            #     '0001',
-            #     '0007',
-            #     '0018',
-            #     '0100',
-            #     '0148'
-            # ]
-            # if not username in list:
             result = Manager.objects.get_or_create(id=username)
             user = result[0]
             if user.bi == 0:
                 return HttpResponse(content='抱歉，你没有权限登录', status=status)
-            request.session['manager_id'] = username
+            request.session['bi_id'] = username
             return HttpResponse(content='success', status=status)
         else:
             return HttpResponse(content='账号或密码错误！', status=status)
@@ -84,7 +76,7 @@ def bi_login(request):
 @csrf_exempt
 def bi_stores(request):
     if request.method == 'GET':
-        if not request.session.__contains__('manager_id'):
+        if not request.session.__contains__('bi_id'):
             return redirect('/sales/bi/login')
         para = request.GET
         page = 1
@@ -213,7 +205,7 @@ def bi_stores(request):
 @csrf_exempt
 def bi_managers(request):
     if request.method == 'GET':
-        if not request.session.__contains__('manager_id'):
+        if not request.session.__contains__('bi_id'):
             return redirect('/sales/bi/login')
         para = request.GET
         managers = Manager.objects.exclude(name='')
@@ -289,7 +281,7 @@ def bi_managers(request):
 @csrf_exempt
 def bi_sales(request):
     if request.method == 'GET':
-        if not request.session.__contains__('manager_id'):
+        if not request.session.__contains__('bi_id'):
             return redirect('/sales/bi/login')
         para = request.GET
         page = 1
@@ -328,8 +320,6 @@ def bi_sales(request):
             end = total
         sales = sales[start: end]
         sales = sales.values()
-
-
 
         for sale in sales:
             # sale['show'] = 1
@@ -401,7 +391,7 @@ def bi_sales(request):
 @csrf_exempt
 def bi_trend(request):
     if request.method == 'GET':
-        if not request.session.__contains__('manager_id'):
+        if not request.session.__contains__('bi_id'):
             return redirect('/sales/bi/login')
         return render(request, 'bi/trend.html', {
             'lib_path': lib_path
@@ -454,7 +444,7 @@ def bi_store_trend(request):
 @csrf_exempt
 def bi_map(request):
     if request.method == 'GET':
-        if not request.session.__contains__('manager_id'):
+        if not request.session.__contains__('bi_id'):
             return redirect('/sales/bi/login')
         return render(request, 'bi/map.html', {
             'lib_path': lib_path
@@ -540,7 +530,7 @@ def bi_sales_map(request):
 @csrf_exempt
 def bi_nano_detail(request):
     if request.method == 'GET':
-        if not request.session.__contains__('manager_id'):
+        if not request.session.__contains__('bi_id'):
             return redirect('/sales/bi/login')
         return render(request, 'bi/nano_detail.html', {
             'lib_path': lib_path
@@ -617,7 +607,7 @@ def bi_nano_detail(request):
 @csrf_exempt
 def bi_inter_list(request):
     if request.method == 'GET':
-        if not request.session.__contains__('manager_id'):
+        if not request.session.__contains__('bi_id'):
             return redirect('/sales/bi/login')
         para = request.GET
         sort = ''
@@ -710,7 +700,7 @@ def bi_inter_list(request):
 @csrf_exempt
 def bi_promotion(request):
     if request.method == 'GET':
-        # if not request.session.__contains__('manager_id'):
+        # if not request.session.__contains__('bi_id'):
         #     return redirect('/sales/bi/login')
         para = request.GET
         page = 1

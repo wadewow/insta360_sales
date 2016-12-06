@@ -9,6 +9,7 @@ from django.core.files.storage import default_storage
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from ..models import Manager
 from ..models import Shop
+from ..models import Clerk
 from ..models import Exhibition
 from ..models import Store
 from ..models import Sale
@@ -400,6 +401,109 @@ def manager_stores(request):
         }
         return render(request, 'manager/stores.html', {
             'stores': stores,
+            'data': data,
+            'lib_path': lib_path
+        })
+
+
+@csrf_exempt
+def manager_sales(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/manager/login_pc')
+        manager_id = request.session['manager_id']
+        para = request.GET
+        page = 1
+        if para.__contains__('page'):
+            try:
+                page = int(para.__getitem__('page'))
+            except:
+                page = 1
+        if page < 1:
+            page = 1
+        sort = '-created_time'
+        if para.__contains__('sort'):
+            sort = para.__getitem__('sort')
+        size = 40
+        if sort == '-active':
+            sales = Sale.objects.filter(name='Insta360 Nano', manager=manager_id).order_by(sort, '-active_time')
+        else:
+            sales = Sale.objects.filter(name='Insta360 Nano', manager=manager_id).order_by(sort)
+        total = sales.count()
+        page_total = total / size + (1 if (total % size) > 0 else 0)
+        if page_total <=0:
+            page_total = 1
+        if page > page_total:
+            page = page_total
+        start = size * (page -1)
+        end = start + size
+        if end > total:
+            end = total
+        sales = sales[start: end]
+        sales = sales.values()
+
+        for sale in sales:
+            business_id = sale['business_id']
+            store_id = sale['store_id']
+            clerk_id = sale['clerk_id']
+            try:
+                shopkeeper = Store.objects.get(id=business_id)
+                sale['business'] = shopkeeper
+            except:
+                pass
+            try:
+                store = Shop.objects.get(id=store_id)
+                manager_id = store.manager
+                manager = Manager.objects.get(id=manager_id)
+                store.manager = manager
+                sale['store']= store
+            except:
+                pass
+            try:
+                clerk = Clerk.objects.get(id=clerk_id)
+                sale['clerk'] = clerk
+            except:
+                pass
+            valid = sale['valid']
+            active = sale['active']
+            if valid == 1:
+                created_time = sale['created_time']
+                device_code = sale['device_code']
+                if device_code == '':
+                    num = 1
+                else:
+                    num = Sale.objects.filter(
+                        device_code=device_code,
+                        clerk_id=clerk_id,
+                        name='Insta360 Nano',
+                        created_time__lte=created_time
+                    ).count()
+                if num > 1:
+                    state = '重复激活'
+                else:
+                    state = '生效'
+            else:
+                if active == 1:
+                    state = '超时'
+                else:
+                    # now = timezone.now()
+                    # created_time = sale['created_time']
+                    # deadline = created_time + datetime.timedelta(hours=12)
+                    # if now >= deadline:
+                    #     state = '作废'
+                    #     sale['show'] = 0
+                    # else:
+                    state = '等待激活'
+            sale['state'] = state
+
+        data = {
+            'total': total,
+            'current_page': page,
+            'page_total': page_total,
+            'sort': sort
+        }
+        return render(request, 'manager/sales.html', {
+            'sales': sales,
             'data': data,
             'lib_path': lib_path
         })

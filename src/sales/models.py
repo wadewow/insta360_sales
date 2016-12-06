@@ -112,6 +112,8 @@ class Manager(models.Model):
     name = models.CharField(max_length=200, blank=True)
     area = models.CharField(max_length=200, blank=True)
     bi = models.IntegerField(default=0)
+    util = models.IntegerField(default=0)
+    service = models.IntegerField(default=0)
 
     def __unicode__(self):
         return str(self.id)

@@ -49,6 +49,7 @@ urlpatterns = [
     url(r'^manager/login_pc$', views.manager_login_pc, name='manager_login_pc'),
     url(r'^manager/list$', views.manager_list, name='manager_list'),
     url(r'^manager/stores$', views.manager_stores, name='manager_stores'),
+    url(r'^manager/sales$', views.manager_sales, name='manager_sales'),
     # url(r'^manager/shopkeeper_info', views.manager_shopkeeper_info, name='manager_shopkeeper_info'),
     url(r'^manager/modify_store$', views.manager_modify_store, name='manager_modify_store'),
     url(r'^manager/export$', views.manager_export, name='manager_export'),
@@ -66,6 +67,7 @@ urlpatterns = [
     url(r'^service/serial_to_inter$', views.service_serial_to_inter, name='service_serial_to_inter'),
     url(r'^service/unbind_cloud$', views.service_unbind_cloud, name='service_unbind_cloud'),
     url(r'^service/cloud_home$', views.service_cloud_home, name='service_cloud_home'),
+    url(r'^service/nano_detail$', views.service_nano_detail, name='service_nano_detail'),
     url(r'^service/login$', views.service_login, name='service_login'),
 
     url(r'^guide$', views.sale_guide, name='sale_guide'),

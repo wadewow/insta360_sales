@@ -30,7 +30,7 @@
         var form = $('form#login');
         form.submit(function(){
             data = $('form#login').serialize();
-            $.post("/sales/manager/login", data, function(data,status){
+            $.post("/sales/service/login", data, function(data,status){
                 if(data == 'success'){
                     $("#tip").text('登录成功！');
                     location.href = "/sales/cash_query"

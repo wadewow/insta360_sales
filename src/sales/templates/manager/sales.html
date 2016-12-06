@@ -9,7 +9,7 @@
     <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
-    <title>Insta360 销售情况</title>
+    <title>销售经理后台系统</title>
     <style type="text/css">
         .sort{
             cursor:pointer
@@ -17,22 +17,22 @@
     </style>
 </head>
 <body>
-{% extends "bi/navigation.html" %}
+{% extends "manager/navigation.html" %}
 {% block title %}销售情况{% endblock %}
 {% block content %}
 <table class="mui-table mui-table--bordered">
   <thead>
     <tr>
-        <th><a class="sort" href="/sales/bi/sales?sort=store_id">门店名称</a></th>
-        <th><a class="sort" href="/sales/bi/sales?sort=business_id">商家名称</a></th>
+        <th><a class="sort" href="/sales/manager/sales?sort=store_id">门店名称</a></th>
+        <th><a class="sort" href="/sales/manager/sales?sort=business_id">商家名称</a></th>
         <th>店员姓名</th>
         <th>手机号</th>
-        <th><a class="sort" href="/sales/bi/sales?sort=serial_number">序列号</a></th>
-        <th><a class="sort" href="/sales/bi/sales?sort=-created_time">售出时间</a></th>
-        <th><a class="sort" href="/sales/bi/sales?sort=-active">激活状态</a></th>
+        <th><a class="sort" href="/sales/manager/sales?sort=serial_number">序列号</a></th>
+        <th><a class="sort" href="/sales/manager/sales?sort=-created_time">售出时间</a></th>
+        <th><a class="sort" href="/sales/manager/sales?sort=-active">激活状态</a></th>
         <th>状态</th>
-        <th><a class="sort" href="/sales/bi/sales?sort=-base">红包奖励</a></th>
-        <th><a class="sort" href="/sales/bi/sales?sort=manager">销售经理</a></th>
+        <th><a class="sort" href="/sales/manager/sales?sort=-base">红包奖励</a></th>
+        <th>销售经理</th>
     </tr>
   </thead>
   <tbody>
@@ -53,12 +53,12 @@
   </tbody>
 </table>
 <div class="mui-container-fluid page_tool">
-    <form action="/sales/bi/sales?sort={{ data.sort }}">
-        <a href="/sales/bi/sales?page=1&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
-        <a href="/sales/bi/sales?page={{ data.current_page|add:"-1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">上页</a>
+    <form action="/sales/manager/sales?sort={{ data.sort }}">
+        <a href="/sales/manager/sales?page=1&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
+        <a href="/sales/manager/sales?page={{ data.current_page|add:"-1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">上页</a>
         <span class="currentPage">{{ data.current_page }}</span> / <span class="totalPage">{{ data.page_total }}</span>
-        <a href="/sales/bi/sales?page={{ data.current_page|add:"1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">下页</a>
-        <a href="/sales/bi/sales?page={{ data.page_total }}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">尾页</a>
+        <a href="/sales/manager/sales?page={{ data.current_page|add:"1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">下页</a>
+        <a href="/sales/manager/sales?page={{ data.page_total }}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">尾页</a>
         <span>跳转到第</span>
         <input id="skip" type="number" pattern="[0-9]+" name="page" style="width:70px" class="skip">
         <span>页</span>

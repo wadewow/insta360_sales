@@ -9,7 +9,7 @@
     <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
-    <title>销售经理门店信息</title>
+    <title>销售经理后台系统</title>
     <script>
     $(function () {
         $gallery = $("#gallery");
@@ -31,14 +31,18 @@
     }
     </style>
 </head>
-<body style="font-family: 'Microsoft YaHei UI'; padding:0 20px">
+<body style="min-width:1500px;font-family: 'Microsoft YaHei UI'; padding:0 20px">
+{% extends "manager/navigation.html" %}
+{% block title %}门店情况
 <a class="mui-btn mui-btn--raised" href="/sales/manager/export">导出CSV</a>
+{% endblock %}
+{% block content %}
 <table class="mui-table mui-table--bordered">
   <thead>
     <tr>
 {#      <th>id</th>#}
       <th><a class="sort" href="/sales/manager/stores?sort=name">门店名称</a></th>
-      <th>商家信息/th>
+      <th>商家信息</th>
 {#      <th>商家姓名</th>#}
 {#      <th>手机号</th>#}
 {#      <th>代码</th>#}
@@ -98,6 +102,7 @@
     <div class="weui-gallery__opr">
     </div>
 </div>
+{% endblock %}
 </body>
 
 </html>

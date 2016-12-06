@@ -9,6 +9,7 @@ from django.core.files.storage import default_storage
 from ..util.option import lib_path
 from ..models import Exhibition
 from ..models import SerialToInter
+from ..models import Manager
 
 import urllib2
 import urllib
@@ -27,11 +28,45 @@ def util_login(request):
         return render(request, 'util/login.html', {
             'lib_path': lib_path
         })
-
+    if request.method == 'POST':
+        para = request.POST
+        if para.__contains__('username'):
+            username = para.__getitem__('username')
+        else:
+            return HttpResponse("Missing parameter: username")
+        if para.__contains__('password'):
+            password = para.__getitem__('password')
+        else:
+            return HttpResponse("Missing parameter: password")
+        url = 'http://account.arashivision.com/user/getUserToken'
+        values = {
+            'jobnumber': username,
+            'password': password
+        }
+        data = urllib.urlencode(values)
+        req = urllib2.Request(url=url, data=data)
+        try:
+            res_data = urllib2.urlopen(req)
+        except urllib2.HTTPError, e:
+            print e.code
+            print e.reason
+            return HttpResponse(content='账号或密码错误！')
+        status = res_data.code
+        if status == 200:
+            result = Manager.objects.get_or_create(id=username)
+            user = result[0]
+            if user.util == 0:
+                return HttpResponse(content='抱歉，你没有权限登录', status=status)
+            request.session['util_id'] = username
+            return HttpResponse(content='success', status=status)
+        else:
+            return HttpResponse(content='账号或密码错误！', status=status)
 
 @csrf_exempt
 def util_import_exhibition(request):
     if request.method == 'GET':
+        if not request.session.__contains__('util_id'):
+            return redirect('/sales/util/login')
         return render(request, 'util/import_exhibition.html', {
             'lib_path': lib_path
         })
@@ -68,6 +103,8 @@ def util_import_exhibition(request):
 @csrf_exempt
 def util_import_nano(request):
     if request.method == 'GET':
+        if not request.session.__contains__('util_id'):
+            return redirect('/sales/util/login')
         return render(request, 'util/import_nano.html', {
             'lib_path': lib_path
         })
@@ -181,6 +218,8 @@ def util_import_nano(request):
 @csrf_exempt
 def util_convert_type(request):
     if request.method == 'GET':
+        if not request.session.__contains__('util_id'):
+            return redirect('/sales/util/login')
         return render(request, 'util/convert_type.html', {
             'lib_path': lib_path
         })

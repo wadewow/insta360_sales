@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <title>Nano序列号查询</title>
+    <script>
+    </script>
+</head>
+<body>
+{% extends "service/navigation.html" %}
+{% block title %}Nano序列号查询{% endblock %}
+{% block content %}
+ <div class="mui--text-center" style="margin:50px auto">
+    <form action="/sales/service/nano_detail" method="post" class="mui-form--inline" id="nano_detail">
+      <div class="mui-textfield">
+        <input type="text" name="serial_number" required="required" placeholder="Nano序列号" value="{{ serial_number }}">
+      </div>
+      <button class="mui-btn mui-btn--raised mui-btn--primary">查询Nano</button>
+    </form>
+</div>
+    {% if exist == 0 %}
+    <div class="mui--text-center" style="margin-top:100px">
+    <h2 style="color:red"><strong id="tip">序列号不存在</strong></h2>
+    </div>
+    {% endif %}
+    {% if exist == 1 %}
+  <div class="mui-container-fluid">
+  <div class="mui-row">
+
+      <div class="mui-col-md-3">
+          {% if factory.flag == 1 %}
+        <table class="mui-table mui-table--bordered">
+          <thead>
+            <tr>
+              <th colspan="2">出货信息</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>出货日期</td>
+              <td>{{ factory.sale_data }}</td>
+            </tr>
+            <tr>
+              <td>客户</td>
+              <td>{{ factory.consumer }}</td>
+            </tr>
+            <tr>
+              <td>出货人</td>
+              <td>{{ factory.shipper }}</td>
+            </tr>
+             <tr>
+              <td>备注</td>
+              <td>{{ factory.remark }}</td>
+            </tr>
+          </tbody>
+        </table>
+          {% else %}
+              无出货信息
+              {% endif %}
+          </div>
+      <div class="mui-col-md-3">
+      {% if agent.flag == 1 %}
+        <table class="mui-table mui-table--bordered">
+          <thead>
+            <tr>
+              <th colspan="2">代理商信息</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>公司</td>
+              <td>{{ agent.company }}</td>
+            </tr>
+            <tr>
+              <td>代理商编号</td>
+              <td>{{ agent.custom_number }}</td>
+            </tr>
+            <tr>
+              <td>代理商名称</td>
+              <td>{{ agent.custom_name }}</td>
+            </tr>
+            <tr>
+              <td>销售经理</td>
+              <td>{{ agent.manager }}</td>
+            </tr>
+          </tbody>
+        </table>
+          {% else %}
+              无代理商信息
+              {% endif %}
+          </div>
+        <div class="mui-col-md-3">
+            {% if active.exist == 0 %}
+                未激活
+                {% else %}
+          <table class="mui-table mui-table--bordered">
+          <thead>
+            <tr>
+              <th colspan="2">激活信息</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>激活状态</td>
+              <td>已激活</td>
+            </tr>
+            <tr>
+              <td>激活时间</td>
+              <td>{{ active.data.first_use_time }}</td>
+            </tr>
+            <tr>
+              <td>激活地点</td>
+              <td>{{ active.data.active_location }}</td>
+            </tr>
+            <tr>
+              <td>机器码</td>
+              <td>{{ active.data.equipment_code }}</td>
+            </tr>
+          </tbody>
+          </table>
+            {% endif %}
+        </div>
+        <div class="mui-col-md-3">
+          {% if sale.flag == 1 %}
+          <table class="mui-table mui-table--bordered">
+          <thead>
+            <tr>
+              <th colspan="2">门店销售信息</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>门店名称</td>
+              <td>{{ sale.store.name }}</td>
+            </tr>
+            <tr>
+              <td>商家名称</td>
+              <td>{{ sale.business.store }}</td>
+            </tr>
+            <tr>
+              <td>售出日期</td>
+              <td>{{ sale.created_time }}</td>
+            </tr>
+            <tr>
+              <td>销售经理</td>
+              <td>{{ sale.manager.name }}</td>
+            </tr>
+          </tbody>
+        </table>
+              {% else %}
+              无门店销售记录
+              {% endif %}
+          </div>
+  </div>
+</div>
+    {% endif %}
+{% endblock %}
+</body>
+</html>
