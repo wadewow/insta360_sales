@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'i+289e(fnb$@1ruz3gzu)uao%05nuuaqnt_@e+r1q!@cc8+o(l'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 # DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ["*"]
@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'internal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-if DEBUG:
+if False:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

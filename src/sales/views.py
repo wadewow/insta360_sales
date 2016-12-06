@@ -274,7 +274,6 @@ def test(request):
 
 @csrf_exempt
 def test1(request):
-    # Shop.objects.filter(province='上海市').update(online='https://h5.m.taobao.com/awp/core/detail.htm?id=540118913635')
     return HttpResponse('fffff')
 
 

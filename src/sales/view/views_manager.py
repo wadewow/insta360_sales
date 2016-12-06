@@ -439,6 +439,8 @@ def manager_sales(request):
         end = start + size
         if end > total:
             end = total
+        # if total == 0:
+        #     sales = []
         sales = sales[start: end]
         sales = sales.values()
 
