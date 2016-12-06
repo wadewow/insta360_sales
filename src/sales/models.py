@@ -111,6 +111,7 @@ class Manager(models.Model):
     id = models.CharField(max_length=200,primary_key=True)
     name = models.CharField(max_length=200, blank=True)
     area = models.CharField(max_length=200, blank=True)
+    bi = models.IntegerField(default=0)
 
     def __unicode__(self):
         return str(self.id)

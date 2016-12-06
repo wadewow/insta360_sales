@@ -33,7 +33,7 @@ class ExhibitionAdmin(admin.ModelAdmin):
     list_display = ('id', 'active', 'active_time')
 
 class ManagerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'area')
+    list_display = ('id', 'name', 'area', 'bi')
 
 class AgentAdmin(admin.ModelAdmin):
     list_display = ('id', 'username', 'password')

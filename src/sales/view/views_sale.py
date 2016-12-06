@@ -193,7 +193,8 @@ def sale_sales(request):
                       # temp = time.localtime(int(active_time)) #################
                       # active_time = time.strftime("%Y-%m-%d %H:%M:%S", temp)
                     else:
-                      active_time = timezone.now()
+                        continue
+                      # active_time = timezone.now()
                     sale_info = {
                       'active_time': active_time,
                       'active': active,

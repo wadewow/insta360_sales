@@ -36,6 +36,50 @@ def bi_login(request):
         return render(request, 'bi/login.html', {
             'lib_path': lib_path
         })
+    if request.method == 'POST':
+        para = request.POST
+
+        if para.__contains__('username'):
+            username = para.__getitem__('username')
+        else:
+            return HttpResponse("Missing parameter: username")
+
+        if para.__contains__('password'):
+            password = para.__getitem__('password')
+        else:
+            return HttpResponse("Missing parameter: password")
+
+        url = 'http://account.arashivision.com/user/getUserToken'
+        values = {
+            'jobnumber': username,
+            'password': password
+        }
+        data = urllib.urlencode(values)
+        req = urllib2.Request(url=url, data=data)
+        try:
+            res_data = urllib2.urlopen(req)
+        except urllib2.HTTPError, e:
+            print e.code
+            print e.reason
+            return HttpResponse(content='账号或密码错误！')
+        status = res_data.code
+        if status == 200:
+            # list = [
+            #     '0001',
+            #     '0007',
+            #     '0018',
+            #     '0100',
+            #     '0148'
+            # ]
+            # if not username in list:
+            result = Manager.objects.get_or_create(id=username)
+            user = result[0]
+            if user.bi == 0:
+                return HttpResponse(content='抱歉，你没有权限登录', status=status)
+            request.session['manager_id'] = username
+            return HttpResponse(content='success', status=status)
+        else:
+            return HttpResponse(content='账号或密码错误！', status=status)
 
 @csrf_exempt
 def bi_stores(request):
@@ -182,16 +226,12 @@ def bi_managers(request):
             manager_id = manager['id']
             stores = Shop.objects.filter(manager=manager_id, created_time__gt='2016-11-05')
             store_count = stores.count()
-            store_sales = stores.aggregate(store_sales=Sum('sales_count'))
-            store_sales = store_sales['store_sales']
-            if store_sales == None:
-                store_sales = 0
-
             bonus = stores.aggregate(bonus=Sum('bonus'))
             bonus = bonus['bonus']
             if bonus == None:
                 bonus = 0
             machine_count = stores.exclude(machine_serial='').count()
+            store_sales = Sale.objects.filter(manager=manager_id).count()
             today = timezone.localtime(timezone.now()).replace(
                 hour=0,
                 minute=0,
