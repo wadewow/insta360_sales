@@ -411,7 +411,8 @@ def manager_sales(request):
     if request.method == 'GET':
         if not request.session.__contains__('manager_id'):
             return redirect('/sales/manager/login_pc')
-        manager_id = request.session['manager_id']
+        manager_id = str(request.session['manager_id'])
+        print manager_id
         para = request.GET
         page = 1
         if para.__contains__('page'):
@@ -439,11 +440,11 @@ def manager_sales(request):
         end = start + size
         if end > total:
             end = total
-        # if total == 0:
-        #     sales = []
-        sales = sales[start: end]
-        sales = sales.values()
-
+        if total == 0:
+            sales = []
+        else:
+            sales = sales[start: end]
+            sales = sales.values()
         for sale in sales:
             business_id = sale['business_id']
             store_id = sale['store_id']

@@ -114,8 +114,11 @@ def bi_stores(request):
         end = start + size
         if end > total:
             end = total
-        stores = stores[start: end]
-
+        if total == 0:
+            stores = []
+        else:
+            stores = stores[start: end]
+            stores = stores.values()
         url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
         req = urllib2.Request(url=url)
         try:
@@ -131,7 +134,7 @@ def bi_stores(request):
         for agent in agent_list:
             agent_dict[agent['custom_number']] = agent['company']
 
-        stores = stores.values()
+
         for store in stores:
             new_option = {}
             option = json.loads(store['option'])
@@ -318,8 +321,11 @@ def bi_sales(request):
         end = start + size
         if end > total:
             end = total
-        sales = sales[start: end]
-        sales = sales.values()
+        if total == 0:
+            sales = []
+        else:
+            sales = sales[start: end]
+            sales = sales.values()
 
         for sale in sales:
             # sale['show'] = 1
@@ -738,7 +744,11 @@ def bi_promotion(request):
         end = start + size
         if end > total:
             end = total
-        stores = stores[start: end]
+        if total == 0:
+            stores = []
+        else:
+            stores = stores[start: end]
+            stores = stores.values()
 
         url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
         req = urllib2.Request(url=url)
@@ -755,7 +765,6 @@ def bi_promotion(request):
         for agent in agent_list:
             agent_dict[agent['custom_number']] = agent['company']
 
-        stores = stores.values()
         for store in stores:
             new_option = {}
             option = json.loads(store['option'])
