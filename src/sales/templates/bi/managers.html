@@ -24,6 +24,7 @@
 <table class="mui-table mui-table--bordered">
   <thead>
     <tr>
+        <th>序号</th>
         <th><a class="sort" href="/sales/bi/managers?sort=id">工号</a></th>
         <th><a class="sort" href="/sales/bi/managers?sort=name">姓名</a></th>
         <th><a class="sort" href="/sales/bi/managers?sort=area">地区</a></th>
@@ -41,6 +42,7 @@
   <tbody>
   {% for manager in managers%}
     <tr>
+        <td>{{ forloop.counter }}</td>
         <td>{{ manager.id }}</td>
         <td>{{ manager.name }}</td>
         <td>{{ manager.area }}</td>

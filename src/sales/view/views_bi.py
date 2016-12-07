@@ -115,7 +115,7 @@ def bi_stores(request):
         if end > total:
             end = total
         if total == 0:
-            stores = []
+            stores = {}
         else:
             stores = stores[start: end]
             stores = stores.values()
@@ -133,7 +133,6 @@ def bi_stores(request):
         agent_dict = {}
         for agent in agent_list:
             agent_dict[agent['custom_number']] = agent['company']
-
 
         for store in stores:
             new_option = {}
@@ -211,7 +210,7 @@ def bi_managers(request):
         if not request.session.__contains__('bi_id'):
             return redirect('/sales/bi/login')
         para = request.GET
-        managers = Manager.objects.exclude(name='')
+        managers = Manager.objects.exclude(region='')
         if para.__contains__('sort'):
             sort = para.__getitem__('sort')
             managers = managers.order_by(sort)
@@ -308,9 +307,9 @@ def bi_sales(request):
         #     sale.manager = s.manager
         #     sale.save()
         if sort == '-active':
-            sales = Sale.objects.filter(created_time__gt='2016-11-05', name='Insta360 Nano').exclude(valid=0, active=0, created_time__lt=deadline).order_by(sort, '-active_time')
+            sales = Sale.objects.filter(name='Insta360 Nano').exclude(valid=0, active=0, created_time__lt=deadline).order_by(sort, '-active_time')
         else:
-            sales = Sale.objects.filter(created_time__gt='2016-11-05', name='Insta360 Nano').exclude(valid=0, active=0, created_time__lt=deadline).order_by(sort)
+            sales = Sale.objects.filter(name='Insta360 Nano').exclude(valid=0, active=0, created_time__lt=deadline).order_by(sort)
         total = sales.count()
         page_total = total / size + (1 if (total % size) > 0 else 0)
         if page_total <=0:
@@ -322,7 +321,7 @@ def bi_sales(request):
         if end > total:
             end = total
         if total == 0:
-            sales = []
+            sales = {}
         else:
             sales = sales[start: end]
             sales = sales.values()
@@ -616,13 +615,40 @@ def bi_inter_list(request):
         if not request.session.__contains__('bi_id'):
             return redirect('/sales/bi/login')
         para = request.GET
+
+        page = 1
+        if para.__contains__('page'):
+            try:
+                page = int(para.__getitem__('page'))
+            except:
+                page = 1
+        if page < 1:
+            page = 1
+        size = 40
+
         sort = ''
         if para.__contains__('sort'):
             sort = para.__getitem__('sort')
         if sort == 'id':
-            serials = SerialToInter.objects.all().order_by(sort).values()
+            serials = SerialToInter.objects.all().order_by(sort)
         else:
-            serials = SerialToInter.objects.all().values()
+            serials = SerialToInter.objects.all()
+        total = serials.count()
+        page_total = total / size + (1 if (total % size) > 0 else 0)
+        if page_total <= 0:
+            page_total = 1
+        if page > page_total:
+            page = page_total
+        start = size * (page - 1)
+        end = start + size
+        if end > total:
+            end = total
+        if total == 0:
+            serials = {}
+        else:
+            serials = serials[start: end]
+            serials = serials.values()
+
         url1 = 'http://api.internal.insta360.com:8088/insta360_nano/camera/agent/getOutOfFactoryInfo'
         url2 = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfo/'
         for serial in serials:
@@ -697,8 +723,15 @@ def bi_inter_list(request):
         if sort == 'agent':
             serials = list(serials)
             serials.sort(key=lambda serial: serial['factory']['consumer'], reverse=False)
+        data = {
+            'total': total,
+            'current_page': page,
+            'page_total': page_total,
+            'sort': sort
+        }
         return render(request, 'bi/inter_list.html', {
             'serials': serials,
+            'data': data,
             'lib_path': lib_path
         })
 
@@ -745,7 +778,7 @@ def bi_promotion(request):
         if end > total:
             end = total
         if total == 0:
-            stores = []
+            stores = {}
         else:
             stores = stores[start: end]
             stores = stores.values()
@@ -972,6 +1005,105 @@ def bi_export(request):
                          delta,
                          store['online'],
                          store['remark']
+                         ]
+                        )
+    return response
+
+
+@csrf_exempt
+def bi_export_sales(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response.write(codecs.BOM_UTF8)
+    response['Content-Disposition'] = 'attachment; filename="销售情况列表.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['门店名称', '商家名称', '省份', '店员姓名', '店员手机', '序列号', '售出时间', '激活状态', '激活时间', '激活机器码', '订单状态', '红包奖励（元）', '销售经理'])
+
+    now = timezone.now()
+    deadline = now - datetime.timedelta(hours=12)
+
+    sales = Sale.objects.filter(name='Insta360 Nano').exclude(valid=0, active=0, created_time__lt=deadline).order_by('-created_time').values()
+
+    for sale in sales:
+        business_id = sale['business_id']
+        store_id = sale['store_id']
+        clerk_id = sale['clerk_id']
+        try:
+            shopkeeper = Store.objects.get(id=business_id)
+            sale['business'] = shopkeeper
+        except:
+            pass
+        try:
+            store = Shop.objects.get(id=store_id)
+            manager_id = store.manager
+            manager = Manager.objects.get(id=manager_id)
+            store.manager = manager
+            sale['store'] = store
+        except:
+            pass
+        try:
+            clerk = Clerk.objects.get(id=clerk_id)
+            sale['clerk'] = clerk
+        except:
+            pass
+        valid = sale['valid']
+        active = sale['active']
+        if valid == 1:
+            created_time = sale['created_time']
+            device_code = sale['device_code']
+            if device_code == '':
+                num = 1
+            else:
+                num = Sale.objects.filter(
+                    device_code=device_code,
+                    clerk_id=clerk_id,
+                    name='Insta360 Nano',
+                    created_time__lte=created_time
+                ).count()
+            if num > 1:
+                state = '重复激活'
+            else:
+                state = '生效'
+        else:
+            if active == 1:
+                state = '超时'
+            else:
+                # now = timezone.now()
+                # created_time = sale['created_time']
+                # deadline = created_time + datetime.timedelta(hours=12)
+                # if now >= deadline:
+                #     state = '作废'
+                #     sale['show'] = 0
+                # else:
+                state = '等待激活'
+        sale['state'] = state
+        created_time = sale['created_time']
+        created_time += datetime.timedelta(hours=8)
+        created_date = created_time.strftime('%Y-%m-%d %H:%M:%S')
+        active = sale['active']
+        if active == 1:
+            active_state = '已激活'
+            active_time = sale['active_time']
+            active_time += datetime.timedelta(hours=8)
+            active_date = created_time.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            active_state = '未激活'
+            active_date = ''
+
+        writer.writerow([sale['store'].name,
+                         sale['business'].store,
+                         sale['province'],
+                         sale['clerk'].name,
+                         sale['clerk'].phone,
+                         sale['serial_number'],
+                         created_date,
+                         active_state,
+                         active_date,
+                         sale['device_code'],
+                         state,
+                         sale['base'],
+                         sale['store'].manager.name + '('+ sale['store'].manager.area +')',
                          ]
                         )
     return response

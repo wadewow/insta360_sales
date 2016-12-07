@@ -53,6 +53,7 @@ urlpatterns = [
     # url(r'^manager/shopkeeper_info', views.manager_shopkeeper_info, name='manager_shopkeeper_info'),
     url(r'^manager/modify_store$', views.manager_modify_store, name='manager_modify_store'),
     url(r'^manager/export$', views.manager_export, name='manager_export'),
+    url(r'^manager/export_sales$', views.manager_export_sales, name='manager_export_sales'),
 
     url(r'^agent/login$', views.agent_login, name='agent_login'),
     url(r'^agent/list$', views.agent_list, name='agent_list'),
@@ -100,6 +101,7 @@ urlpatterns = [
     url(r'^bi/nano_detail$', views.bi_nano_detail, name='bi_nano_detail'),
     url(r'^bi/inter_list$', views.bi_inter_list, name='bi_inter_list'),
     url(r'^bi/export$', views.bi_export, name='bi_export'),
+    url(r'^bi/export_sales$', views.bi_export_sales, name='bi_export_sales'),
     url(r'^bi/promotion$', views.bi_promotion, name='bi_promotion'),
     url(r'^bi/apply$', views.bi_apply, name='bi_apply'),
 

@@ -40,6 +40,7 @@
 <table class="mui-table mui-table--bordered">
   <thead>
     <tr>
+      <th>序号</th>
 {#      <th>id</th>#}
       <th><a class="sort" href="/sales/manager/stores?sort=name">门店名称</a></th>
       <th>商家信息</th>
@@ -53,7 +54,7 @@
       <th>备注</th>
 {#      <th>促销策略</th>#}
       <th><a class="sort" href="/sales/manager/stores?sort=agent">代理商</a></th>
-      <th>销售经理</th>
+      <th><a class="sort" href="/sales/manager/stores?sort=manager">销售经理</a></th>
       <th><a class="sort" href="/sales/manager/stores?sort=-sales_count">销量(有效数)</a></th>
       <th><a class="sort" href="/sales/manager/stores?sort=-created_time">创建时间</a></th>
       <th><a class="sort" href="/sales/manager/stores?sort=-online">网店地址</a></th>
@@ -63,8 +64,9 @@
   <tbody>
   {% for store in stores%}
     <tr>
+      <td>{{ forloop.counter }}</td>
 {#      <td>{{ store.id }}</td>#}
-      <td>{{ store.name }}<br>({{ store.code }})<</td>
+      <td>{{ store.name }}<br>({{ store.code }})</td>
       <td class="mui--text-center" style="min-width: 80px">{{ store.business_id.store }}<br>（{{ store.business_id.name }}）<br>{{ store.business_id.phone }}</td>
 {#      <td style="min-width: 70px">{{ store.business_id.name }}</td>#}
 {#      <td>{{ store.business_id.phone }}</td>#}
@@ -101,6 +103,20 @@
     <span class="weui-gallery__img" id="galleryImg" style=""></span>
     <div class="weui-gallery__opr">
     </div>
+</div>
+<div class="mui-container-fluid page_tool">
+    <form action="/sales/manager/stores?sort={{ data.sort }}">
+        <a href="/sales/manager/stores?page=1&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
+        <a href="/sales/manager/stores?page={{ data.current_page|add:"-1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">上页</a>
+        <span class="currentPage">{{ data.current_page }}</span> / <span class="totalPage">{{ data.page_total }}</span>
+        <a href="/sales/manager/stores?page={{ data.current_page|add:"1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">下页</a>
+        <a href="/sales/manager/stores?page={{ data.page_total }}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">尾页</a>
+        <span>跳转到第</span>
+        <input id="skip" type="number" pattern="[0-9]+" name="page" style="width:70px" class="skip">
+        <span>页</span>
+        <input type="submit" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary" value="GO">
+        <span> 总计 </span><span>{{ data.total }}</span><span> 条</span>
+    </form>
 </div>
 {% endblock %}
 </body>

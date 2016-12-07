@@ -67,7 +67,6 @@ def manager_login(request):
         print data
         if status == 200:
             request.session['manager_id'] = username
-            # del request.session['manager_id']
             return HttpResponse(content='success', status=status)
         else:
             return HttpResponse(content='账号或密码错误！', status=status)
@@ -342,15 +341,50 @@ def manager_stores(request):
         if not request.session.__contains__('manager_id'):
             return redirect('/sales/manager/login_pc')
         manager_id = request.session['manager_id']
+        try:
+            manager = Manager.objects.get(id=manager_id)
+            is_leader = manager.is_leader
+            if is_leader == 1:
+                region = manager.region
+                manager_list = Manager.objects.filter(region=region).values('id')
+                stores = Shop.objects.filter(manager__in=manager_list)
+            else:
+                stores = Shop.objects.filter(manager=manager_id)
+        except:
+            stores = Shop.objects.filter(manager=manager_id)
+
         para = request.GET
+        page = 1
+        if para.__contains__('page'):
+            try:
+                page = int(para.__getitem__('page'))
+            except:
+                page = 1
+        if page < 1:
+            page = 1
+        size = 40
         sort = '-created_time'
         if para.__contains__('sort'):
             sort = para.__getitem__('sort')
         if sort == 'province':
-            stores = Shop.objects.filter(manager=manager_id).order_by(sort, 'city', 'location')
+            stores = stores.order_by(sort, 'city', 'location')
         else:
-            stores = Shop.objects.filter(manager=manager_id).order_by(sort)
+            stores = stores.order_by(sort)
         total = stores.count()
+        page_total = total / size + (1 if (total % size) > 0 else 0)
+        if page_total <= 0:
+            page_total = 1
+        if page > page_total:
+            page = page_total
+        start = size * (page - 1)
+        end = start + size
+        if end > total:
+            end = total
+        if total == 0:
+            stores = {}
+        else:
+            stores = stores[start: end]
+            stores = stores.values()
 
         url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
         req = urllib2.Request(url=url)
@@ -366,7 +400,6 @@ def manager_stores(request):
         agent_dict = {}
         for agent in agent_list:
             agent_dict[agent['custom_number']] = agent['company']
-        stores = stores.values()
         for store in stores:
             new_option = {}
             option = json.loads(store['option'])
@@ -397,7 +430,10 @@ def manager_stores(request):
             valid_count = sales.filter(valid=1).count()
             store['valid_count'] = valid_count
         data = {
-            'total': total
+            'total': total,
+            'current_page': page,
+            'page_total': page_total,
+            'sort': sort
         }
         return render(request, 'manager/stores.html', {
             'stores': stores,
@@ -412,7 +448,17 @@ def manager_sales(request):
         if not request.session.__contains__('manager_id'):
             return redirect('/sales/manager/login_pc')
         manager_id = str(request.session['manager_id'])
-        print manager_id
+        try:
+            manager = Manager.objects.get(id=manager_id)
+            is_leader = manager.is_leader
+            if is_leader == 1:
+                region = manager.region
+                manager_list = Manager.objects.filter(region=region).values('id')
+                sales = Sale.objects.filter(name='Insta360 Nano', manager__in=manager_list)
+            else:
+                sales = Sale.objects.filter(name='Insta360 Nano', manager=manager_id)
+        except:
+            sales = Sale.objects.filter(name='Insta360 Nano', manager=manager_id)
         para = request.GET
         page = 1
         if para.__contains__('page'):
@@ -426,10 +472,12 @@ def manager_sales(request):
         if para.__contains__('sort'):
             sort = para.__getitem__('sort')
         size = 40
+
         if sort == '-active':
-            sales = Sale.objects.filter(name='Insta360 Nano', manager=manager_id).order_by(sort, '-active_time')
+            sales = sales.order_by(sort, '-active_time')
         else:
-            sales = Sale.objects.filter(name='Insta360 Nano', manager=manager_id).order_by(sort)
+            sales = sales.order_by(sort)
+
         total = sales.count()
         page_total = total / size + (1 if (total % size) > 0 else 0)
         if page_total <=0:
@@ -441,7 +489,7 @@ def manager_sales(request):
         if end > total:
             end = total
         if total == 0:
-            sales = []
+            sales = {}
         else:
             sales = sales[start: end]
             sales = sales.values()
@@ -592,6 +640,116 @@ def manager_export(request):
                          delta,
                          store['online'],
                          store['remark']
+                         ])
+    return response
+
+
+@csrf_exempt
+def manager_export_sales(request):
+    if not request.session.__contains__('manager_id'):
+        return redirect('/sales/manager/login_pc')
+    manager_id = request.session['manager_id']
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response.write(codecs.BOM_UTF8)
+    response['Content-Disposition'] = 'attachment; filename="销售情况列表.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['门店名称', '商家名称', '省份', '店员姓名', '店员手机', '序列号', '售出时间', '激活状态', '激活时间', '激活机器码', '订单状态', '红包奖励（元）', '销售经理'])
+
+    try:
+        manager = Manager.objects.get(id=manager_id)
+        is_leader = manager.is_leader
+        if is_leader == 1:
+            region = manager.region
+            manager_list = Manager.objects.filter(region=region).values('id')
+            sales = Sale.objects.filter(name='Insta360 Nano', manager__in=manager_list)
+        else:
+            sales = Sale.objects.filter(name='Insta360 Nano', manager=manager_id)
+    except:
+        sales = Sale.objects.filter(name='Insta360 Nano', manager=manager_id)
+
+    sales = sales.order_by('-created_time').values()
+
+    for sale in sales:
+        business_id = sale['business_id']
+        store_id = sale['store_id']
+        clerk_id = sale['clerk_id']
+        try:
+            shopkeeper = Store.objects.get(id=business_id)
+            sale['business'] = shopkeeper
+        except:
+            pass
+        try:
+            store = Shop.objects.get(id=store_id)
+            manager_id = store.manager
+            manager = Manager.objects.get(id=manager_id)
+            store.manager = manager
+            sale['store'] = store
+        except:
+            pass
+        try:
+            clerk = Clerk.objects.get(id=clerk_id)
+            sale['clerk'] = clerk
+        except:
+            pass
+        valid = sale['valid']
+        active = sale['active']
+        if valid == 1:
+            created_time = sale['created_time']
+            device_code = sale['device_code']
+            if device_code == '':
+                num = 1
+            else:
+                num = Sale.objects.filter(
+                    device_code=device_code,
+                    clerk_id=clerk_id,
+                    name='Insta360 Nano',
+                    created_time__lte=created_time
+                ).count()
+            if num > 1:
+                state = '重复激活'
+            else:
+                state = '生效'
+        else:
+            if active == 1:
+                state = '超时'
+            else:
+                # now = timezone.now()
+                # created_time = sale['created_time']
+                # deadline = created_time + datetime.timedelta(hours=12)
+                # if now >= deadline:
+                #     state = '作废'
+                #     sale['show'] = 0
+                # else:
+                state = '等待激活'
+        sale['state'] = state
+        created_time = sale['created_time']
+        created_time += datetime.timedelta(hours=8)
+        created_date = created_time.strftime('%Y-%m-%d %H:%M:%S')
+        active = sale['active']
+        if active == 1:
+            active_state = '已激活'
+            active_time = sale['active_time']
+            active_time += datetime.timedelta(hours=8)
+            active_date = created_time.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            active_state = '未激活'
+            active_date = ''
+
+        writer.writerow([sale['store'].name,
+                         sale['business'].store,
+                         sale['province'],
+                         sale['clerk'].name,
+                         sale['clerk'].phone,
+                         sale['serial_number'],
+                         created_date,
+                         active_state,
+                         active_date,
+                         sale['device_code'],
+                         state,
+                         sale['base'],
+                         sale['store'].manager.name + '('+ sale['store'].manager.area +')',
                          ]
                         )
     return response

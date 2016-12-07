@@ -18,11 +18,14 @@
 </head>
 <body>
 {% extends "bi/navigation.html" %}
-{% block title %}销售情况{% endblock %}
+{% block title %}销售情况
+    <a class="mui-btn mui-btn--raised" href="/sales/bi/export_sales">导出CSV</a>
+{% endblock %}
 {% block content %}
 <table class="mui-table mui-table--bordered">
   <thead>
     <tr>
+        <th>序号</th>
         <th><a class="sort" href="/sales/bi/sales?sort=store_id">门店名称</a></th>
         <th><a class="sort" href="/sales/bi/sales?sort=business_id">商家名称</a></th>
         <th>店员姓名</th>
@@ -38,6 +41,7 @@
   <tbody>
   {% for sale in sales%}
     <tr>
+      <td>{{ forloop.counter }}</td>
       <td>{{ sale.store.name }}</td>
       <td>{{ sale.business.store }}</td>
       <td style="min-width: 70px">{{ sale.clerk.name }}</td>

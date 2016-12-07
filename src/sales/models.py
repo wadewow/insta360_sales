@@ -111,6 +111,8 @@ class Manager(models.Model):
     id = models.CharField(max_length=200,primary_key=True)
     name = models.CharField(max_length=200, blank=True)
     area = models.CharField(max_length=200, blank=True)
+    region = models.CharField(max_length=200, blank=True)
+    is_leader = models.IntegerField(default=0)
     bi = models.IntegerField(default=0)
     util = models.IntegerField(default=0)
     service = models.IntegerField(default=0)
