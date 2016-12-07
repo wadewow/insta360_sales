@@ -571,7 +571,20 @@ def manager_export(request):
 
     writer = csv.writer(response)
     writer.writerow(['门店名称', '门店代码', '商家名称', '商家姓名', '商家手机', '省份', '城市', '详细地址', '配置', '样机序列号' ,'展台序列号' , '代理商', '销售经理', '累计总销量', '有效订单数', '创建时间', '创建天数', '网店地址', '备注'])
-    stores = Shop.objects.filter(manager=manager_id).values()
+
+    try:
+        manager = Manager.objects.get(id=manager_id)
+        is_leader = manager.is_leader
+        if is_leader == 1:
+            region = manager.region
+            manager_list = Manager.objects.filter(region=region).values('id')
+            stores = Shop.objects.filter(manager__in=manager_list)
+        else:
+            stores = Shop.objects.filter( manager=manager_id)
+    except:
+        stores = Shop.objects.filter(manager=manager_id)
+
+    stores = stores.values()
     url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
     req = urllib2.Request(url=url)
     try:
