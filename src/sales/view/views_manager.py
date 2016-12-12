@@ -7,12 +7,15 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.contrib.auth.hashers import make_password
+
 from ..models import Manager
 from ..models import Shop
 from ..models import Clerk
 from ..models import Exhibition
 from ..models import Store
 from ..models import Sale
+from ..util.util import getCode
 from ..util.option import dict
 from ..util.option import lib_path
 
@@ -104,6 +107,188 @@ def manager_list(request):
                 'lib_path': lib_path
             })
 
+
+@csrf_exempt
+def manager_create(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/manager/login')
+
+        url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
+        req = urllib2.Request(url=url)
+        try:
+            res_data = urllib2.urlopen(req)
+        except:
+            res_data = '["默认"]'
+        data = res_data.read()
+        try:
+            agent_list = json.loads(data)
+        except:
+            agent_list = []
+        option = dict
+        return render(request, 'manager/create.html', {
+            "options": option,
+            "agent_list": agent_list,
+            'lib_path': lib_path
+        })
+    if request.method == 'POST':
+        try:
+            if not request.session.__contains__('manager_id'):
+                return redirect('/sales/manager/login')
+            else:
+                manager = request.session['manager_id']
+                para = request.POST
+                business_store = para.__getitem__('business_store')
+                business_name = para.__getitem__('business_name')
+                business_phone = para.__getitem__('business_phone')
+                business_password = business_phone[-6:]
+
+                try:
+                    Store.objects.get(store=business_store)
+                    is_used = True
+                except ObjectDoesNotExist:
+                    is_used = False
+                except MultipleObjectsReturned:
+                    is_used = True
+                if is_used:
+                    return HttpResponse("该商家公司名称已被使用！")
+
+                business_info = {
+                    'store': business_store,
+                    'name': business_name,
+                    'password': make_password(business_password),
+                    'phone': business_phone,
+                    'pwd': business_password
+                }
+                result = Store.objects.get_or_create(phone=business_phone,
+                                                     defaults=business_info)
+                if result[1]:
+                    business = result[0]
+                else:
+                    return HttpResponse('该手机号已经被注册！')
+                temp = para.__getitem__("store_city")
+                try:
+                    temps = temp.split("/")
+                    store_province = temps[0]
+                    store_city = temps[1]
+                except:
+                    store_province = temp
+                    store_city = ''
+                store_name = para.__getitem__("store_name")
+                store_online = para.__getitem__("store_online")
+                store_location = para.__getitem__("store_location")
+                store_exhibition = para.__getitem__("store_exhibition")
+                store_machine_serial = para.__getitem__("store_machine_serial")
+                store_remark = para.__getitem__("store_remark")
+                store_agent = para.__getitem__("store_agent")
+                try:
+                    res = Exhibition.objects.get(id=store_exhibition)
+                except:
+                    return HttpResponse('展台序列号无效')
+
+                n = len(manager)
+                for i in range(0,4-n):
+                    manager = '0' + manager
+                try:
+                    Manager.objects.get(id=manager)
+                except:
+                    return HttpResponse('销售经理编号无效！')
+
+                try:
+                    Shop.objects.get(machine_serial=store_machine_serial)
+                    return HttpResponse('该样机已被使用！')
+                except MultipleObjectsReturned:
+                    return HttpResponse('该样机已被使用！')
+                except ObjectDoesNotExist:
+                    pass
+
+                option = {}
+                for index, item in enumerate(dict):
+                    if para.__contains__(item):
+                        value = para.__getitem__(item)
+                        option[item] = value
+
+                code = getCode(6)
+                while True:
+                    try:
+                        Shop.objects.get(code=code)
+                        code = getCode(6)
+                    except ObjectDoesNotExist:
+                        break
+                    except MultipleObjectsReturned:
+                        code = getCode(6)
+
+                try:
+                    photo_num = int(para.__getitem__("photo_num"))
+                except:
+                    photo_num = 1
+
+                path_join = ''
+                for i in range(0, photo_num):
+                    if (not request.FILES.__contains__("photo" + str(i))) or para.__contains__('removephoto' + str(i)):
+                        continue
+                    file = request.FILES.__getitem__("photo"+str(i))
+                    path = 'sales/static/store/' + file.name
+                    path = default_storage.save(path, file)
+
+                    path_join += path[5:] + ':'
+                if len(path_join) > 0:
+                    path_join = path_join[:-1]
+
+
+                res.active = 1
+                res.save()
+                store = Shop.objects.create(
+                    business_id=business.id,
+                    name=store_name,
+                    online=store_online,
+                    province=store_province,
+                    city=store_city,
+                    location=store_location,
+                    photo=path_join,
+                    code=code,
+                    exhibition=store_exhibition,
+                    option=json.dumps(option),
+                    machine_serial=store_machine_serial,
+                    remark = store_remark,
+                    agent=store_agent,
+                    manager=manager
+                )
+
+                if store_machine_serial != '':
+                    url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/camera/setOffsetBySerial'
+                    values = {
+                        'serial_number': store_machine_serial,
+                        'offset': 0
+                    }
+                    try:
+                        data = urllib.urlencode(values)
+                        req = urllib2.Request(url, data=data)
+                        res_data = urllib2.urlopen(req)
+                        res = res_data.read()
+                        res = json.loads(res)
+                        print res
+                    except:
+                        print 'setOffsetBySerial error'
+
+                clerk_name = para.__getitem__('clerk_name')
+                clerk_phone = para.__getitem__('clerk_phone')
+                clerk_password = clerk_phone[-6:]
+
+                clerk_info = {
+                    'store_id': store.id,
+                    'name': clerk_name,
+                    'password': make_password(clerk_password),
+                    'phone': clerk_phone,
+                    'pwd': clerk_password,
+                }
+                result = Clerk.objects.get_or_create(phone=clerk_phone,
+                                                     defaults=clerk_info)
+                if not result[1]:
+                    return HttpResponse('该手机号已经被注册！')
+                return HttpResponse('success')
+        except:
+            return HttpResponse('创建失败')
 
 
 @csrf_exempt

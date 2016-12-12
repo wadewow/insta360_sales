@@ -16,19 +16,43 @@
     <link href="{{ lib_path }}/static/city_picker/css/city-picker.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css"/>
-    <title>添加门店</title>
-
+    <title>创建门店</title>
 </head>
 <body>
-    <div class="weui-cells__title">添加门店</div>
-    <form action="" id="add_store" enctype="multipart/form-data">
-        <div class="weui-cells weui-cells_form"  style="overflow: visible">
+    <form action="" id="manager_create" enctype="multipart/form-data">
+        <div class="weui-cells weui-cells_form">
+            <div class="weui-cells__title">添加商家</div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">商家公司名称</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" id="business_store" name="business_store" type="text" required="required" autofocus="autofocus" placeholder="请输入商家公司名称">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">真实姓名</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" id="business_name" name="business_name" type="text" required="required"  placeholder="请输入真实姓名">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">手机号</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" id="business_phone" name="business_phone" pattern="[0-9]{6,}" required="required"  placeholder="请输入手机号">
+                </div>
+            </div>
+            <div class="weui-cells__title">添加门店</div>
             <div class="weui-cell">
                 <div class="weui-cell__hd">
                     <label class="weui-label">门店名称</label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" id="name" name="name" type="text" required="required" autofocus="autofocus" placeholder="请输入门店名">
+                    <input class="weui-input" id="store_name" name="store_name" type="text" required="required" autofocus="autofocus" placeholder="请输入门店名">
                 </div>
             </div>
             <div class="weui-cell">
@@ -37,14 +61,14 @@
                 </div>
                 <div class="weui-cell__bd">
                     <div>
-                      <input type="text" id="city" name="city" required="required" data-toggle="city-picker" readonly="readonly" placeholder="请选择省/市" data-level="city">
+                      <input type="text" id="store_city" name="store_city" required="required" data-toggle="city-picker" readonly="readonly" placeholder="请选择省/市" data-level="city">
                     </div>
 
                 </div>
             </div>
             <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <input class="weui-input" id="location" name="location" type="text" required="required" placeholder="区/街道/楼">
+                    <input class="weui-input" id="store_location" name="store_location" type="text" required="required" placeholder="区/街道/楼">
                 </div>
             </div>
             <div class="weui-cell">
@@ -52,7 +76,7 @@
                     <label class="weui-label">网店地址<br>(可选)</label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="text" id="online" name="online" placeholder="" value="http://">
+                    <input class="weui-input" type="text" id="store_online" name="store_online" placeholder="" value="http://">
                 </div>
             </div>
             <div class="weui-cell">
@@ -62,7 +86,7 @@
                 <div class="weui-cell__bd">
                 <div class="weui-cell weui-cell_select">
                     <div class="weui-cell__bd">
-                        <select class="weui-select" required="required" id="agent" name="agent">
+                        <select class="weui-select" required="required" id="store_agent" name="store_agent">
                         <option value="" disabled="disabled" style="display: none;visibility: hidden">请选择代理商</option>
                             {% for agent in agent_list %}
                                 <option value="{{ agent.custom_number }}">{{ agent.custom_number }}</option>
@@ -72,18 +96,10 @@
                 </div>
                 </div>
             </div>
-            <div class="weui-cell">
-                <div class="weui-cell__hd">
-                    <label class="weui-label">销售经理编号</label>
-                </div>
-                <div class="weui-cell__bd">
-                    <input class="weui-input" type="text" id="manager" name="manager" pattern="\S+" required="required"  placeholder="请输入销售经理编号" value="">
-                </div>
-            </div>
             <div class="weui-cell weui-cell_vcode">
                 <div class="weui-cell__hd"><label class="weui-label">样机序列号</label></div>
                 <div class="weui-cell__bd">
-                    <input type="text" class="weui-input" id="machine_serial" required="required"  name="machine_serial" placeholder="请输入样机序列号">
+                    <input type="text" class="weui-input" id="store_machine_serial" required="required"  name="store_machine_serial" placeholder="请输入样机序列号">
                 </div>
                 <div class="weui-cell__ft">
                     <a href="javascript:;" class="weui-btn weui-btn_plain-primary" id="scan1">扫一扫</a>
@@ -94,7 +110,7 @@
                     <label class="weui-label">展台编号</label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="text" id="exhibition" name="exhibition" readonly="readonly" required="required" placeholder="扫码获取展台信息" value="">
+                    <input class="weui-input" type="text" id="store_exhibition" name="store_exhibition" readonly="readonly" required="required" placeholder="扫码获取展台信息" value="">
                 </div>
             </div>
 
@@ -110,13 +126,7 @@
                 <div class="weui-cell__hd">
                     <label class="weui-label">展台配置</label>
                 </div>
-
                 <div class="weui-cell__bd">
-{#                <div class="weui-cell__hd" id="machine_serial_div" style="display: none;">#}
-{#                    <input type="text" class="weui-input" id="machine_serial" name="machine_serial" placeholder="   请输入样机序列号">#}
-{#                    <a href="javascript:;" class="weui-btn weui-btn_plain-primary" id="scan1">扫一扫</a>#}
-{##}
-{#                </div>#}
                     <div class="weui-cells weui-cells_checkbox">
                     {% for key, value in options.items %}
                         <label class="weui-cell weui-check__label" for={{ key }}>
@@ -129,11 +139,10 @@
                         </div>
                         </label>
                     {% endfor %}
-
-            </div>
+                    </div>
 
             <div class="weui-cell__hd">
-                <input type="text" class="weui-input" name="remark" id="remark" placeholder="   请输入备注信息">
+                <input type="text" class="weui-input" name="store_remark" id="store_remark" placeholder="   请输入备注信息">
             </div>
             </div>
             </div>
@@ -153,21 +162,35 @@
                     </div>
                 </div>
             </div>
+            <div class="weui-cells__title">添加店员</div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">姓名</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" id="clerk_name" name="clerk_name" type="text" required="required"  placeholder="请输入姓名">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">手机号</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" id="clerk_phone" name="clerk_phone" pattern="[0-9]{6,}" required="required"  placeholder="请输入手机号">
+                </div>
+            </div>
             <div class="weui_btn_area">
                 <input type="submit" class="weui-btn weui-btn_primary" value="确认">
             </div>
-            <div class="weui-gallery" id="gallery">
-            <span class="weui-gallery__img" id="galleryImg" style=""></span>
-            <div class="weui-gallery__opr">
-                <a href="javascript:" class="weui-gallery__del" id="delete">
-                    <i class="weui-icon-delete weui-icon_gallery-delete"></i>
-                </a>
-            </div>
-            </div>
         </div>
     </form>
-    <div>
-        <p id="tip"></p>
+    <div class="weui-gallery" id="gallery">
+        <span class="weui-gallery__img" id="galleryImg" style=""></span>
+        <div class="weui-gallery__opr">
+            <a href="javascript:" class="weui-gallery__del" id="delete">
+                <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+            </a>
+        </div>
     </div>
     <div id="loadingToast" style="display:none">
         <div class="weui-mask_transparent"></div>
@@ -183,9 +206,7 @@
             <div class="weui-dialog__hd"><strong class="weui-dialog__title">输入展台序列号，区分大小写</strong></div>
 
             <div class="weui-dialog__hd">
-{#                <div class="weui-cell__bd">#}
-                      <input class="weui-input" type="text" name="serial" id="serial" required="required" placeholder="请在此输入序列号">
-{#                </div>#}
+                <input class="weui-input" type="text" name="serial" id="serial" required="required" placeholder="请在此输入序列号">
             </div>
             <div class="weui-dialog__ft">
                 <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default cancel">取消</a>
@@ -199,7 +220,7 @@
     $(function () {
         var $formData = new FormData();
         var photo_num = 0;
-        var form = $('form#add_store');
+        var form = $('form#manager_create');
         $('form').h5Validate({
             errorClass: 'invalid'
         });
@@ -207,7 +228,7 @@
         form.submit(function(){
             result = form.h5Validate('allValid');
             files = $("#uploaderInput")[0].files;
-            agent = $("#agent").val();
+            agent = $("#store_agent").val();
             if (agent==null || agent == '') {
                 alert("请选择代理商！");
                 return false;
@@ -219,26 +240,26 @@
                 return false;
             }
             load();
-            $formData.append("name", $("#name").val());
-            $formData.append("city", $("#city").val());
-            $formData.append("location", $("#location").val());
-            $formData.append("online", $("#online").val());
-            $formData.append("agent", agent);
+            $formData.append("business_store", $("#business_store").val());
+            $formData.append("business_name", $("#business_name").val());
+            $formData.append("business_phone", $("#business_phone").val());
+            $formData.append("store_name", $("#store_name").val());
+            $formData.append("store_city", $("#store_city").val());
+            $formData.append("store_location", $("#store_location").val());
+            $formData.append("store_online", $("#store_online").val());
+            $formData.append("store_agent", agent);
             checkboxes = $(':checkbox');
             for (var k = 0; k < checkboxes.length; k++) {
                 $formData.append(checkboxes[k].name, checkboxes[k].checked);
             }
-            $formData.append("exhibition", $("#exhibition").val());
-{#            for (var j = 0; j < files.length; j++) {#}
-{#                $formData.append("photo" + j, files[j]);#}
-{#            }#}
-{#            $formData.append("photo_num", files.length);#}
+            $formData.append("store_exhibition", $("#store_exhibition").val());
             $formData.append("photo_num", photo_num);
-            $formData.append("machine_serial", $("#machine_serial").val());
-            $formData.append("remark", $("#remark").val());
-            $formData.append("manager", $("#manager").val());
+            $formData.append("store_machine_serial", $("#store_machine_serial").val());
+            $formData.append("store_remark", $("#store_remark").val());
+            $formData.append("clerk_name", $("#clerk_name").val());
+            $formData.append("clerk_phone", $("#clerk_phone").val());
             $.ajax({
-                url: "/sales/store/add_store",
+                url: "/sales/manager/create",
                 type: "POST",
                 data: $formData,
                 timeout: 20000,
@@ -246,8 +267,9 @@
                 contentType: false   // 告诉jQuery不要去设置Content-Type请求头
             }).done(function ( data ) {
                 finish();
-                if (data['result'] && data['result'] == 'success') {
-                    location.href = "/sales/store/store_info?store_id=" + data['store_id'] + '&first=1'
+                if (data == 'success') {
+                    alert('创建成功,账号为手机号，初始密码为手机号后六位');
+                    location.href = "/sales/manager/list"
                 }
                 else {
                     alert(data);
@@ -289,14 +311,10 @@
 
         $uploaderInput.on("change", function(e){
             var src, url = window.URL || window.webkitURL || window.mozURL, files = e.target.files;
-{#            $uploaderFiles.html('');#}
-
             for (var i = 0, len = files.length; i < len; ++i) {
                 var file = files[i];
                 // Ensure it's an image
                 if(file.type.match(/image.*/)) {
-                    console.log('An image has been loaded');
-
                     // Load the image
                     var reader = new FileReader();
                     reader.onload = function (readerEvent) {
@@ -364,7 +382,6 @@
                             });
                         };
                         image.src = readerEvent.target.result;
-
                     };
                     reader.readAsDataURL(file);
                 }
@@ -382,14 +399,9 @@
         $("#delete").on("click", function(){
             $num = $("#galleryImg").attr('data-num');
             $("#" + $num).remove();
-{#            $formData.delete($num);#}
             $formData.append('remove'+$num, '1');
             $gallery.fadeOut(100);
         });
-
-{#        $("#machine").on("click", function(){#}
-{#            $("#machine_serial_div").toggle()#}
-{#        });#}
 
         $("#scan").on("click", function(){
             wx.scanQRCode({
@@ -403,7 +415,7 @@
                     };
                     $.post("/sales/store/store_validate", data, function(data,status){
                         if(data=="success"){
-                            $("#exhibition").val(code);
+                            $("#store_exhibition").val(code);
                             $("#config").show();
                         }
                         else{
@@ -422,7 +434,7 @@
                 success: function (res) {
                     var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
                     var code = result.split(',')[1];
-                    $("#machine_serial").val(code);
+                    $("#store_machine_serial").val(code);
                 }
             });
         });
@@ -452,7 +464,7 @@
             $.post("/sales/store/store_validate", data, function(data,status){
                 if(data=="success"){
                     $dialog.fadeOut(200);
-                    $("#exhibition").val(code);
+                    $("#store_exhibition").val(code);
                     $("#config").show();
                 }
                 else{
@@ -466,7 +478,5 @@
         });
 
     });
-
-
 </script>
 </html>

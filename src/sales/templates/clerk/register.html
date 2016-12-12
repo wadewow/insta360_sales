@@ -87,7 +87,6 @@
             data = $('form#register').serialize();
             data += '&wx_code='+ wx_code;
             $.post("/sales/clerk/register", data, function(data,status){
-                  console.log("Data: " + data + "\nStatus: " + status);
                   if(data=="success"){
                     alert("注册成功！");
                     location.href = "/sales/clerk/info"
@@ -98,8 +97,6 @@
             });
             return false
         });
-
-
     });
 </script>
 </html>

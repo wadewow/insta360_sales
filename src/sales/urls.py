@@ -38,8 +38,8 @@ urlpatterns = [
     url(r'^clerk/account$', views.account_account, name='account_account'),
 
     url(r'^sale/scan$', views.sale_scan, name='sale_scan'),
+    url(r'^sale/super_scan$', views.sale_super_scan, name='sale_super_scan'),
     url(r'^sale/sales$', views.sale_sales, name='sale_sales'),
-    # url(r'^sale/cash$', views.sale_cash, name='sale_cash'),
     url(r'^sale/test$', views.sale_test, name='sale_test'),
 
     url(r'^account/cash$', views.account_cash, name='account_cash'),
@@ -49,8 +49,8 @@ urlpatterns = [
     url(r'^manager/login_pc$', views.manager_login_pc, name='manager_login_pc'),
     url(r'^manager/list$', views.manager_list, name='manager_list'),
     url(r'^manager/stores$', views.manager_stores, name='manager_stores'),
+    url(r'^manager/create$', views.manager_create, name='manager_create'),
     url(r'^manager/sales$', views.manager_sales, name='manager_sales'),
-    # url(r'^manager/shopkeeper_info', views.manager_shopkeeper_info, name='manager_shopkeeper_info'),
     url(r'^manager/modify_store$', views.manager_modify_store, name='manager_modify_store'),
     url(r'^manager/export$', views.manager_export, name='manager_export'),
     url(r'^manager/export_sales$', views.manager_export_sales, name='manager_export_sales'),

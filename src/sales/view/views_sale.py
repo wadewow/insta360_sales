@@ -153,6 +153,110 @@ def sale_scan(request):
             return HttpResponse('扫描失败！')
 
 @csrf_exempt
+def sale_super_scan(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('clerk_id'):
+            return redirect('/sales/clerk/login')
+        else:
+            return render(request, 'sale/super_scan.html', {
+                'lib_path': lib_path
+            })
+
+    if request.method == 'POST':
+        try:
+            if not request.session.__contains__('clerk_id'):
+                return redirect('/sales/clerk/login')
+            else:
+                para = request.POST
+                serial_number = para.__getitem__('serial')
+                test = True
+
+                try:
+                    SaleNano.objects.get(id=serial_number)
+                except ObjectDoesNotExist:
+                    test = False
+                clerk_id = request.session['clerk_id']
+                clerk = Clerk.objects.get(id=clerk_id)
+                try:
+                    shop = Shop.objects.get(id=clerk.store_id)
+                except:
+                    return redirect('/sales/clerk/info')
+                if test:
+                    now = timezone.now()
+                    active = 1
+                    active_time = now
+                    name = '测试商品'
+                    sale_info = {
+                        'active_time': active_time,
+                        'store_id': clerk.store_id,
+                        'clerk_id': clerk_id,
+                        'name': name,
+                        'active': active,
+                        'serial_number': serial_number,
+                        'business_id': shop.business_id,
+                        'created_time': now,
+                        'manager': shop.manager,
+                        'province': shop.province
+                    }
+                    Sale.objects.update_or_create(serial_number=serial_number, name=name, defaults=sale_info)
+                    return HttpResponse('success')
+
+                try:
+                    Shop.objects.get(machine_serial=serial_number)
+                    is_machine_serial = True
+                except ObjectDoesNotExist:
+                    is_machine_serial = False
+                except MultipleObjectsReturned:
+                    is_machine_serial = True
+
+                if is_machine_serial:
+                    return HttpResponse("样机序列号无法扫描！")
+
+                url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfo/'
+                values = {
+                    'serial_number': serial_number
+                }
+                data = urllib.urlencode(values)
+                req = urllib2.Request(url, data=data)
+                res_data = urllib2.urlopen(req)
+                res = res_data.read()
+                res = json.loads(res)
+                flag = res['flag']
+                if not flag:
+                    return HttpResponse("序列号无效！")
+                now = timezone.now()
+                active = 0
+                active_time = now
+
+                name = 'Insta360 Nano'
+                sale_info = {
+                    'active_time': active_time,
+                    'store_id': clerk.store_id,
+                    'clerk_id': clerk_id,
+                    'name': name,
+                    'active': active,
+                    'serial_number': serial_number,
+                    'business_id': shop.business_id,
+                    'created_time': now,
+                    'manager': shop.manager,
+                    'province': shop.province
+                }
+                try:
+                    temp = Sale.objects.get(serial_number=serial_number, name=name)
+                    s_id = temp.store_id
+                    t_shop = Shop.objects.get(id=s_id)
+                    t_shop.sales_count = t_shop.sales_count - 1
+                    t_shop.save()
+                except:
+                    pass
+                Sale.objects.update_or_create(serial_number=serial_number, name=name, defaults=sale_info)
+                shop.sales_count = shop.sales_count + 1
+                shop.save()
+                return HttpResponse('success')
+        except:
+            return HttpResponse('扫描失败！')
+
+@csrf_exempt
 def sale_sales(request):
     if request.method == 'POST':
         return HttpResponse('Do nothing')

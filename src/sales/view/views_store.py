@@ -139,7 +139,7 @@ def store_add(request):
                 try:
                     res = Exhibition.objects.get(id=exhibition)
                 except:
-                    return HttpResponse('序列号无效')
+                    return HttpResponse('展台序列号无效')
 
                 n = len(manager)
                 for i in range(0,4-n):
@@ -243,7 +243,6 @@ def store_add(request):
                     'store_id': store.id
                 }
 
-###################################待测试
                 if machine_serial != '':
                     url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/camera/setOffsetBySerial'
                     values = {

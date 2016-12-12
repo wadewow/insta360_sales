@@ -31,8 +31,10 @@
         </div>
         </div>
     </div>
-    <a href="javascript:;" class="weui-btn weui-btn_primary" id="scan">扫描商品</a>
-    <a href="/sales/clerk/account" class="weui-btn weui-btn_default">查看红包&促销奖励及提现</a>
+    <div class="weui_btn_area" style="margin-top:10px">
+        <a href="javascript:;" class="weui-btn weui-btn_primary" id="scan">扫描商品</a>
+        <a href="/sales/clerk/account" class="weui-btn weui-btn_default">查看红包&促销奖励及提现</a>
+    </div>
     <div class="weui-cells">
         {% for sale in sale_list %}
         {% if sale.invalid == 0 %}

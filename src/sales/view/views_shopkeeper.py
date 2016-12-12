@@ -40,9 +40,6 @@ def shopkeeper_register(request):
             if wx_code != '':
                 openid = getOpenid(wx_code)
 
-            # stores = Store.objects.all().values_list("store", flat=True).distinct()
-            # if store in stores:
-            #     return HttpResponse('该商家公司名称已被使用！')
             try:
                 Store.objects.get(store=store)
                 is_used = True
