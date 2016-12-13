@@ -10,7 +10,6 @@ from view.views_clerk import *
 from view.views_sale import *
 from view.views_manager import *
 from view.views_account import *
-from view.views_promotion import *
 from view.views_service import *
 from view.views_agent import *
 from view.views_wx import *

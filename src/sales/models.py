@@ -75,6 +75,7 @@ class Sale(models.Model):
     device_code = models.CharField(max_length=200, blank=True)
     manager = models.CharField(max_length=200, blank=True)
     province = models.CharField(max_length=200, blank=True)
+    delay = models.IntegerField(default=0)
 
     def __unicode__(self):
         return str(self.id)

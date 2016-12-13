@@ -24,7 +24,7 @@ class ClerkAdmin(admin.ModelAdmin):
     list_display = ('id', 'store_id', 'name', 'password', 'phone', 'created_time', 'update_time', 'base', 'bonus', 'balance', 'promotion', 'pwd', 'openid')
 
 class SaleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'business_id', 'store_id', 'clerk_id','serial_number', 'name', 'created_time', 'active', 'active_time', 'base', 'cashed', 'device_code', 'valid', 'manager', 'province')
+    list_display = ('id', 'business_id', 'store_id', 'clerk_id','serial_number', 'name', 'created_time', 'active', 'active_time', 'base', 'cashed', 'device_code', 'valid', 'manager', 'province', 'delay')
 
 class TokenAdmin(admin.ModelAdmin):
     list_display = ('id', 'token', 'created_time', 'type')

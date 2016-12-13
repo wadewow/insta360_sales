@@ -746,6 +746,35 @@ def manager_sales(request):
 
 
 @csrf_exempt
+def manager_delay(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/manager/login_pc')
+        return render(request, 'manager/delay.html', {
+            'lib_path': lib_path
+        })
+    if request.method == 'POST':
+        para = request.POST
+        serial_number = para.get('serial_number','')
+        res = Sale.objects.filter(serial_number=serial_number).update(delay = 1)
+        if res == 0:
+            result = '没有该序列号的销售记录'
+        else:
+            result = '已延长激活时间至一周'
+        return HttpResponse(result)
+
+
+@csrf_exempt
+def manager_delay_m(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('manager_id'):
+            return redirect('/sales/manager/login')
+        return render(request, 'manager/delay_m.html', {
+            'lib_path': lib_path
+        })
+
+
+@csrf_exempt
 def manager_export(request):
     if not request.session.__contains__('manager_id'):
         return redirect('/sales/manager/login_pc')

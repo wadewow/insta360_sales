@@ -107,9 +107,6 @@ def sale_scan(request):
                 now = timezone.now()
                 active = 0
                 if active_time != '0':
-                    # active = 1
-                    # temp = time.localtime(int(active_time))
-                    # active_time = time.strftime("%Y-%m-%d %H:%M:%S", temp)
                     return HttpResponse("该序列号已被售出！")
                 else:
                     active_time = now
@@ -286,7 +283,6 @@ def sale_sales(request):
                     data = res[item]
                     active_time = data['first_use_time']
                     device_code = data['equipment_code']
-                    active = 0
                     if active_time != '0':
                       active = 1
 
@@ -310,30 +306,26 @@ def sale_sales(request):
                 sales = Sale.objects.filter(clerk_id=clerk_id).order_by("-created_time").values()
 
     #########################################
-
-
                 for sale in sales:
                     active = sale['active']
                     created_time = sale['created_time']
                     active_time =sale['active_time']
-                    deadline = created_time + datetime.timedelta(hours=12)
+                    delay = sale.delay
+                    delta = (168 if delay == 1 else 12)
+                    deadline = created_time + datetime.timedelta(hours=delta)
                     base = sale['base']
                     cash = 0
                     show_time = ''
                     invalid = 0
                     if active==0:
                         if now >= deadline:
-                            hint = '未在12小时内激活，不可提现'
+                            hint = '未在' + str(delta) + '小时内激活，不可提现'
                             invalid = 0
                         else:
                             show_time = deadline
                             hint = '之前激活可提现'
-
                     else:
                         show_time = active_time
-                        # print created_time
-                        # print deadline
-                        # print active_time
                         if active_time >= deadline:
                             hint = '激活，不可提现'
                             invalid = 0
@@ -389,28 +381,6 @@ def sale_sales(request):
         except:
             return redirect('/sales/clerk/login_wx')
 
-#
-# @csrf_exempt
-# def sale_cash(request):
-#     if request.method == 'GET':
-#         if not request.session.__contains__('clerk_id'):
-#             return redirect('/sales/clerk/login_wx')
-#         else:
-#             return render(request, 'sale/scan.html', {
-# 'lib_path': lib_path})
-#
-#     if request.method == 'POST':
-#         try:
-#             if not request.session.__contains__('clerk_id'):
-#                 return redirect('/sales/clerk/login_wx')
-#             else:
-#                 para = request.POST
-#                 sale_id = para.__getitem__('sale_id')
-#                 Sale.objects.filter(id=sale_id).update(cashed=1)
-#                 return HttpResponse("success")
-#         except:
-#             return  HttpResponse("error")
-
 
 @csrf_exempt
 def sale_guide(request):
@@ -423,20 +393,11 @@ def sale_guide(request):
             elif not para.__contains__('serial_number'):
                 return HttpResponse("Missing parameter: serail_number")
             else:
-# # ######################
-#                 timestamp = int(time.time())
-#                 temp = time.localtime(int(timestamp))
-#                 active_time = time.strftime("%Y-%m-%d %H:%M:%S", temp)
-#                 print active_time
-##########################
                 result = {
                 }
                 result['status'] = 0
                 location = para.__getitem__('location')
                 serial_number = para.__getitem__('serial_number')
-
-                print 'location:' + location
-                print 'serial_number:' + serial_number
 
                 shop = Shop.objects.filter(machine_serial=serial_number).order_by('-created_time').first()
                 if shop != None:
@@ -477,10 +438,8 @@ def sale_guide(request):
                     province = shop.province
 
                     serial = SaleNano.objects.filter(id=serial_number).count()
-                    if False:
-                    # if (not location in province) and serial == 0:
+                    if (not location in province) and serial == 0:
                         result['message'] = 'Location mismatching'
-                        print result['message']
                         return JsonResponse(data=result, safe=False)
                     else:
                         qualified = False
@@ -494,14 +453,14 @@ def sale_guide(request):
                             temp = time.localtime(int(activated_time))
                             sale.active_time = time.strftime("%Y-%m-%d %H:%M:%S", temp)
                             sale.save()
-
 ######################################
                         if serial == 0:
                             active = sale.active
                             created_time = sale.created_time
                             active_time = sale.active_time
-
-                            deadline = created_time + datetime.timedelta(hours=12)
+                            delay = sale.delay
+                            delta = (168 if delay == 1 else 12)
+                            deadline = created_time + datetime.timedelta(hours=delta)
                             deadline = (deadline + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S")
 
                             clerk_id = sale.clerk_id
@@ -510,16 +469,10 @@ def sale_guide(request):
                                 num = 1
                             else:
                                 num = Sale.objects.filter(device_code=device_code, clerk_id=clerk_id,name='Insta360 Nano').count()
-
-                            print active_time
-                            print deadline
-
                             if active == 1 and active_time < deadline and num < 2:
                                 qualified = True
                         else:
                             qualified = True
-
-
                         #  #######################################
                         if not qualified:
                             result['message'] = 'Not qualified'

@@ -91,14 +91,6 @@ def bi_stores(request):
         sort = '-created_time'
         if para.__contains__('sort'):
             sort = para.__getitem__('sort')
-        #
-        # stores = Shop.objects.all()
-        # for store in stores:
-        #     id = store.id
-        #     count = Sale.objects.filter(store_id=id, name='Insta360 Nano').count()
-        #     print count
-        #     store.sales_count = count
-        #     store.save()
 
         if sort == 'province':
             stores = Shop.objects.filter(created_time__gt='2016-11-05').order_by(sort, 'city', 'location')
@@ -300,16 +292,20 @@ def bi_sales(request):
         size = 40
         now = timezone.now()
         deadline = now - datetime.timedelta(hours=12)
-        # sales = Sale.objects.all()
-        # for sale in sales:
-        #     s_id = sale.store_id
-        #     s = Shop.objects.get(id=s_id)
-        #     sale.manager = s.manager
-        #     sale.save()
+        deadline1 = now - datetime.timedelta(hours=168)
+        sales = Sale.objects.filter(name='Insta360 Nano').exclude(
+            valid=0,
+            active=0,
+            delay=0,
+            created_time__lt=deadline).exclude(
+            valid=0,
+            active=0,
+            delay=1,
+            created_time__lt=deadline1)
         if sort == '-active':
-            sales = Sale.objects.filter(name='Insta360 Nano').exclude(valid=0, active=0, created_time__lt=deadline).order_by(sort, '-active_time')
+            sales = sales.order_by(sort, '-active_time')
         else:
-            sales = Sale.objects.filter(name='Insta360 Nano').exclude(valid=0, active=0, created_time__lt=deadline).order_by(sort)
+            sales = sales.order_by(sort)
         total = sales.count()
         page_total = total / size + (1 if (total % size) > 0 else 0)
         if page_total <=0:
@@ -371,13 +367,6 @@ def bi_sales(request):
                 if active == 1:
                     state = '超时'
                 else:
-                    # now = timezone.now()
-                    # created_time = sale['created_time']
-                    # deadline = created_time + datetime.timedelta(hours=12)
-                    # if now >= deadline:
-                    #     state = '作废'
-                    #     sale['show'] = 0
-                    # else:
                     state = '等待激活'
             sale['state'] = state
 
@@ -754,15 +743,6 @@ def bi_promotion(request):
         sort = '-created_time'
         if para.__contains__('sort'):
             sort = para.__getitem__('sort')
-        #
-        # stores = Shop.objects.all()
-        # for store in stores:
-        #     id = store.id
-        #     count = Sale.objects.filter(store_id=id, name='Insta360 Nano').count()
-        #     print count
-        #     store.sales_count = count
-        #     store.save()
-
         if sort == 'province':
             stores = Shop.objects.filter(created_time__gt='2016-11-05').order_by(sort, 'city', 'location')
         else:
@@ -1022,8 +1002,16 @@ def bi_export_sales(request):
 
     now = timezone.now()
     deadline = now - datetime.timedelta(hours=12)
-
-    sales = Sale.objects.filter(name='Insta360 Nano').exclude(valid=0, active=0, created_time__lt=deadline).order_by('-created_time').values()
+    deadline1 = now - datetime.timedelta(hours=168)
+    sales = Sale.objects.filter(name='Insta360 Nano').exclude(
+        valid=0,
+        active=0,
+        delay=0,
+        created_time__lt=deadline).exclude(
+        valid=0,
+        active=0,
+        delay=1,
+        created_time__lt=deadline1).order_by('-created_time').values()
 
     for sale in sales:
         business_id = sale['business_id']
@@ -1069,13 +1057,6 @@ def bi_export_sales(request):
             if active == 1:
                 state = '超时'
             else:
-                # now = timezone.now()
-                # created_time = sale['created_time']
-                # deadline = created_time + datetime.timedelta(hours=12)
-                # if now >= deadline:
-                #     state = '作废'
-                #     sale['show'] = 0
-                # else:
                 state = '等待激活'
         sale['state'] = state
         created_time = sale['created_time']

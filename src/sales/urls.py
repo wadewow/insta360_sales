@@ -51,6 +51,8 @@ urlpatterns = [
     url(r'^manager/stores$', views.manager_stores, name='manager_stores'),
     url(r'^manager/create$', views.manager_create, name='manager_create'),
     url(r'^manager/sales$', views.manager_sales, name='manager_sales'),
+    url(r'^manager/delay$', views.manager_delay, name='manager_delay'),
+    url(r'^manager/delay_m$', views.manager_delay_m, name='manager_delay_m'),
     url(r'^manager/modify_store$', views.manager_modify_store, name='manager_modify_store'),
     url(r'^manager/export$', views.manager_export, name='manager_export'),
     url(r'^manager/export_sales$', views.manager_export_sales, name='manager_export_sales'),
@@ -59,8 +61,6 @@ urlpatterns = [
     url(r'^agent/list$', views.agent_list, name='agent_list'),
     url(r'^agent/sales$', views.agent_sales, name='agent_sales'),
     url(r'^agent/search$', views.agent_search, name='agent_search'),
-
-    url(r'^promotion/store_filter$', views.store_filter, name='store_filter'),
 
     url(r'^cash_query$', views.cash_query, name='cash_query'),
     url(r'^service/cloud_query$', views.service_cloud_query, name='service_cloud_query'),
