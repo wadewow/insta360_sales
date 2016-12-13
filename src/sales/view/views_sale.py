@@ -434,7 +434,7 @@ def sale_guide(request):
                     province = shop.province
 
                     serial = SaleNano.objects.filter(id=serial_number).count()
-                    if (not location in province) and serial == 0:
+                    if not location in province:
                         result['message'] = 'Location mismatching'
                         return JsonResponse(data=result, safe=False)
                     else:
