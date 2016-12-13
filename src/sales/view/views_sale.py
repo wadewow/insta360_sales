@@ -258,7 +258,7 @@ def sale_sales(request):
     if request.method == 'POST':
         return HttpResponse('Do nothing')
     if request.method == 'GET':
-        try:
+        # try:
             if not request.session.__contains__('clerk_id'):
                 return redirect('/sales/clerk/login_wx')
             else:
@@ -306,7 +306,7 @@ def sale_sales(request):
                     active = sale['active']
                     created_time = sale['created_time']
                     active_time =sale['active_time']
-                    delay = sale.delay
+                    delay = sale['delay']
                     delta = (168 if delay == 1 else 12)
                     deadline = created_time + datetime.timedelta(hours=delta)
                     base = sale['base']
@@ -374,8 +374,8 @@ def sale_sales(request):
                     'sale_list': sales,
                     'lib_path': lib_path
                 })
-        except:
-            return redirect('/sales/clerk/login_wx')
+        # except:
+        #     return redirect('/sales/clerk/login_wx')
 
 
 @csrf_exempt
