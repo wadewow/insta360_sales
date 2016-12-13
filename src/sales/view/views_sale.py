@@ -289,12 +289,8 @@ def sale_sales(request):
                       temp = datetime.datetime.utcfromtimestamp(int(active_time))
                       temp = temp + datetime.timedelta(hours=8)
                       active_time = temp.strftime("%Y-%m-%d %H:%M:%S")
-
-                      # temp = time.localtime(int(active_time)) #################
-                      # active_time = time.strftime("%Y-%m-%d %H:%M:%S", temp)
                     else:
                         continue
-                      # active_time = timezone.now()
                     sale_info = {
                       'active_time': active_time,
                       'active': active,
@@ -400,7 +396,7 @@ def sale_guide(request):
                 serial_number = para.__getitem__('serial_number')
 
                 shop = Shop.objects.filter(machine_serial=serial_number).order_by('-created_time').first()
-                if shop != None:
+                if shop != None and location in shop.province:
                     store_name = shop.name
                     store_location = shop.province + ' ' + shop.city + ' ' + shop.location
                     info = {}
