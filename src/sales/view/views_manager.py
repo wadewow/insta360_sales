@@ -90,8 +90,20 @@ def manager_list(request):
             return redirect('/sales/manager/login')
         else:
             manager_id = request.session['manager_id']
-            print manager_id
-            store_list = Shop.objects.filter(manager=manager_id).values()
+
+            try:
+                manager = Manager.objects.get(id=manager_id)
+                is_leader = manager.is_leader
+                if is_leader == 1:
+                    region = manager.region
+                    manager_list = Manager.objects.filter(region=region).values('id')
+                    stores = Shop.objects.filter(manager__in=manager_list)
+                else:
+                    stores = Shop.objects.filter(manager=manager_id)
+            except:
+                stores = Shop.objects.filter(manager=manager_id)
+
+            store_list = stores.values()
             for store in store_list:
                 new_option = {}
                 option = json.loads(store['option'])
@@ -102,6 +114,12 @@ def manager_list(request):
                 store_id = store['id']
                 sales_count = Sale.objects.filter(store_id=store_id, name='Insta360 Nano').count()
                 store['sales_count'] = sales_count
+                t_manager_id = store['manager']
+                try:
+                    manager = Manager.objects.get(id=t_manager_id)
+                    store['manager'] = manager
+                except:
+                    pass
             return render(request, 'manager/list.html', {
                 'store_list': store_list,
                 'lib_path': lib_path

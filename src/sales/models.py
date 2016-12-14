@@ -21,7 +21,7 @@ class Store(models.Model):
 class Shop(models.Model):
     business_id = models.CharField(max_length=200)
     name = models.CharField(max_length=200)
-    code = models.CharField(max_length=200)
+    code = models.CharField(max_length=200,blank=True)
     online = models.CharField(max_length=200)
     province = models.CharField(max_length=200)
     city = models.CharField(max_length=200)

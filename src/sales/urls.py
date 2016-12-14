@@ -40,7 +40,6 @@ urlpatterns = [
     url(r'^sale/scan$', views.sale_scan, name='sale_scan'),
     url(r'^sale/super_scan$', views.sale_super_scan, name='sale_super_scan'),
     url(r'^sale/sales$', views.sale_sales, name='sale_sales'),
-    url(r'^sale/test$', views.sale_test, name='sale_test'),
 
     url(r'^account/cash$', views.account_cash, name='account_cash'),
     url(r'^account/record$', views.account_record, name='account_record'),

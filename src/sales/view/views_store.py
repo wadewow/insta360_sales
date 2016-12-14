@@ -313,7 +313,6 @@ def store_info(request):
             return redirect('/sales/shopkeeper/login_wx')
 
 
-
 @csrf_exempt
 def store_modify(request):
     if request.method == 'POST':
@@ -567,6 +566,7 @@ def store_validate(request):
             return HttpResponse("error")
 
 
+@csrf_exempt
 def store_promotion(request):
     if request.method == 'POST':
         try:
@@ -587,3 +587,14 @@ def store_promotion(request):
                 Shop.objects.filter(id=store).update(promotion=promotion.id)
         except:
             return HttpResponse('error')
+
+
+@csrf_exempt
+def store_disable(request):
+    if request.method == 'POST':
+        para = request.POST
+        store_id = para.__getitem__('store_id')
+        res = Shop.objects.filter(id=store_id).update(code='')
+        if res == 0:
+            return HttpResponse('不存在该店铺')
+        return HttpResponse('success')

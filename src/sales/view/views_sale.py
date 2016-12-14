@@ -53,6 +53,8 @@ def sale_scan(request):
                 clerk = Clerk.objects.get(id=clerk_id)
                 try:
                     shop = Shop.objects.get(id=clerk.store_id)
+                    if shop.code == '':
+                        return HttpResponse('您所属的门店已注销')
                 except:
                     return redirect('/sales/clerk/info')
                 if test:
@@ -76,7 +78,6 @@ def sale_scan(request):
                     return HttpResponse('success')
                 #######################################
 
-
                 try:
                     Shop.objects.get(machine_serial=serial_number)
                     is_machine_serial = True
@@ -87,9 +88,6 @@ def sale_scan(request):
 
                 if is_machine_serial:
                     return HttpResponse("样机序列号无法扫描！")
-
-
-
 
                 url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfo/'
                 values = {
@@ -176,6 +174,8 @@ def sale_super_scan(request):
                 clerk = Clerk.objects.get(id=clerk_id)
                 try:
                     shop = Shop.objects.get(id=clerk.store_id)
+                    if shop.code == '':
+                        return HttpResponse('您所属的门店已注销')
                 except:
                     return redirect('/sales/clerk/info')
                 if test:
@@ -258,7 +258,7 @@ def sale_sales(request):
     if request.method == 'POST':
         return HttpResponse('Do nothing')
     if request.method == 'GET':
-        # try:
+        try:
             if not request.session.__contains__('clerk_id'):
                 return redirect('/sales/clerk/login_wx')
             else:
@@ -374,8 +374,8 @@ def sale_sales(request):
                     'sale_list': sales,
                     'lib_path': lib_path
                 })
-        # except:
-        #     return redirect('/sales/clerk/login_wx')
+        except:
+            return redirect('/sales/clerk/login_wx')
 
 
 @csrf_exempt
@@ -396,7 +396,7 @@ def sale_guide(request):
                 serial_number = para.__getitem__('serial_number')
 
                 shop = Shop.objects.filter(machine_serial=serial_number).order_by('-created_time').first()
-                if shop != None and location in shop.province:
+                if shop != None and location in shop.province and shop.code != '':
                     store_name = shop.name
                     store_location = shop.province + ' ' + shop.city + ' ' + shop.location
                     info = {}
@@ -428,6 +428,9 @@ def sale_guide(request):
                     store_id = sale.store_id
                     try:
                         shop = Shop.objects.get(id=store_id)
+                        if shop.code == '':
+                            result['message'] = 'The store has been disabled'
+                            return JsonResponse(data=result, safe=False)
                     except:
                         result['message'] = 'No store information'
                         return JsonResponse(data=result, safe=False)
@@ -499,53 +502,3 @@ def sale_guide(request):
 
         except:
             return HttpResponse("Something unknown wrong")
-
-
-@csrf_exempt
-def sale_test(request):
-    if request.method == 'GET':
-        if not request.session.__contains__('clerk_id'):
-            return redirect('/sales/clerk/login_wx')
-        else:
-            return render(request, 'sale/scan.html', {
-                'lib_path': lib_path
-            })
-
-    if request.method == 'POST':
-        try:
-            if not request.session.__contains__('clerk_id'):
-                return redirect('/sales/clerk/login_wx')
-            else:
-                para = request.POST
-
-                serial_number = para.__getitem__('serial')
-                try:
-                    SaleNano.objects.get(id=serial_number)
-                except:
-                    return HttpResponse('非测试序列号不可扫描')
-
-                now = timezone.now()
-                active = 1
-                active_time = now
-                clerk_id = request.session['clerk_id']
-                clerk = Clerk.objects.get(id=clerk_id)
-                try:
-                    shop = Shop.objects.get(id=clerk.store_id)
-                except:
-                    return redirect('/sales/clerk/info')
-                name = '测试商品'
-                sale_info = {
-                    'active_time': active_time,
-                    'store_id': clerk.store_id,
-                    'clerk_id': clerk_id,
-                    'name': name,
-                    'active': active,
-                    'serial_number': serial_number,
-                    'business_id': shop.business_id,
-                    'created_time': now,
-                    'province': shop.province
-                }
-                Sale.objects.update_or_create(serial_number=serial_number, name=name, defaults=sale_info)
-                return HttpResponse('success')
-        except:
-            return HttpResponse('扫描失败！')
