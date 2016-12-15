@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="renderer" content="webkit">
-    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//static.insta360.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
     <title>出厂序列号导入系统</title>
@@ -23,38 +23,6 @@
     </style>
     <script>
         $(function () {
-{#            var join = '';#}
-{#            var count = 0;#}
-{#            $('#uploaderInput').on("change", function (e) {#}
-{#                join = '';#}
-{#                var file = e.target.files[0];#}
-{#                var reader = new FileReader();#}
-{#                reader.onload = (function(file) {#}
-{#                    return function(e) {#}
-{#                        result = this.result;#}
-{#                        lines = result.split('\n');#}
-{#                        count =0;#}
-{#                        for(var i=0;i<lines.length;i++){#}
-{#                            if(i<3){#}
-{#                                continue#}
-{#                            }#}
-{#                            var line = lines[i];#}
-{#                            var data = line.split('\t');#}
-{#                            if(data.length<2) {#}
-{#                                continue#}
-{#                            }#}
-{#                            temp = "('" + data[0] + "','" + data[1] + "','" + data[2] + "','" + data[3] + "','" + data[4] + "','" + data[5] + "','" + data[6] + "','" + data[7] + "'),";#}
-{#                            join += temp;#}
-{#                            count ++#}
-{#                        }#}
-{#                        console.log(join);#}
-{#                        $("#tip").text('加载完成，请点击导入');#}
-{#                    };#}
-{#                })(file);#}
-{#                //读取文件内容#}
-{#                reader.readAsText(file);#}
-{#            });#}
-
             var form = $('form#import_nano');
             form.submit(function(){
                 $uploaderInput = $("#uploaderInput")[0];
