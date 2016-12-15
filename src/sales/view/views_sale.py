@@ -351,10 +351,7 @@ def sale_sales(request):
                                         base = round((base * random.uniform(0.2, 1)), 2)
                                     if base < 1:
                                         base = base * 2
-                                    temp = {
-                                        'base': base
-                                    }
-                                    Sale.objects.update_or_create(id=sale['id'], defaults=temp)
+                                    Sale.objects.filter(id=sale['id']).update(valid=1, base=base)
                                     try:
                                         account = Clerk.objects.get(id=clerk_id)
                                     except:
@@ -363,13 +360,11 @@ def sale_sales(request):
                                         account.balance += base
                                     account.base += base
                                     account.save()
-                                    Sale.objects.filter(id=sale['id']).update(valid=1)
                     sale['hint'] = hint
                     sale['cash'] = cash
                     sale['base'] = base
                     sale['show_time'] = show_time
                     sale['invalid'] = invalid
-
                 return render(request, 'sale/sales.html', {
                     'sale_list': sales,
                     'lib_path': lib_path
@@ -425,6 +420,18 @@ def sale_guide(request):
                     result['message'] = 'No nano information'
                     return JsonResponse(data=result,safe=False)
                 else:
+                    ######################################
+                    try:
+                        activated_time = para.__getitem__('activated_time')
+                    except:
+                        activated_time = '0'
+                    if activated_time != '0' and sale.active == 0:
+                        sale.active = 1
+                        temp = datetime.datetime.utcfromtimestamp(int(activated_time))
+                        temp = temp + datetime.timedelta(hours=8)
+                        sale.active_time= temp.strftime("%Y-%m-%d %H:%M:%S")
+                        sale.save()
+                    ######################################
                     store_id = sale.store_id
                     try:
                         shop = Shop.objects.get(id=store_id)
@@ -442,17 +449,6 @@ def sale_guide(request):
                         return JsonResponse(data=result, safe=False)
                     else:
                         qualified = False
-######################################
-                        try:
-                            activated_time = para.__getitem__('activated_time')
-                        except:
-                            activated_time = '0'
-                        if activated_time != '0':
-                            sale.active = 1
-                            temp = time.localtime(int(activated_time))
-                            sale.active_time = time.strftime("%Y-%m-%d %H:%M:%S", temp)
-                            sale.save()
-######################################
                         if serial == 0:
                             active = sale.active
                             created_time = sale.created_time
@@ -472,7 +468,7 @@ def sale_guide(request):
                                 qualified = True
                         else:
                             qualified = True
-                        #  #######################################
+
                         if not qualified:
                             result['message'] = 'Not qualified'
                             return JsonResponse(data=result, safe=False)

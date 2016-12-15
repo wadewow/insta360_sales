@@ -79,9 +79,8 @@ urlpatterns = [
     url(r'^QR_code$', views.QR_code, name='QR_code'),
 
     url(r'^test$', views.test, name='test'),
-    url(r'^test1$', views.test1, name='test1'),
 
-    url(r'^util/set_active$', views.set_active, name='set_active'),
+    url(r'^util/refresh_active$', views.refresh_active, name='refresh_active'),
     url(r'^util/query_ex$', views.query_ex, name='query_ex'),
     url(r'^util/set_offset$', views.set_offset, name='set_offset'),
     url(r'^util/import_exhibition$', views.util_import_exhibition, name='util_import_exhibition'),

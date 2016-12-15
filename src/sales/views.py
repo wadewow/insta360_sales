@@ -212,33 +212,63 @@ def set_offset(request):
                     print 'setOffsetBySerial error'
         return HttpResponse('finish')
 
+
 @csrf_exempt
-def set_active(request):
+def refresh_active(request):
     if request.method == 'GET':
-        para = request.GET
-        if not para.__contains__('serial_number'):
-            return HttpResponse('Missing parameter serial_number')
-        serial_number = para.__getitem__('serial_number')
-        try:
-            sale = Sale.objects.get(serial_number=serial_number)
-        except:
-            return HttpResponse('No information for this serial number')
-        now = timezone.now()
-        sale.active = 1
-        sale.active_time = now
-        created_time = sale.created_time
-        active_time = now
-        base = sale.base
-        clerk_id = sale.clerk_id
-        deadline = created_time + datetime.timedelta(hours=12)
-        if active_time < deadline:
-            device_code = sale.device_code
-            if device_code == '':
-                num = 1
+        sales = Sale.objects.filter(name='Insta360 Nano', active=0)
+        serial_numbers = ''
+        for sale in sales:
+            serial_number = sale.serial_number
+            serial_numbers = serial_numbers + serial_number + ','
+        url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfos/'
+        values = {
+            'serial_number': serial_numbers
+        }
+        data = urllib.urlencode(values)
+        req = urllib2.Request(url, data=data)
+        res_data = urllib2.urlopen(req)
+        res = res_data.read()
+        res = json.loads(res)
+        for index, item in enumerate(res):
+            data = res[item]
+            active_time = data['first_use_time']
+            device_code = data['equipment_code']
+            if active_time != '0':
+                active = 1
+                temp = datetime.datetime.utcfromtimestamp(int(active_time))
+                temp = temp + datetime.timedelta(hours=8)
+                active_time = temp.strftime("%Y-%m-%d %H:%M:%S")
             else:
-                num = Sale.objects.filter(device_code=device_code, clerk_id=clerk_id, name='Insta360 Nano').count()
-            if num < 2:
-                if base == 0:
+                continue
+            sale_info = {
+                'active_time': active_time,
+                'active': active,
+                'device_code': device_code
+            }
+            Sale.objects.update_or_create(serial_number=item, name='Insta360 Nano', defaults=sale_info)
+        sales = Sale.objects.filter(name='Insta360 Nano', active=1, valid=0)
+        for sale in sales:
+            created_time = sale.created_time
+            active_time = sale.active_time
+            clerk_id = sale.clerk_id
+            delay = sale.delay
+            delta = (168 if delay == 1 else 12)
+            deadline = created_time + datetime.timedelta(hours=delta)
+            base = sale.base
+            if active_time < deadline:
+                device_code = sale.device_code
+                if device_code == '':
+                    num = 1
+                else:
+                    num = Sale.objects.filter(
+                        device_code=device_code,
+                        clerk_id=clerk_id,
+                        name='Insta360 Nano',
+                        created_time__lte=created_time
+                    ).count()
+                if num < 2 and base == 0:
+                    print sale.serial_number
                     base = round(random.uniform(1, 10), 2)
                     if base > 3:
                         base = round((base * random.uniform(0.1, 1)), 2)
@@ -248,15 +278,15 @@ def set_active(request):
                         base = base * 2
                     sale.base = base
                     sale.valid = 1
+                    sale.save()
                     try:
                         account = Clerk.objects.get(id=clerk_id)
                     except:
-                        return HttpResponse("No clerk information")
+                        return HttpResponse("请重新注册")
                     if sale.name != '测试商品':
                         account.balance += base
                     account.base += base
                     account.save()
-        sale.save()
         return HttpResponse('Succeed')
 
 @csrf_exempt
@@ -270,10 +300,3 @@ def test(request):
     return render(request, 'test.html', {
         'lib_path': lib_path
     })
-
-@csrf_exempt
-def test1(request):
-    return HttpResponse('fffff')
-
-
-
