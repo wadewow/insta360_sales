@@ -102,6 +102,7 @@ urlpatterns = [
     url(r'^bi/export_sales$', views.bi_export_sales, name='bi_export_sales'),
     url(r'^bi/promotion$', views.bi_promotion, name='bi_promotion'),
     url(r'^bi/apply$', views.bi_apply, name='bi_apply'),
+    url(r'^bi/batch_active$', views.bi_batch_active, name='bi_batch_active'),
 
     url(r'^wx/wx_mass_message$', views.wx_mass_message, name='wx_mass_message'),
 ]

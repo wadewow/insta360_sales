@@ -9,19 +9,6 @@
     <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
     <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
     <title>Nano序列号查询</title>
-    <script>
-{#    $(function () {#}
-{#        var form = $('form#nano_detail');#}
-{#        form.submit(function(){#}
-{#            data = $('form#nano_detail').serialize();#}
-{#          $.post("/sales/service/nano_detail", data, function(data,status){#}
-{#              console.log("Data: " + data + "\nStatus: " + status);#}
-{#              $("#tip").text(data);#}
-{#          });#}
-{#            return false#}
-{#        });#}
-{#    });#}
-    </script>
 </head>
 <body>
 {% extends "bi/navigation.html" %}
@@ -43,8 +30,6 @@
     {% if exist == 1 %}
   <div class="mui-container-fluid">
   <div class="mui-row">
-      <div class="mui-col-md-1">
-          </div>
       <div class="mui-col-md-3">
           {% if factory.flag == 1 %}
         <table class="mui-table mui-table--bordered">
@@ -107,6 +92,61 @@
               无代理商信息
               {% endif %}
           </div>
+        <div class="mui-col-md-3">
+            {% if active.exist == 0 %}
+                未激活
+            {% else %}
+          <table class="mui-table mui-table--bordered">
+          <thead>
+            <tr>
+              <th colspan="2">激活信息</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>激活状态</td>
+              <td>已激活</td>
+            </tr>
+            <tr>
+              <td>激活时间</td>
+              <td>{{ active.data.first_use_time }}</td>
+            </tr>
+            <tr>
+              <td>激活地点</td>
+              <td>{{ active.data.active_location }}</td>
+            </tr>
+            <tr>
+              <td>激活ip</td>
+              <td>{{ active.data.active_ip }}</td>
+            </tr>
+            <tr>
+              <td>货种</td>
+              <td>
+                  {% if active.data.type == '1' %}
+                      国内货
+                  {% elif active.data.type == '2' %}
+                      国际货
+                  {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>云播</td>
+              <td>
+                  {% if active.data.status == '2' %}
+                      绑定云播
+                  {% elif active.data.status == '1' %}
+                      未绑定云播
+                  {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>机器码</td>
+              <td>{{ active.data.equipment_code }}</td>
+            </tr>
+          </tbody>
+          </table>
+            {% endif %}
+        </div>
       <div class="mui-col-md-3">
           {% if sale.flag == 1 %}
           <table class="mui-table mui-table--bordered">
@@ -137,8 +177,6 @@
               {% else %}
               无门店销售记录
               {% endif %}
-          </div>
-      <div class="mui-col-md-2">
           </div>
   </div>
 </div>

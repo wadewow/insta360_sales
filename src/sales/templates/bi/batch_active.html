@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//static.insta360.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <title>激活信息批量查询</title>
+    <style type="text/css">
+        body {
+            padding:10px 10px;
+        }
+        .submit {
+            float: right;
+        }
+        .textarea {
+            height:600px;
+            width:100%
+        }
+        #batch_active{
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+{% extends "bi/navigation.html" %}
+{% block title %}激活信息批量查询{% endblock %}
+{% block content %}
+ <div class="mui-row">
+<div class="mui-col-md-3">
+    <div class="">
+    <form action="/sales/bi/batch_active" id="batch_active" method="post" class="mui-form">
+    <div class="">
+        <textarea placeholder="请复制序列号,一行一个序列号，不要有其他字符" name="serial_numbers" form="batch_active" autofocus="autofocus" required="required" class="textarea"></textarea>
+    </div>
+        <button class="mui-btn mui-btn--raised mui-btn--primary submit">查询</button>
+    </form>
+</div>
+</div>
+<div class="mui-col-md-9">
+    {% if flag == 1 %}
+      <table class="mui-table mui-table--bordered table">
+      <thead>
+        <tr>
+            <th>序列号</th>
+            <th>激活状态</th>
+            <th>激活时间</th>
+            <th>激活地点</th>
+            <th>激活ip</th>
+            <th>机器码</th>
+            <th>货种</th>
+            <th>云播</th>
+        </tr>
+      </thead>
+      <tbody>
+       {% for key, value in result.items %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ value.active }}</td>
+            <td>{{ value.first_use_time }}</td>
+            <td>{{ value.active_location }}</td>
+            <td>{{ value.active_ip }}</td>
+            <td>{{ value.equipment_code }}</td>
+            <td>{{ value.type }}</td>
+            <td>{{ value.status }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+      </table>
+    {% endif %}
+  </div>
+  </div>
+{% endblock %}
+</body>
+</html>

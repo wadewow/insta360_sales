@@ -98,7 +98,7 @@
         <div class="mui-col-md-3">
             {% if active.exist == 0 %}
                 未激活
-                {% else %}
+            {% else %}
           <table class="mui-table mui-table--bordered">
           <thead>
             <tr>
@@ -117,6 +117,30 @@
             <tr>
               <td>激活地点</td>
               <td>{{ active.data.active_location }}</td>
+            </tr>
+            <tr>
+              <td>激活ip</td>
+              <td>{{ active.data.active_ip }}</td>
+            </tr>
+            <tr>
+              <td>货种</td>
+              <td>
+                  {% if active.data.type == '1' %}
+                      国内货
+                  {% elif active.data.type == '2' %}
+                      国际货
+                  {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>云播</td>
+              <td>
+                  {% if active.data.status == '2' %}
+                      绑定云播
+                  {% elif active.data.status == '1' %}
+                      未绑定云播
+                  {% endif %}
+              </td>
             </tr>
             <tr>
               <td>机器码</td>

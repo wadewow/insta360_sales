@@ -376,13 +376,13 @@ def sale_sales(request):
 @csrf_exempt
 def sale_guide(request):
     if request.method == 'POST':
-        try:
+        # try:
             para = request.POST
             print para
             if not para.__contains__('location'):
                 return HttpResponse("Missing parameter: location")
             elif not para.__contains__('serial_number'):
-                return HttpResponse("Missing parameter: serail_number")
+                return HttpResponse("Missing parameter: serial_number")
             else:
                 result = {
                 }
@@ -456,8 +456,6 @@ def sale_guide(request):
                             delay = sale.delay
                             delta = (168 if delay == 1 else 12)
                             deadline = created_time + datetime.timedelta(hours=delta)
-                            deadline = (deadline + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S")
-
                             clerk_id = sale.clerk_id
                             device_code = sale.device_code
                             if device_code == '':
@@ -496,5 +494,5 @@ def sale_guide(request):
                                 result['data'] = info
                             return JsonResponse(data=result, safe=False)
 
-        except:
-            return HttpResponse("Something unknown wrong")
+        # except:
+        #     return HttpResponse("Something unknown wrong")

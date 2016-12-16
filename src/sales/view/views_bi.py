@@ -532,7 +532,6 @@ def bi_nano_detail(request):
     if request.method == 'POST':
         para = request.POST
         serial_number = para.__getitem__('serial_number')
-
         url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/agent/getOutOfFactoryInfo'
         values = {
             'serial_number': serial_number,
@@ -548,7 +547,6 @@ def bi_nano_detail(request):
             res = json.loads(res)
             agent = res['agent']
             factory = res['factory']
-            exist = 1
             if len(agent) == 0:
                 agent['flag'] = 0
             else:
@@ -557,11 +555,29 @@ def bi_nano_detail(request):
                 factory['flag'] = 0
             else:
                 factory['flag'] = 1
-            if factory['flag'] == 0 and agent['flag'] == 0:
-                exist = 0
+            if agent['flag'] == 1 or factory['flag'] == 1:
+                exist = 1
         except:
             pass
-
+        url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfo/'
+        try:
+            data = urllib.urlencode(values)
+            req = urllib2.Request(url, data=data)
+            res_data = urllib2.urlopen(req)
+            res = res_data.read()
+            active_info = json.loads(res)
+            if active_info['flag']:
+                exist = 1
+            active_time = active_info['data']['first_use_time']
+            if active_time == '0':
+                active_info['exist'] = 0
+            else:
+                active_info['exist'] = 1
+                temp = datetime.datetime.utcfromtimestamp(int(active_time))
+                temp = temp + datetime.timedelta(hours=8)
+                active_info['data']['first_use_time'] = temp.strftime("%Y-%m-%d %H:%M:%S")
+        except:
+            active_info = {}
         try:
             sale = Sale.objects.get(serial_number=serial_number, name="Insta360 Nano")
             store_id = sale.store_id
@@ -594,7 +610,61 @@ def bi_nano_detail(request):
             'agent': agent,
             'factory': factory,
             'sale': sale_info,
+            'active': active_info,
             'lib_path': lib_path
+        })
+
+
+
+@csrf_exempt
+def bi_batch_active(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('bi_id'):
+            return redirect('/sales/bi/login')
+        return render(request, 'bi/batch_active.html', {
+            'lib_path': lib_path
+        })
+    if request.method == 'POST':
+        para = request.POST
+        if not para.__contains__("serial_numbers"):
+            return redirect('sales/bi/batch_active')
+        serial_numbers = para.__getitem__("serial_numbers")
+        serial_numbers = serial_numbers.replace('\r\n',',')
+        url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfos/'
+        values = {
+            'serial_number': serial_numbers
+        }
+        data = urllib.urlencode(values)
+        req = urllib2.Request(url, data=data)
+        res_data = urllib2.urlopen(req)
+        res = res_data.read()
+        res = json.loads(res)
+        for index, item in enumerate(res):
+            data = res[item]
+            active_time = data['first_use_time']
+            type = data['type']
+            status = data['status']
+            if active_time != '0':
+                res[item]['active'] = '已激活'
+                temp = datetime.datetime.utcfromtimestamp(int(active_time))
+                temp = temp + datetime.timedelta(hours=8)
+                active_time = temp.strftime("%Y-%m-%d %H:%M:%S")
+                res[item]['first_use_time'] = active_time
+            else:
+                res[item]['active'] = '未激活'
+                res[item]['first_use_time'] = ''
+            if type == '1':
+                res[item]['type'] = '国内货'
+            elif type == '2':
+                res[item]['type'] = '国际货'
+            if status == '1':
+                res[item]['status'] = '未绑定云播账号'
+            elif status == '2':
+                res[item]['status'] = '已绑定云播账号'
+        return render(request, 'bi/batch_active.html', {
+            'lib_path': lib_path,
+            'flag': 1,
+            'result': res
         })
 
 

@@ -324,6 +324,8 @@ def service_nano_detail(request):
                 factory['flag'] = 0
             else:
                 factory['flag'] = 1
+            if agent['flag'] == 1 or factory['flag'] == 1:
+                exist = 1
         except:
             pass
         url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfo/'
@@ -371,7 +373,6 @@ def service_nano_detail(request):
             sale_info = {
                 'flag': 0
             }
-
         return render(request, 'service/nano_detail.html', {
             'serial_number': serial_number,
             'exist': exist,
