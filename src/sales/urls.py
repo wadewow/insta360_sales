@@ -99,6 +99,7 @@ urlpatterns = [
     url(r'^bi/nano_detail$', views.bi_nano_detail, name='bi_nano_detail'),
     url(r'^bi/inter_list$', views.bi_inter_list, name='bi_inter_list'),
     url(r'^bi/export$', views.bi_export, name='bi_export'),
+    url(r'^bi/export_excel$', views.bi_export_excel, name='bi_export_excel'),
     url(r'^bi/export_sales$', views.bi_export_sales, name='bi_export_sales'),
     url(r'^bi/promotion$', views.bi_promotion, name='bi_promotion'),
     url(r'^bi/apply$', views.bi_apply, name='bi_apply'),

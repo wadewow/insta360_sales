@@ -3,4 +3,6 @@ django-cors-headers==1.1.0
 xmltodict==0.10.2
 requests==2.2.1
 xlrd==1.0.0
+xlwt==1.1.2
 pytz==2016.6.1
+Pillow==2.9.0
