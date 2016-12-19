@@ -15,7 +15,8 @@ COPY root/root/.pip/ /root/.pip/
 
 # install package
 RUN apk add --update curl gcc g++ libgcc make \
-    zlib-dev mariadb-dev \
+    zlib-dev libjpeg-turbo-dev tiff-dev \
+    mariadb-dev \
     nginx \
     && curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz | tar xfz - -C /
 
