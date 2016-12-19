@@ -1240,7 +1240,7 @@ def bi_export_excel(request):
         for photo_path in store['photo']:
             try:
                 Image.open('sales' + photo_path).convert("RGB").save('sales/static/store/violations.bmp')
-                sheet.insert_bitmap('sales/static/store/violations.bmp',row,col, scale_x=scale * 1, scale_y=scale * 10.0/height_scale)
+                sheet.insert_bitmap('sales/static/store/violations.bmp',row,col, scale_x=scale * 1, scale_y=scale * 100.0/height_scale)
                 col += 1
             except:
                 pass
