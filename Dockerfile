@@ -19,8 +19,8 @@ RUN apk add --update curl gcc g++ libgcc make \
     nginx \
     && curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz | tar xfz - -C /
 
-# install  mysqlclient
-RUN pip install mysqlclient
+# install pillow & mysqlclient
+RUN pip install pillow mysqlclient
 
 # clean cache & package
 RUN apk del gcc g++ make curl \
