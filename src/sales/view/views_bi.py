@@ -92,10 +92,18 @@ def bi_stores(request):
         if para.__contains__('sort'):
             sort = para.__getitem__('sort')
 
+        stores = Shop.objects.filter(created_time__gt='2016-11-05')
+        key = ''
+        if para.__contains__('key') and para.__getitem__('key') != '':
+            key = para.__getitem__('key')
+            stores = Shop.objects.filter(created_time__gt='2016-11-05',code=key)
+            if not stores.exists():
+                stores = Shop.objects.filter(created_time__gt='2016-11-05',name__icontains=key)
+
         if sort == 'province':
-            stores = Shop.objects.filter(created_time__gt='2016-11-05').order_by(sort, 'city', 'location')
+            stores = stores.order_by(sort, 'city', 'location')
         else:
-            stores = Shop.objects.filter(created_time__gt='2016-11-05').order_by(sort)
+            stores = stores.order_by(sort)
         total = stores.count()
         page_total = total / size + (1 if (total % size) > 0 else 0)
         if page_total <=0:
@@ -187,7 +195,8 @@ def bi_stores(request):
             'total': total,
             'current_page': page,
             'page_total': page_total,
-            'sort': sort
+            'sort': sort,
+            'key': key,
         }
         return render(request, 'bi/stores.html', {
             'stores': stores,
