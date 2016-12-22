@@ -26,6 +26,7 @@ import csv
 import codecs
 import collections
 import urllib2
+import re
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -638,28 +639,55 @@ def bi_batch_active(request):
         if not para.__contains__("serial_numbers"):
             return redirect('sales/bi/batch_active')
         serial_numbers = para.__getitem__("serial_numbers")
-        serial_numbers = serial_numbers.replace('\r\n',',')
+
+        pattern = re.compile('INS.{11}', re.S)
+        items = re.findall(pattern, serial_numbers)
+        join_serial = ''
+        for i in items:
+            join_serial += i + ','
         url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfos/'
+        url1 = 'http://api.internal.insta360.com:8088/insta360_nano/camera/agent/getOutOfFactoryInfo'
         values = {
-            'serial_number': serial_numbers
+            'serial_number': join_serial
         }
         data = urllib.urlencode(values)
         req = urllib2.Request(url, data=data)
         res_data = urllib2.urlopen(req)
         res = res_data.read()
         res = json.loads(res)
+        active_num = 0
+        inactive_num = 0
         for index, item in enumerate(res):
+
+            values = {
+                'serial_number': item,
+            }
+            agent = {}
+            factory = {}
+            try:
+                data1 = urllib.urlencode(values)
+                req1 = urllib2.Request(url1, data=data1)
+                res_data1 = urllib2.urlopen(req1)
+                res1 = res_data1.read()
+                res1 = json.loads(res1)
+                agent = res1['agent']
+                factory = res1['factory']
+            except:
+                pass
+
             data = res[item]
             active_time = data['first_use_time']
             type = data['type']
             status = data['status']
             if active_time != '0':
+                active_num += 1
                 res[item]['active'] = '已激活'
                 temp = datetime.datetime.utcfromtimestamp(int(active_time))
                 temp = temp + datetime.timedelta(hours=8)
                 active_time = temp.strftime("%Y-%m-%d %H:%M:%S")
                 res[item]['first_use_time'] = active_time
             else:
+                inactive_num += 1
                 res[item]['active'] = '未激活'
                 res[item]['first_use_time'] = ''
             if type == '1':
@@ -670,10 +698,15 @@ def bi_batch_active(request):
                 res[item]['status'] = '未绑定云播账号'
             elif status == '2':
                 res[item]['status'] = '已绑定云播账号'
+            res[item]['agent'] = agent
+            res[item]['factory'] = factory
+        total_num = inactive_num + active_num
+        tip = '共' + str(total_num) + '个' + '序列号，其中' + str(active_num) + '个已激活，' + str(inactive_num) + '个未激活'
         return render(request, 'bi/batch_active.html', {
             'lib_path': lib_path,
             'flag': 1,
-            'result': res
+            'result': res,
+            'tip': tip
         })
 
 
