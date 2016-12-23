@@ -625,7 +625,6 @@ def bi_nano_detail(request):
         })
 
 
-
 @csrf_exempt
 def bi_batch_active(request):
     if request.method == 'GET':
@@ -658,7 +657,6 @@ def bi_batch_active(request):
         active_num = 0
         inactive_num = 0
         for index, item in enumerate(res):
-
             values = {
                 'serial_number': item,
             }
@@ -674,7 +672,6 @@ def bi_batch_active(request):
                 factory = res1['factory']
             except:
                 pass
-
             data = res[item]
             active_time = data['first_use_time']
             type = data['type']
