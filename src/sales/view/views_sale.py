@@ -253,6 +253,99 @@ def sale_super_scan(request):
         except:
             return HttpResponse('扫描失败！')
 
+
+@csrf_exempt
+def sale_super_record(request):
+    if request.method == 'GET':
+        para = request.GET
+        serial_number = para.__getitem__('serial')
+        clerk_phone = para.__getitem__('phone')
+        test = True
+        try:
+            SaleNano.objects.get(id=serial_number)
+        except ObjectDoesNotExist:
+            test = False
+        clerk = Clerk.objects.get(phone=clerk_phone)
+        try:
+            shop = Shop.objects.get(id=clerk.store_id)
+            if shop.code == '':
+                return HttpResponse('您所属的门店已注销')
+        except:
+            return redirect('/sales/clerk/info')
+        if test:
+            now = timezone.now()
+            active = 1
+            active_time = now
+            name = '测试商品'
+            sale_info = {
+                'active_time': active_time,
+                'store_id': clerk.store_id,
+                'clerk_id': clerk.id,
+                'name': name,
+                'active': active,
+                'serial_number': serial_number,
+                'business_id': shop.business_id,
+                'created_time': now,
+                'manager': shop.manager,
+                'province': shop.province
+            }
+            Sale.objects.update_or_create(serial_number=serial_number, name=name, defaults=sale_info)
+            return HttpResponse('success')
+
+        try:
+            Shop.objects.get(machine_serial=serial_number)
+            is_machine_serial = True
+        except ObjectDoesNotExist:
+            is_machine_serial = False
+        except MultipleObjectsReturned:
+            is_machine_serial = True
+
+        if is_machine_serial:
+            return HttpResponse("样机序列号无法扫描！")
+
+        url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getActivateInfo/'
+        values = {
+            'serial_number': serial_number
+        }
+        data = urllib.urlencode(values)
+        req = urllib2.Request(url, data=data)
+        res_data = urllib2.urlopen(req)
+        res = res_data.read()
+        res = json.loads(res)
+        flag = res['flag']
+        if not flag:
+            return HttpResponse("序列号无效！")
+        now = timezone.now()
+        active = 0
+        active_time = now
+
+        name = 'Insta360 Nano'
+        sale_info = {
+            'active_time': active_time,
+            'store_id': clerk.store_id,
+            'clerk_id': clerk.id,
+            'name': name,
+            'active': active,
+            'serial_number': serial_number,
+            'business_id': shop.business_id,
+            'created_time': now,
+            'manager': shop.manager,
+            'province': shop.province
+        }
+        try:
+            temp = Sale.objects.get(serial_number=serial_number, name=name)
+            s_id = temp.store_id
+            t_shop = Shop.objects.get(id=s_id)
+            t_shop.sales_count = t_shop.sales_count - 1
+            t_shop.save()
+        except:
+            pass
+        Sale.objects.update_or_create(serial_number=serial_number, name=name, defaults=sale_info)
+        shop.sales_count = shop.sales_count + 1
+        shop.save()
+        return HttpResponse('success')
+
+
 @csrf_exempt
 def sale_sales(request):
     if request.method == 'POST':
