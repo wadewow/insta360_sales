@@ -176,7 +176,7 @@ def service_cloud_query(request):
     if request.method == 'POST':
         para = request.POST
         words = para.get('words','')
-        url = 'http://statistics.internal.insta360.com/api/cloud/getCloudUserInfo'
+        url = 'https://statistics.insta360.com/api/cloud/getCloudUserInfo'
         values = {
             'words': words,
         }
@@ -226,7 +226,7 @@ def service_unbind_cloud(request):
                 'lib_path': lib_path
             })
         serial_number = para.__getitem__('serial_number')
-        url = 'http://statistics.internal.insta360.com/api/cloud/unbundlingAccount'
+        url = 'https://statistics.insta360.com/api/cloud/unbundlingAccount'
         values = {
             'serial_number': serial_number,
         }
@@ -252,7 +252,7 @@ def service_cloud_home(request):
     if request.method == 'GET':
         if not request.session.__contains__('service_id'):
             return redirect('/sales/service/login')
-        url = 'http://statistics.internal.insta360.com/api/cloud/getHomePageInfo'
+        url = 'https://statistics.insta360.com/api/cloud/getHomePageInfo'
         try:
             req = urllib2.Request(url)
             res_data = urllib2.urlopen(req)
@@ -270,7 +270,7 @@ def service_cloud_home(request):
 
     if request.method == 'POST':
         data = request.body
-        url = 'http://statistics.internal.insta360.com/api/cloud/setHomePage'
+        url = 'https://statistics.insta360.com/api/cloud/setHomePage'
         try:
             req = urllib2.Request(url, data=data)
             res_data = urllib2.urlopen(req)
