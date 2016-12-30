@@ -32,14 +32,6 @@
 {% if exsit == 1 %}
     <div class="mui--align-middle" style="max-width:500px;margin: 100px auto;font-size:16px">
 <table class="mui-table mui-table--bordered">
-{#  <thead>#}
-{#    <tr>#}
-{#      <th>门店id</th>#}
-{#      <th>门店名称</th>#}
-{#      <th>地理位置</th>#}
-{#    </tr>#}
-{#  </thead>#}
-
   <tbody>
     <tr>
       <td><strong>员工ID</strong></td>
@@ -75,7 +67,10 @@
 </table>
     <form class="mui-form--inline" id="wechat_form" style="display: none" method="post" action="/sales/service_cash">
       <div class="mui-textfield">
-          <input type="text" name="wechat" required="required" placeholder="输入提现微信号">
+          <input type="text" name="wechat" required="required" placeholder="输入提现微信号" value="{{ wechat }}">
+          {% if wechat != "" %}
+            <label>微信号</label>
+          {% endif %}
           <input type="hidden" name="id" value="{{ record.id }}">
       </div>
       <button class="mui-btn mui-btn--raised mui-btn--danger">确认支付</button>

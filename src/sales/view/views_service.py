@@ -79,6 +79,11 @@ def cash_query(request):
         code = para.get('code','')
         try:
             record = CashRecord.objects.get(code=code)
+            phone = record.phone
+            res = CashRecord.objects.filter(phone=phone).exclude(wechat='').order_by('-created_time')
+            wechat = ''
+            if res.exists():
+                wechat = res.first().wechat
         except ObjectDoesNotExist:
             return render(request, 'service/cash_query.html', {
                 'exsit': 0,
@@ -87,6 +92,7 @@ def cash_query(request):
         return render(request, 'service/cash_query.html', {
             'exsit': 1,
             'record': record,
+            'wechat': wechat,
             'lib_path': lib_path
         })
 
