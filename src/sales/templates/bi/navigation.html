@@ -17,9 +17,11 @@
       <li>
           <strong><a href="/sales/bi/stores">门店情况</a></strong>
       </li>
+        {% if mode != 0 %}
       <li>
           <strong><a href="/sales/bi/sales">销售情况</a></strong>
       </li>
+        {% endif %}
       <li>
           <strong><a href="/sales/bi/managers">销售经理情况</a></strong>
       </li>
@@ -37,6 +39,9 @@
       </li>
       <li>
           <strong><a href="/sales/bi/inter_list">国内转国际序列号列表</a></strong>
+      </li>
+      <li>
+          <strong><a href="/sales/bi/power_manage">员工权限管理</a></strong>
       </li>
     </ul>
   </div>

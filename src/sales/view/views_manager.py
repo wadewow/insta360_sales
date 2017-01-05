@@ -66,9 +66,14 @@ def manager_login(request):
             return HttpResponse(content='账号或密码错误！')
         status = res_data.code
         data = res_data.read()
-        print status
-        print data
         if status == 200:
+            try:
+                name = json.loads(data)['name']
+                print name
+                if name != '':
+                    Manager.objects.filter(id=username).update(name=name)
+            except:
+                pass
             request.session['manager_id'] = username
             return HttpResponse(content='success', status=status)
         else:

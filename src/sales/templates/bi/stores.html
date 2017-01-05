@@ -61,7 +61,9 @@
 {#      <th>促销策略</th>#}
       <th><a class="sort" href="/sales/bi/stores?sort=agent&key={{ data.key }}">代理商</a></th>
       <th><a class="sort" href="/sales/bi/stores?sort=manager&key={{ data.key }}">销售经理</a></th>
+      {% if mode != 0 %}
       <th><a class="sort" href="/sales/bi/stores?sort=-sales_count&key={{ data.key }}">销量(有效数)</a></th>
+      {% endif %}
       <th><a class="sort" href="/sales/bi/stores?sort=city&key={{ data.key }}">城市</a></th>
       <th><a class="sort" href="/sales/bi/stores?sort=-created_time&key={{ data.key }}">创建时间</a></th>
       <th><a class="sort" href="/sales/bi/stores?sort=-online&key={{ data.key }}">网址</a></th>
@@ -94,7 +96,9 @@
 {#      <td>{{ store.promotion }}</td>#}
       <td style="min-width: 80px">{{ store.agent }}</td>
       <td style="min-width: 70px">{{ store.manager.name }}<br>({{ store.manager.area }})</td>
-      <td>{{ store.sales_count }}({{ store.valid_count }})</td>
+      {% if mode != 0 %}
+        <td>{{ store.sales_count }}({{ store.valid_count }})</td>
+      {% endif %}
       <td>{{ store.city }}</td>
       <td style="min-width: 80px">{{ store.created_time }}</td>
       <td style="max-width: 100px">{% if store.online != 'http://' %}<a href="{{ store.online }}" title="{{ store.online }}"  target="_blank">{{ store.online|truncatechars:10}}</a>{% endif %}</td>

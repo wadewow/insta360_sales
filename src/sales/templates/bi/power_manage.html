@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//static.insta360.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <title>员工权限管理</title>
+    <script>
+        $(function () {
+            var $form = $('form#power_modify');
+            $form.submit(function () {
+                var data = "";
+                checkboxes = $(':checkbox');
+                for (var k = 0; k < checkboxes.length; k++) {
+                    data += checkboxes[k].name + '=' +　checkboxes[k].checked + '&'
+                }
+                var job_number = $("#job_number").val();
+                data += 'job_number=' + job_number;
+                console.log(data);
+                $.post("/sales/bi/power_manage", data, function (data, status) {
+                    if (data == 'success') {
+                        alert('权限修改成功');
+                    }
+                    else {
+                        alert(data)
+                    }
+                });
+                return false
+            });
+        });
+    </script>
+</head>
+<body>
+{% extends "bi/navigation.html" %}
+{% block title %}员工权限管理{% endblock %}
+{% block content %}
+ <div class="mui--text-center" style="margin:50px auto">
+    <form action="/sales/bi/power_manage" method="get" class="mui-form--inline" id="power_manage">
+      <div class="mui-textfield">
+        <input type="text" name="job_number" required="required" placeholder="工号" value="{{ job_number }}">
+      </div>
+      <button class="mui-btn mui-btn--raised mui-btn--primary">查询权限</button>
+    </form>
+</div>
+    {% if flag == 0 %}
+    <div class="mui--text-center" style="margin-top:100px">
+    <h2 style="color:red"><strong id="tip">工号不存在</strong></h2>
+    </div>
+    {% endif %}
+    {% if flag == 1 %}
+  <div class="mui-container-fluid">
+  <div class="mui-row">
+    <div class="mui-col-md-4">
+    </div>
+    <div class="mui-col-md-3">
+        <form action="/sales/bi/power_manage" method="post" class="mui-form--inline" id="power_modify">
+        <input type="hidden" id="job_number" value="{{ job_number }}">
+      <table class="mui-table mui-table--bordered">
+      <thead>
+        <tr>
+          <th colspan="2">权限信息</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>姓名</td>
+          <td>{{ user.name }}</td>
+        </tr>
+        <tr>
+          <td rowspan="3">权限</td>
+          <td>
+              <div class="mui-checkbox">
+                <label>
+                  <input type="checkbox" name="bi" {% if user.bi == 1 %} checked="checked" {% endif %} value="bi">
+                  销售后台
+                </label>
+              </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+              <div class="mui-checkbox">
+                <label>
+                  <input type="checkbox" name="util" {% if user.util == 1 %} checked="checked" {% endif %} value="util">
+                  数据导入系统
+                </label>
+              </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+              <div class="mui-checkbox">
+                <label>
+                  <input type="checkbox" name="service" {% if user.service == 1 %} checked="checked" {% endif %}  value="service">
+                  客服系统
+                </label>
+              </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+        <div class="mui--text-center">
+            <button class="mui-btn mui-btn--raised mui-btn--accent">保存</button>
+        </div>
+        </form>
+      </div>
+    <div class="mui-col-md-5">
+    </div>
+  </div>
+</div>
+    {% endif %}
+{% endblock %}
+</body>
+</html>

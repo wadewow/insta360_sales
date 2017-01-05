@@ -45,14 +45,16 @@
         <th>姓名</th>
         <th>地区</th>
         <th>门店数</th>
-        <th>累计销量</th>
         <th>累计样机数</th>
+      {% if mode != 0 %}
+        <th>累计销量</th>
         <th>累计促销费用</th>
         <th>试营业门店</th>
         <th>正常门店</th>
         <th>预警门店</th>
         <th>问题门店</th>
         <th>放弃门店</th>
+      {% endif %}
     </tr>
   </thead>
   <tbody>
@@ -63,14 +65,16 @@
         <td>{{ manager.name }}</td>
         <td>{{ manager.area }}</td>
         <td>{{ manager.store_count }}</td>
-        <td>{{ manager.store_sales }}</td>
         <td>{{ manager.machine_count }}</td>
+        {% if mode != 0 %}
+        <td>{{ manager.store_sales }}</td>
         <td>￥{{ manager.bonus }}</td>
         <td>{{ manager.trial }}</td>
         <td>{{ manager.normal }}</td>
         <td>{{ manager.warn }}</td>
         <td>{{ manager.problem }}</td>
         <td>{{ manager.abandon }}</td>
+        {% endif %}
     </tr>
   {% endfor %}
   </tbody>

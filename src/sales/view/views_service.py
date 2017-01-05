@@ -55,7 +55,14 @@ def service_login(request):
             print e.reason
             return HttpResponse(content='账号或密码错误！')
         status = res_data.code
+        data = res_data.read()
         if status == 200:
+            try:
+                name = json.loads(data)['name']
+                if name != '':
+                    Manager.objects.filter(id=username).update(name=name)
+            except:
+                pass
             # result = Manager.objects.get_or_create(id=username)
             # user = result[0]
             # if user.service == 0:

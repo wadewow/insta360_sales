@@ -17,6 +17,7 @@ from ..models import Promotion
 from ..models import SerialToInter
 from ..util.option import dict
 from ..util.option import lib_path
+from ..util.option import mode
 
 import datetime
 import json
@@ -64,7 +65,14 @@ def bi_login(request):
             print e.reason
             return HttpResponse(content='账号或密码错误！')
         status = res_data.code
+        data = res_data.read()
         if status == 200:
+            try:
+                name = json.loads(data)['name']
+                if name != '':
+                    Manager.objects.filter(id=username).update(name=name)
+            except:
+                pass
             result = Manager.objects.get_or_create(id=username)
             user = result[0]
             if user.bi == 0:
@@ -202,7 +210,8 @@ def bi_stores(request):
         return render(request, 'bi/stores.html', {
             'stores': stores,
             'data': data,
-            'lib_path': lib_path
+            'lib_path': lib_path,
+            'mode': mode
         })
 
 
@@ -278,7 +287,8 @@ def bi_managers(request):
             managers.sort(key=lambda manager: manager[i_sort], reverse=True)
         return render(request, 'bi/managers.html', {
             'managers': managers,
-            'lib_path': lib_path
+            'lib_path': lib_path,
+            'mode': mode
         })
 
 
@@ -389,7 +399,8 @@ def bi_sales(request):
         return render(request, 'bi/sales.html', {
             'sales': sales,
             'data': data,
-            'lib_path': lib_path
+            'lib_path': lib_path,
+            'mode': mode
         })
 
 @csrf_exempt
@@ -398,7 +409,8 @@ def bi_trend(request):
         if not request.session.__contains__('bi_id'):
             return redirect('/sales/bi/login')
         return render(request, 'bi/trend.html', {
-            'lib_path': lib_path
+            'lib_path': lib_path,
+            'mode': mode
         })
 
 
@@ -451,7 +463,8 @@ def bi_map(request):
         if not request.session.__contains__('bi_id'):
             return redirect('/sales/bi/login')
         return render(request, 'bi/map.html', {
-            'lib_path': lib_path
+            'lib_path': lib_path,
+            'mode': mode
         })
 
 
@@ -537,7 +550,8 @@ def bi_nano_detail(request):
         if not request.session.__contains__('bi_id'):
             return redirect('/sales/bi/login')
         return render(request, 'bi/nano_detail.html', {
-            'lib_path': lib_path
+            'lib_path': lib_path,
+            'mode': mode
         })
     if request.method == 'POST':
         para = request.POST
@@ -621,7 +635,8 @@ def bi_nano_detail(request):
             'factory': factory,
             'sale': sale_info,
             'active': active_info,
-            'lib_path': lib_path
+            'lib_path': lib_path,
+            'mode': mode
         })
 
 
@@ -631,7 +646,8 @@ def bi_batch_active(request):
         if not request.session.__contains__('bi_id'):
             return redirect('/sales/bi/login')
         return render(request, 'bi/batch_active.html', {
-            'lib_path': lib_path
+            'lib_path': lib_path,
+            'mode': mode
         })
     if request.method == 'POST':
         para = request.POST
@@ -703,7 +719,8 @@ def bi_batch_active(request):
             'lib_path': lib_path,
             'flag': 1,
             'result': res,
-            'tip': tip
+            'tip': tip,
+            'mode': mode
         })
 
 
@@ -830,7 +847,8 @@ def bi_inter_list(request):
         return render(request, 'bi/inter_list.html', {
             'serials': serials,
             'data': data,
-            'lib_path': lib_path
+            'lib_path': lib_path,
+            'mode': mode
         })
 
 
@@ -926,7 +944,8 @@ def bi_promotion(request):
             'promotions':promotions,
             'stores': stores,
             'data': data,
-            'lib_path': lib_path
+            'lib_path': lib_path,
+            'mode': mode
         })
     if request.method == 'POST':
         para = request.POST
@@ -984,6 +1003,50 @@ def bi_apply(request):
             except:
                 continue
         return HttpResponse('success')
+
+
+@csrf_exempt
+def bi_power_manage(request):
+    if request.method == 'GET':
+        if not request.session.__contains__('bi_id'):
+            return redirect('/sales/bi/login')
+        job_number = ""
+        para = request.GET
+        if para.__contains__('job_number'):
+            job_number = para.__getitem__('job_number')
+        flag = 1
+        if job_number == "":
+            return render(request, 'bi/power_manage.html', {
+                'lib_path': lib_path,
+                'mode': mode
+            })
+        try:
+            user = Manager.objects.get(id=job_number)
+        except:
+            flag = 0
+            user = {}
+        return render(request, 'bi/power_manage.html', {
+            'job_number': job_number,
+            'flag': flag,
+            'user': user,
+            'lib_path': lib_path,
+            'mode': mode
+        })
+    if request.method == 'POST':
+        para = request.POST
+        job_number = para.__getitem__('job_number')
+        temp = {}
+        for index in para:
+            if index != 'job_number':
+                value = para.__getitem__(index)
+                if value == 'true':
+                    value = 1
+                else:
+                    value = 0
+                temp[index] = value
+        Manager.objects.update_or_create(id=job_number, defaults=temp)
+        return HttpResponse('success')
+
 
 @csrf_exempt
 def bi_export(request):
@@ -1097,185 +1160,6 @@ def bi_export(request):
                          ]
                         )
     return response
-
-# import xlwt
-# from PIL import Image
-# @csrf_exempt
-# def bi_export_excel(request):
-#     height_scale = 80
-#     scale = 1.0/5
-#     response = HttpResponse(content_type='application/ms-excel')
-#     # response.write(codecs.BOM_UTF8)
-#     response['Content-Disposition'] = 'attachment; filename="门店列表.xls"'
-#     book = xlwt.Workbook(encoding='utf8')
-#     sheet = book.add_sheet('stores')
-#     default_book_style = book.default_style
-#     default_book_style.font.height = 20 * height_scale
-#
-#     tall_style = xlwt.easyxf('font:height 40;')  # 36pt
-#     first_row = sheet.row(0)
-#     first_row.set_style(tall_style)
-#
-#     # stores = Shop.objects.filter(created_time__gt='2016-11-05').values()
-#     stores = Shop.objects.filter(exhibition__in=store_list).values()
-#     url = 'http://api.internal.insta360.com:8088/insta360_nano/camera/index/getAgentNumberInfo'
-#     req = urllib2.Request(url=url)
-#     try:
-#         res_data = urllib2.urlopen(req)
-#     except:
-#         res_data = '["默认"]'
-#     data = res_data.read()
-#     try:
-#         agent_list = json.loads(data)
-#     except:
-#         agent_list = [{'custom_number': '默认'}]
-#     agent_dict = {}
-#     for agent in agent_list:
-#         agent_dict[agent['custom_number']] = agent['company']
-#     row = 0
-#     sheet.write(row, 0, u'门店名称')
-#     sheet.write(row, 1, u'门店代码')
-#     sheet.write(row, 2, u'商家名称')
-#     sheet.write(row, 3, u'商家姓名')
-#     sheet.write(row, 4, u'商家手机')
-#     sheet.write(row, 5, u'省份')
-#     sheet.write(row, 6, u'城市')
-#     sheet.write(row, 7, u'详细地址')
-#     sheet.write(row, 8, u'门店状态')
-#     sheet.write(row, 9, u'累计促销费用')
-#     sheet.write(row, 10, u'物料')
-#     sheet.write(row, 11, u'样机序列号')
-#     sheet.write(row, 12, u'展台序列号')
-#     sheet.write(row, 13, u'代理商')
-#     sheet.write(row, 14, u'销售经理')
-#     sheet.write(row, 15, u'累计总销量')
-#     sheet.write(row, 16, u'有效订单数')
-#     sheet.write(row, 17, u'创建时间')
-#     sheet.write(row, 18, u'创建天数')
-#     sheet.write(row, 19, u'网店地址')
-#     sheet.write(row, 20, u'备注')
-#     sheet.write(row, 21, u'图片')
-#     sheet.col(0).width = 256 * 20
-#     sheet.col(1).width = 256 * 10
-#     sheet.col(2).width = 256 * 20
-#     sheet.col(3).width = 256 * 8
-#     sheet.col(4).width = 256 * 15
-#     sheet.col(5).width = 256 * 8
-#     sheet.col(6).width = 256 * 8
-#     sheet.col(7).width = 256 * 40
-#     sheet.col(8).width = 256 * 8
-#     sheet.col(9).width = 256 * 8
-#     sheet.col(10).width = 256 * 20
-#     sheet.col(11).width = 256 * 20
-#     sheet.col(12).width = 256 * 20
-#     sheet.col(13).width = 256 * 30
-#     sheet.col(14).width = 256 * 15
-#     sheet.col(15).width = 256 * 8
-#     sheet.col(16).width = 256 * 8
-#     sheet.col(17).width = 256 * 20
-#     sheet.col(18).width = 256 * 8
-#     sheet.col(19).width = 256 * 20
-#     sheet.col(20).width = 256 * 10
-#     for i in range(21,50):
-#         sheet.col(i).width = 256 * 30
-#
-#
-#     row = 1
-#     for store in stores:
-#         store_id = store['id']
-#         new_option = ''
-#         option = json.loads(store['option'])
-#         for index, item in enumerate(option):
-#             if option[item] == 'true':
-#                 new_option += dict[item] + ' '
-#         store['option'] = new_option
-#         photo_join = store['photo']
-#         photos = photo_join.split(':')
-#         store['photo'] = photos
-#         business_id = store['business_id']
-#         manager_id = store['manager']
-#         store['agent'] = agent_dict[store['agent']]
-#         try:
-#             shopkeeper = Store.objects.get(id=business_id)
-#             store['business'] = shopkeeper
-#         except:
-#             pass
-#         try:
-#             manager = Manager.objects.get(id=manager_id)
-#             store['manager'] = manager
-#         except:
-#             pass
-#         sales = Sale.objects.filter(store_id=store_id, name='Insta360 Nano')
-#
-#         now = timezone.now()
-#         today = timezone.localtime(now).replace(
-#             hour=0,
-#             minute=0,
-#             second=0,
-#             microsecond=0
-#         )
-#         created_time = store['created_time']
-#         one_week = today - datetime.timedelta(days=7)
-#         two_week = today - datetime.timedelta(days=14)
-#         three_week = today - datetime.timedelta(days=21)
-#
-#         if created_time >= two_week:
-#             state = '试营业'
-#         else:
-#             one_week_sales = sales.filter(created_time__gt=one_week).count()
-#             if one_week_sales > 0:
-#                 state = '正常'
-#             else:
-#                 two_week_sales = sales.filter(created_time__gt=two_week).count()
-#                 if two_week_sales > 0:
-#                     state = '预警'
-#                 else:
-#                     three_week_sales = sales.filter(created_time__gt=three_week).count()
-#                     if three_week_sales > 0:
-#                         state = '问题'
-#                     else:
-#                         state = '放弃'
-#
-#         sales_count = sales.count()
-#         valid_count = sales.filter(valid=1).count()
-#         created_time += datetime.timedelta(hours=8)
-#         created_date = created_time.strftime('%Y-%m-%d %H:%M:%S')
-#         now = timezone.now()
-#         delta = (now - created_time).days + 1
-#         if len(store['online']) < 10:
-#             store['online'] = ''
-#         sheet.write(row, 0, store['name'])
-#         sheet.write(row, 1, store['code'])
-#         sheet.write(row, 2, store['business'].store)
-#         sheet.write(row, 3, store['business'].name)
-#         sheet.write(row, 4, store['business'].phone)
-#         sheet.write(row, 5, store['province'])
-#         sheet.write(row, 6, store['city'])
-#         sheet.write(row, 7, store['location'])
-#         sheet.write(row, 8, state)
-#         sheet.write(row, 9, store['bonus'])
-#         sheet.write(row, 10, store['option'])
-#         sheet.write(row, 11, store['machine_serial'])
-#         sheet.write(row, 12, store['exhibition'])
-#         sheet.write(row, 13, store['agent'])
-#         sheet.write(row, 14, store['manager'].name + '('+ store['manager'].area +')')
-#         sheet.write(row, 15, sales_count)
-#         sheet.write(row, 16, valid_count)
-#         sheet.write(row, 17, created_date)
-#         sheet.write(row, 18, delta)
-#         sheet.write(row, 19, store['online'])
-#         sheet.write(row, 20, store['remark'])
-#         col = 21
-#         for photo_path in store['photo']:
-#             try:
-#                 Image.open('sales' + photo_path).convert("RGB").save('sales/static/store/violations.bmp')
-#                 sheet.insert_bitmap('sales/static/store/violations.bmp',row,col, scale_x=scale * 1, scale_y=scale * 100.0/height_scale)
-#                 col += 1
-#             except:
-#                 pass
-#         row += 1
-#     book.save(response)
-#     return response
 
 
 @csrf_exempt

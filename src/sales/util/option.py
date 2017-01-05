@@ -17,3 +17,5 @@ dict["TV"] = "电视机"
 dict["fold"] = "三折页"
 
 lib_path = '//static.insta360.com/ajax/libs'
+
+mode = 1
