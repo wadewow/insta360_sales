@@ -18,6 +18,7 @@ from view.views_bi import *
 from view.views_admin import *
 from .util.wx_option import option
 from .util.option import lib_path
+from .util.util import getBaseBonus
 from django.utils import timezone
 
 import json
@@ -269,14 +270,7 @@ def refresh_active(request):
                         created_time__lte=created_time
                     ).count()
                 if num < 2 and base == 0:
-                    print sale.serial_number
-                    base = round(random.uniform(1, 10), 2)
-                    if base > 3:
-                        base = round((base * random.uniform(0.1, 1)), 2)
-                    if base > 5.5:
-                        base = round((base * random.uniform(0.2, 1)), 2)
-                    if base < 1:
-                        base = base * 2
+                    base = getBaseBonus()
                     sale.base = base
                     sale.valid = 1
                     sale.save()

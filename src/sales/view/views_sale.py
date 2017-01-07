@@ -7,7 +7,7 @@ from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from ..util.option import lib_path
-
+from ..util.util import getBaseBonus
 from ..models import Clerk
 from ..models import Sale
 from ..models import Shop
@@ -436,13 +436,7 @@ def sale_sales(request):
 
                                 cash = 1
                                 if base == 0:
-                                    base = round(random.uniform(1, 10), 2)
-                                    if base > 3:
-                                        base = round((base * random.uniform(0.1, 1)), 2)
-                                    if base > 5.5:
-                                        base = round((base * random.uniform(0.2, 1)), 2)
-                                    if base < 1:
-                                        base = base * 2
+                                    base = getBaseBonus()
                                     Sale.objects.filter(id=sale['id']).update(valid=1, base=base)
                                     try:
                                         account = Clerk.objects.get(id=clerk_id)

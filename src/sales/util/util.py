@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from random import Random
+import random
 import urllib
 import urllib2
 import json
@@ -24,6 +25,17 @@ def getCode1(n):
     for i in range(n):
         code += chars[random.randint(0, length)]
     return code
+
+
+def getBaseBonus():
+    base = round(random.uniform(1, 10), 2)
+    if base > 3:
+        base = round((base * random.uniform(0.1, 1)), 2)
+    if base > 5.5:
+        base = round((base * random.uniform(0.2, 1)), 2)
+    if base < 1:
+        base = round(random.uniform(1, 2), 2)
+    return base
 
 
 def calBonus(bm, bm1, bm2, bonus, bonus1, bonus2, num):
