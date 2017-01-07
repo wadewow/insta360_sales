@@ -68,7 +68,7 @@
         var $apply = $('form#apply');
         $apply.submit(function(){
             var data = $apply.serialize();
-            $.post("/sales/bi/apply", data, function(data,status){
+            $.post("/sales/admin/apply", data, function(data,status){
                 if(data == 'success'){
                     alert('成功应用促销');
                 }
@@ -89,14 +89,16 @@
             height:500px;
             position:fixed;
             background:floralwhite;
-            top:100px;
-            left:500px;
+            margin-top: -250px;
+            top:50%;
+            left:50%;
+            margin-left: -400px;
             display: none;
         }
     </style>
 </head>
 <body>
-{% extends "bi/navigation.html" %}
+{% extends "admin/navigation.html" %}
 {% block title %}促销管理{% endblock %}
 {% block content %}
     <button class="mui-btn mui-btn--raised mui-btn--accent" id="make_promotion">添加促销策略</button>
@@ -211,7 +213,7 @@
 
   </tbody>
 </table>
-<form action="/sales/bi/apply" id="apply">
+<form action="/sales/admin/apply" id="apply">
     <button class="mui-btn mui-btn--raised mui-btn--accent" id="save">保存</button>
 </form>
 <table class="mui-table mui-table--bordered">
@@ -219,21 +221,21 @@
     <tr>
 {#      <th>id</th>#}
       <th>促销</th>
-      <th><a class="sort" href="/sales/bi/promotion?sort=name">门店名称</a></th>
+      <th><a class="sort" href="/sales/admin/promotion?sort=name">门店名称</a></th>
       <th>商家名称</th>
 {#      <th>商家姓名</th>#}
 {#      <th>手机号</th>#}
 {#      <th>代码</th>#}
-      <th><a class="sort" href="/sales/bi/promotion?sort=province">线下地址</a></th>
-      <th><a class="sort" href="/sales/bi/promotion?sort=-option">配置</a></th>
-      <th><a class="sort" href="/sales/bi/promotion?sort=-machine_serial">样机序列号</a></th>
+      <th><a class="sort" href="/sales/admin/promotion?sort=province">线下地址</a></th>
+      <th><a class="sort" href="/sales/admin/promotion?sort=-option">配置</a></th>
+      <th><a class="sort" href="/sales/admin/promotion?sort=-machine_serial">样机序列号</a></th>
 {#      <th>展台照片</th>#}
 {#      <th>备注</th>#}
-      <th><a class="sort" href="/sales/bi/promotion?sort=agent">代理商</a></th>
-      <th><a class="sort" href="/sales/bi/promotion?sort=manager">销售经理</a></th>
-      <th><a class="sort" href="/sales/bi/promotion?sort=-sales_count">累计销量</a></th>
-      <th><a class="sort" href="/sales/bi/promotion?sort=-created_time">创建时间</a></th>
-      <th><a class="sort" href="/sales/bi/promotion?sort=-online">网店地址</a></th>
+      <th><a class="sort" href="/sales/admin/promotion?sort=agent">代理商</a></th>
+      <th><a class="sort" href="/sales/admin/promotion?sort=manager">销售经理</a></th>
+      <th><a class="sort" href="/sales/admin/promotion?sort=-sales_count">累计销量</a></th>
+      <th><a class="sort" href="/sales/admin/promotion?sort=-created_time">创建时间</a></th>
+      <th><a class="sort" href="/sales/admin/promotion?sort=-online">网店地址</a></th>
     </tr>
   </thead>
   <tbody>
@@ -289,12 +291,12 @@
     </div>
 </div>
 <div class="mui-container-fluid page_tool">
-    <form action="/sales/bi/promotion?sort={{ data.sort }}">
-        <a href="/sales/bi/promotion?page=1&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
-        <a href="/sales/bi/promotion?page={{ data.current_page|add:"-1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">上页</a>
+    <form action="/sales/admin/promotion?sort={{ data.sort }}">
+        <a href="/sales/admin/promotion?page=1&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">首页</a>
+        <a href="/sales/admin/promotion?page={{ data.current_page|add:"-1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">上页</a>
         <span class="currentPage">{{ data.current_page }}</span> / <span class="totalPage">{{ data.page_total }}</span>
-        <a href="/sales/bi/promotion?page={{ data.current_page|add:"1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">下页</a>
-        <a href="/sales/bi/promotion?page={{ data.page_total }}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">尾页</a>
+        <a href="/sales/admin/promotion?page={{ data.current_page|add:"1"}}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">下页</a>
+        <a href="/sales/admin/promotion?page={{ data.page_total }}&sort={{ data.sort }}" class="mui-btn mui-btn--small mui-btn--raised mui-btn--primary">尾页</a>
         <span>跳转到第</span>
         <input id="skip" type="number" pattern="[0-9]+" name="page" style="width:70px" class="skip">
         <span>页</span>

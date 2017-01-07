@@ -100,12 +100,15 @@ urlpatterns = [
     url(r'^bi/nano_detail$', views.bi_nano_detail, name='bi_nano_detail'),
     url(r'^bi/inter_list$', views.bi_inter_list, name='bi_inter_list'),
     url(r'^bi/export$', views.bi_export, name='bi_export'),
-    # url(r'^bi/export_excel$', views.bi_export_excel, name='bi_export_excel'),
     url(r'^bi/export_sales$', views.bi_export_sales, name='bi_export_sales'),
-    url(r'^bi/promotion$', views.bi_promotion, name='bi_promotion'),
-    url(r'^bi/apply$', views.bi_apply, name='bi_apply'),
     url(r'^bi/batch_active$', views.bi_batch_active, name='bi_batch_active'),
-    url(r'^bi/power_manage$', views.bi_power_manage, name='bi_power_manage'),
+
+    url(r'^admin/login$', views.admin_login, name='admin_login'),
+    url(r'^admin/power_manage$', views.admin_power_manage, name='admin_power_manage'),
+    url(r'^admin/manager_list$', views.admin_manager_list, name='admin_manager_list'),
+    url(r'^admin/modify_manager$', views.admin_modify_manager, name='admin_modify_manager'),
+    url(r'^admin/promotion$', views.admin_promotion, name='admin_promotion'),
+    url(r'^admin/apply$', views.admin_apply, name='admin_apply'),
 
     url(r'^wx/wx_mass_message$', views.wx_mass_message, name='wx_mass_message'),
 ]

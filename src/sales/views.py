@@ -15,6 +15,7 @@ from view.views_agent import *
 from view.views_wx import *
 from view.views_util import *
 from view.views_bi import *
+from view.views_admin import *
 from .util.wx_option import option
 from .util.option import lib_path
 from django.utils import timezone

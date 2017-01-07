@@ -11,38 +11,18 @@
 </head>
 <body style="font-family: 'Microsoft YaHei UI'; padding:0 20px">
   <div id="sidedrawer" class="mui--no-user-select">
-    <div id="sidedrawer-brand" class="mui--appbar-line-height">Statistics</div>
+    <div id="sidedrawer-brand" class="mui--appbar-line-height">Admin</div>
     <div class="mui-divider"></div>
     <ul>
       <li>
-          <strong><a href="/sales/bi/stores">门店情况</a></strong>
-      </li>
-        {% if mode != 0 %}
-      <li>
-          <strong><a href="/sales/bi/sales">销售情况</a></strong>
-      </li>
-        {% endif %}
-      <li>
-          <strong><a href="/sales/bi/managers">销售经理情况</a></strong>
+          <strong><a href="/sales/admin/power_manage">员工权限管理</a></strong>
       </li>
       <li>
-          <strong><a href="/sales/bi/trend">数据走势</a></strong>
+          <strong><a href="/sales/admin/manager_list">销售人员管理</a></strong>
       </li>
       <li>
-          <strong><a href="/sales/bi/map">数据分布地图</a></strong>
+          <strong><a href="/sales/admin/promotion">促销设置</a></strong>
       </li>
-      <li>
-          <strong><a href="/sales/bi/nano_detail">Nano序列号查询</a></strong>
-      </li>
-      <li>
-          <strong><a href="/sales/bi/batch_active">激活信息批量查询</a></strong>
-      </li>
-      <li>
-          <strong><a href="/sales/bi/inter_list">国内转国际序列号列表</a></strong>
-      </li>
-{#      <li>#}
-{#          <strong><a href="/sales/bi/power_manage">员工权限管理</a></strong>#}
-{#      </li>#}
     </ul>
   </div>
   <header id="header">

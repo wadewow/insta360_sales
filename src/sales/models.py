@@ -116,6 +116,7 @@ class Manager(models.Model):
     is_leader = models.IntegerField(default=0)
     bi = models.IntegerField(default=0)
     util = models.IntegerField(default=0)
+    admin = models.IntegerField(default=0)
     service = models.IntegerField(default=0)
 
     def __unicode__(self):

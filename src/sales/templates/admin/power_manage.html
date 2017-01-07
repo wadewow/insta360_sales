@@ -21,7 +21,7 @@
                 var job_number = $("#job_number").val();
                 data += 'job_number=' + job_number;
                 console.log(data);
-                $.post("/sales/bi/power_manage", data, function (data, status) {
+                $.post("/sales/admin/power_manage", data, function (data, status) {
                     if (data == 'success') {
                         alert('权限修改成功');
                     }
@@ -35,11 +35,11 @@
     </script>
 </head>
 <body>
-{% extends "bi/navigation.html" %}
+{% extends "admin/navigation.html" %}
 {% block title %}员工权限管理{% endblock %}
 {% block content %}
  <div class="mui--text-center" style="margin:50px auto">
-    <form action="/sales/bi/power_manage" method="get" class="mui-form--inline" id="power_manage">
+    <form action="/sales/admin/power_manage" method="get" class="mui-form--inline" id="power_manage">
       <div class="mui-textfield">
         <input type="text" name="job_number" required="required" placeholder="工号" value="{{ job_number }}">
       </div>
@@ -57,7 +57,7 @@
     <div class="mui-col-md-4">
     </div>
     <div class="mui-col-md-3">
-        <form action="/sales/bi/power_manage" method="post" class="mui-form--inline" id="power_modify">
+        <form action="/sales/admin/power_manage" method="post" class="mui-form--inline" id="power_modify">
         <input type="hidden" id="job_number" value="{{ job_number }}">
       <table class="mui-table mui-table--bordered">
       <thead>
@@ -71,7 +71,7 @@
           <td>{{ user.name }}</td>
         </tr>
         <tr>
-          <td rowspan="3">权限</td>
+          <td rowspan="4">权限</td>
           <td>
               <div class="mui-checkbox">
                 <label>
@@ -97,6 +97,16 @@
                 <label>
                   <input type="checkbox" name="service" {% if user.service == 1 %} checked="checked" {% endif %}  value="service">
                   客服系统
+                </label>
+              </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+              <div class="mui-checkbox">
+                <label>
+                  <input type="checkbox" name="admin" {% if user.admin == 1 %} checked="checked" {% endif %}  value="admin">
+                  后台管理系统
                 </label>
               </div>
           </td>

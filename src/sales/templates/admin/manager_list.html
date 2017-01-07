@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <script src="//static.insta360.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/muicss/0.9.3/js/mui.min.js"></script>
+    <link href="//cdn.bootcss.com/muicss/0.9.3/css/mui.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/jquery.tablesorter/2.28.3/css/theme.default.min.css" rel="stylesheet">
+    <title>销售人员管理</title>
+    <script>
+    $(function () {
+        var $add_div = $('#add_div');
+        $('#add_manager').on("click", function(){
+            $add_div.show();
+        });
+        $('#cancel').on("click", function(){
+            $add_div.hide();
+            return false
+        });
+        var $form = $('form#form_add_manager');
+        $form.submit(function(){
+            var $leader = $(':checkbox#leader');
+            var is_leader = $leader[0].checked;
+            var data = $form.serialize();
+            data += '&is_leader=' + is_leader;
+            $.post("/sales/admin/manager_list", data, function(data,status){
+                if(data == 'success'){
+                    $add_div.hide();
+                    alert('成功添加销售人员');
+                    location.reload()
+                }
+                else {
+                    alert(data)
+                }
+            });
+            return false
+        });
+
+        var $modify_div = $('#modify_div');
+        $('.modify_manager').on("click", function(){
+            job_number = $(this).attr('data-job_number');
+            name = $(this).attr('data-name');
+            area = $(this).attr('data-area');
+            region = $(this).attr('data-region');
+            is_leader = $(this).attr('data-is_leader');
+            $('#job_number_modify').val(job_number);
+            $('#name_modify').val(name);
+            $('#area_modify').val(area);
+            $('#region_modify').val(region);
+            leader = $('#leader_modify');
+            if(is_leader == '1'){
+{#                leader.attr('checked', 'checked');#}
+                leader.prop('checked', true)
+            }else{
+                leader.prop('checked', false);
+{#                leader.removeAttr('checked')#}
+            }
+            $modify_div.show();
+        });
+        $('#cancel_modify').on("click", function(){
+            $modify_div.hide();
+            return false
+        });
+        var $form_modify = $('form#form_modify_manager');
+        $form_modify.submit(function(){
+            var $leader = $(':checkbox#leader_modify');
+            var is_leader = $leader[0].checked;
+            var data = $form_modify.serialize();
+            data += '&is_leader=' + is_leader;
+            $.post("/sales/admin/modify_manager", data, function(data,status){
+                if(data == 'success'){
+                    $modify_div.hide();
+                    alert('修改成功！');
+                    location.reload()
+                }
+                else {
+                    alert(data)
+                }
+            });
+            return false
+        });
+    });
+    </script>
+    <style type="text/css">
+        .modal{
+            width:600px;
+            height:500px;
+            position:fixed;
+            background:floralwhite;
+            margin-top: -250px;
+            top: 50%;
+            left: 50%;
+            margin-left: -300px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+{% extends "admin/navigation.html" %}
+{% block title %}销售人员管理{% endblock %}
+{% block content %}
+    <button class="mui-btn mui-btn--raised mui-btn--accent" id="add_manager">添加销售人员</button>
+    <div class="modal"  id="add_div">
+        <form class="mui-form--inline" style="margin-top:40px" id="form_add_manager">
+            <div class="mui-row">
+                <div class="mui-col-md-4">
+                </div>
+                <div class="mui-col-md-4">
+                    <div class="mui-textfield">
+                        <input type="text" required="required" name="job_number" id="job_number">
+                        <label>工号</label>
+                    </div>
+                </div>
+                <div class="mui-col-md-4">
+                </div>
+            </div>
+            <div class="mui-row">
+                <div class="mui-col-md-4">
+                </div>
+                <div class="mui-col-md-4">
+                    <div class="mui-textfield">
+                        <input type="text" required="required" name="name" id="name">
+                        <label>姓名</label>
+                    </div>
+                </div>
+                <div class="mui-col-md-4">
+                </div>
+            </div>
+            <div class="mui-row">
+                <div class="mui-col-md-4">
+                </div>
+                <div class="mui-col-md-4">
+                    <div class="mui-textfield">
+                        <input type="text" required="required" name="region" id="region">
+                        <label>区域</label>
+                    </div>
+                </div>
+                <div class="mui-col-md-4">
+                </div>
+            </div>
+            <div class="mui-row">
+                <div class="mui-col-md-4">
+                </div>
+                <div class="mui-col-md-4">
+                    <div class="mui-textfield">
+                        <input type="text" required="required" name="area" id="area">
+                        <label>省市</label>
+                    </div>
+                </div>
+                <div class="mui-col-md-4">
+                </div>
+            </div>
+            <div class="mui-row">
+                <div class="mui-col-md-4">
+                </div>
+                <div class="mui-col-md-4">
+                    <div class="mui-checkbox">
+                        <label>
+                          <input type="checkbox" name="leader" value="leader" id="leader">
+                          是否为区域经理
+                        </label>
+                    </div>
+                </div>
+                <div class="mui-col-md-4">
+                </div>
+            </div>
+            <div class="mui-row mui--text-center" style="margin-top:20px">
+                <button class="mui-btn mui-btn--raised mui-btn--danger" id="cancel">取消</button>
+                <button class="mui-btn mui-btn--raised mui-btn--primary">确认</button>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="modal" id="modify_div">
+        <form class="mui-form--inline" style="margin-top:80px" id="form_modify_manager">
+            <input type="hidden" name="job_number" id="job_number_modify">
+            <div class="mui-row">
+                <div class="mui-col-md-4">
+                </div>
+                <div class="mui-col-md-4">
+                    <div class="mui-textfield">
+                        <input type="text" required="required" name="name" id="name_modify">
+                        <label>姓名</label>
+                    </div>
+                </div>
+                <div class="mui-col-md-4">
+                </div>
+            </div>
+            <div class="mui-row">
+                <div class="mui-col-md-4">
+                </div>
+                <div class="mui-col-md-4">
+                    <div class="mui-textfield">
+                        <input type="text" required="required" name="region" id="region_modify">
+                        <label>区域</label>
+                    </div>
+                </div>
+                <div class="mui-col-md-4">
+                </div>
+            </div>
+            <div class="mui-row">
+                <div class="mui-col-md-4">
+                </div>
+                <div class="mui-col-md-4">
+                    <div class="mui-textfield">
+                        <input type="text" required="required" name="area" id="area_modify">
+                        <label>省市</label>
+                    </div>
+                </div>
+                <div class="mui-col-md-4">
+                </div>
+            </div>
+            <div class="mui-row">
+                <div class="mui-col-md-4">
+                </div>
+                <div class="mui-col-md-4">
+                    <div class="mui-checkbox">
+                        <label>
+                          <input type="checkbox" name="leader" value="leader" id="leader_modify">
+                          是否为区域经理
+                        </label>
+                    </div>
+                </div>
+                <div class="mui-col-md-4">
+                </div>
+            </div>
+            <div class="mui-row mui--text-center" style="margin-top:20px">
+                <button class="mui-btn mui-btn--raised mui-btn--danger" id="cancel_modify">取消</button>
+                <button class="mui-btn mui-btn--raised mui-btn--primary">确认</button>
+            </div>
+        </form>
+    </div>
+
+<table class="mui-table mui-table--bordered tablesorter tablesorter-default" id="myTable">
+  <thead>
+    <tr>
+        <td>序号</td>
+        <td>工号</td>
+        <td>姓名</td>
+        <td>区域</td>
+        <td>省市</td>
+        <td>是否区域经理</td>
+        <td>操作</td>
+    </tr>
+  </thead>
+  <tbody>
+  {% for manager in managers%}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ manager.id }}</td>
+      <td>{{ manager.name }}</td>
+      <td>{{ manager.region }}</td>
+      <td>{{ manager.area }}</td>
+      <td>{% if manager.is_leader == 1 %}是{% else %}否{% endif %}</td>
+      <td><button class="mui-btn mui-btn--small mui-btn--accent mui-btn--raised modify_manager" data-job_number="{{ manager.id }}" data-name="{{ manager.name }}" data-region="{{ manager.region }}" data-area="{{ manager.area }}" data-is_leader="{{ manager.is_leader }}">修改</button></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+    <script src="//cdn.bootcss.com/jquery.tablesorter/2.28.3/js/jquery.tablesorter.min.js"></script>
+    <script>
+        $(function(){
+          $("#myTable").tablesorter();
+        });
+    </script>
+{% endblock %}
+</body>
+
+</html>
